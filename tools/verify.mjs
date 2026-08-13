@@ -111,7 +111,11 @@ for (const page of pages) {
 /* ------------------------------- saída ----------------------------------- */
 console.log('Contraste WCAG 2.1 AA');
 notes.forEach((n) => console.log(n));
-console.log(`\nCatálogo: ${catalog.filter((p) => p.status === 'live').length} no ar, ${catalog.filter((p) => p.status === 'dev').length} em desenvolvimento`);
+const shown = catalog.filter((p) => p.is_public !== false);
+const hidden = catalog.length - shown.length;
+console.log(`\nCatálogo: ${shown.filter((p) => p.status === 'live').length} no ar, `
+  + `${shown.filter((p) => p.status === 'dev').length} em desenvolvimento`
+  + (hidden ? `, ${hidden} oculto(s) do site` : ''));
 console.log(`Páginas verificadas: ${pages.length}\n`);
 
 if (problems.length) {
