@@ -13,7 +13,7 @@ export default async function handler(req, res) {
 
   const cfg = config();
   if (!cfg.brevoKey) {
-    return fail(res, 503, 'A newsletter ainda não está configurada. Escreva para contato@hacktechfarm.com.br.br.');
+    return fail(res, 503, 'A newsletter ainda não está configurada. Escreva para hacktechfarm@proton.me.');
   }
 
   const ip = clientIp(req);

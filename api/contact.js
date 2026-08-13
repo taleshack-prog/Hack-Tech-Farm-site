@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
   const cfg = config();
   if (!cfg.brevoKey || !cfg.contactFrom) {
-    return fail(res, 503, 'O formulário ainda não está configurado. Escreva para contato@hacktechfarm.com.br.br.');
+    return fail(res, 503, 'O formulário ainda não está configurado. Escreva para hacktechfarm@proton.me.');
   }
 
   const ip = clientIp(req);
@@ -44,7 +44,7 @@ export default async function handler(req, res) {
   try {
     await brevoSendContact(cfg, { name, email, subject, message });
   } catch (err) {
-    return fail(res, 502, 'A mensagem não foi enviada. Tente de novo ou escreva para contato@hacktechfarm.com.br.br.', err);
+    return fail(res, 502, 'A mensagem não foi enviada. Tente de novo ou escreva para hacktechfarm@proton.me.', err);
   }
 
   return sendJson(res, 200, { ok: true });

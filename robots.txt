@@ -4,4 +4,4 @@ Disallow: /dashboard.html
 Disallow: /login.html
 Disallow: /api/
 
-Sitemap: https://hacktechfarm.com.br.br/sitemap.xml
+Sitemap: https://hacktechfarm.com.br/sitemap.xml

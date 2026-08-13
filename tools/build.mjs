@@ -13,7 +13,13 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const SITE_URL = 'https://hacktechfarm.com.br.br';
+const SITE_URL = 'https://hacktechfarm.com.br';
+
+/* E-mail público de contato. Provisoriamente no Proton, porque o plano gratuito
+   deles não aceita domínio próprio. Quando o Mail Plus for assinado, troque
+   por contato@hacktechfarm.com.br AQUI e rode `npm run build` — é o único
+   lugar que precisa mudar. */
+const CONTACT_EMAIL = 'hacktechfarm@proton.me';
 
 const PRODUCTS = JSON.parse(readFileSync(join(ROOT, 'data/products.json'), 'utf8')).products;
 
@@ -41,7 +47,7 @@ const FOOTER = [
                 ['asphalt.html', 'Asphalt Hoops'], ['galeria.html', 'ArtHack']]],
   ['Empresa', [['sobre.html', 'Sobre nós'], ['roadmap.html', 'Roadmap'],
                ['parceiros.html', 'Parceiros'], ['contato.html', 'Contato']]],
-  ['Contato', [['mailto:contato@hacktechfarm.com.br.br', 'contato@hacktechfarm.com.br.br'],
+  ['Contato', [[`mailto:${CONTACT_EMAIL}`, CONTACT_EMAIL],
                ['contato.html', 'Fale conosco']]],
 ];
 
@@ -228,7 +234,7 @@ const ORG_LD = JSON.stringify({
   name: 'Hack Tech Farm',
   alternateName: 'HTF',
   url: SITE_URL,
-  email: 'contato@hacktechfarm.com.br.br',
+  email: CONTACT_EMAIL,
   description: 'Software house familiar de Porto Alegre. Desenvolvimento de software, tokenização de arte e IA para LinkedIn.',
   address: { '@type': 'PostalAddress', addressLocality: 'Porto Alegre', addressRegion: 'RS', addressCountry: 'BR' },
   founder: [{ '@type': 'Person', name: 'Tales Hack' },
@@ -629,7 +635,7 @@ function buildContato() {
           </div>
           <div class="stack">
             <h2 style="margin-bottom:6px">Outros caminhos</h2>
-            <div class="card"><h3>E-mail</h3><p><a href="mailto:contato@hacktechfarm.com.br.br">contato@hacktechfarm.com.br.br</a></p></div>
+            <div class="card"><h3>E-mail</h3><p><a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></p></div>
             <div class="card"><h3>Onde estamos</h3><p>Porto Alegre, RS — Brasil. Trabalhamos remoto com clientes de qualquer lugar.</p></div>
             <div class="card"><h3>Suporte de produto</h3><p>Para dúvidas sobre o Posthink, o suporte fica dentro do próprio app — a resposta é mais rápida por lá.</p></div>
           </div>

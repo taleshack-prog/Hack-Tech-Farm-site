@@ -29,7 +29,7 @@ export function config() {
     secret: get('AUTH_SECRET'),
     brevoKey: get('BREVO_API_KEY', false),
     brevoListId: process.env.BREVO_LIST_ID || '',
-    contactTo: process.env.CONTACT_TO || 'contato@hacktechfarm.com.br.br',
+    contactTo: process.env.CONTACT_TO || 'hacktechfarm@proton.me',
     contactFrom: process.env.CONTACT_FROM || '',
     missing,
   };
