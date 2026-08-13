@@ -1,11 +1,4 @@
 {
-  "_comment": "Galeria do ArtHack. Editada pelo dashboard. As imagens ficam em img/obras/<slug>.jpg (grande) e <slug>-thumb.jpg (600x600), geradas no navegador no momento do upload.",
-  "obras": [
-    { "slug": "obra-01", "title": "Sulco", "meta": "Acrílica sobre tela, 2023", "order": 10, "placeholder": true },
-    { "slug": "obra-02", "title": "Ruído branco", "meta": "Técnica mista, 2022", "order": 20, "placeholder": true },
-    { "slug": "obra-03", "title": "Colheita", "meta": "Acrílica sobre tela, 2024", "order": 30, "placeholder": true },
-    { "slug": "obra-04", "title": "Sinapse", "meta": "Óleo sobre tela, 2021", "order": 40, "placeholder": true },
-    { "slug": "obra-05", "title": "Terra batida", "meta": "Técnica mista, 2023", "order": 50, "placeholder": true },
-    { "slug": "obra-06", "title": "Segunda leitura", "meta": "Acrílica sobre papel, 2024", "order": 60, "placeholder": true }
-  ]
+  "_comment": "Galeria do ArtHack. Editada pelo dashboard. Imagens em img/obras/<slug>.jpg e <slug>-thumb.jpg.",
+  "obras": []
 }
