@@ -1,15 +1,19 @@
-/* api/subscribe.js — inscrição na newsletter.
- * POST { email, website?, elapsed?, turnstileToken?, source? }
+/* api/subscribe.js — inscrição na newsletter via Brevo.
+ * POST { email, website?, elapsed?, source? }
  */
-const {
-  EMAIL_RE, isSpam, verifyTurnstile, rateLimit, clientIp,
-  supabaseInsert, sendJson, fail
-} = require('./_lib');
+import {
+  config, EMAIL_RE, isSpam, rateLimit, clientIp, brevoSubscribe, sendJson, fail,
+} from './_lib.js';
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return fail(res, 405, 'Método não permitido.');
+  }
+
+  const cfg = config();
+  if (!cfg.brevoKey) {
+    return fail(res, 503, 'A newsletter ainda não está configurada. Escreva para contato@hacktechfarm.com.');
   }
 
   const ip = clientIp(req);
@@ -19,8 +23,8 @@ module.exports = async function handler(req, res) {
 
   const body = req.body && typeof req.body === 'object' ? req.body : {};
 
-  /* Bot detectado: responde 200 sem gravar. Devolver erro só ensinaria o
-     script a contornar a armadilha. */
+  /* Bot detectado: responde 200 sem gravar. Devolver erro só ensinaria
+     o script a contornar a armadilha. */
   const spam = isSpam(body);
   if (spam) {
     console.warn('[HTF/api] inscrição descartada (%s) de %s', spam, ip);
@@ -32,18 +36,11 @@ module.exports = async function handler(req, res) {
     return fail(res, 400, 'Digite um e-mail válido.');
   }
 
-  if (!(await verifyTurnstile(body.turnstileToken, ip))) {
-    return fail(res, 400, 'Não conseguimos confirmar que você não é um robô. Recarregue a página.');
-  }
-
   try {
-    await supabaseInsert('subscribers', {
-      email,
-      source: String(body.source || '').slice(0, 120)
-    }, { onConflict: 'email' });   // reinscrever não gera erro nem duplica
+    await brevoSubscribe(cfg, email, String(body.source || '').slice(0, 120));
   } catch (err) {
     return fail(res, 502, 'A inscrição não foi salva. Tente de novo em instantes.', err);
   }
 
   return sendJson(res, 200, { ok: true });
-};
+}

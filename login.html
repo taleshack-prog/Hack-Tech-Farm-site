@@ -21,20 +21,19 @@
 
     <div class="login-box">
       <h1>Área restrita</h1>
-      <p>Entre para gerenciar produtos e atualizações.</p>
+      <p>Entre com a conta do GitHub que tem acesso ao repositório do site.</p>
 
-      <form id="login-form" novalidate>
-        <div class="form-group">
-          <label for="email">E-mail</label>
-          <input type="email" id="email" name="email" autocomplete="username" required>
-        </div>
-        <div class="form-group">
-          <label for="password">Senha</label>
-          <input type="password" id="password" name="password" autocomplete="current-password" required>
-        </div>
-        <button type="submit" class="btn btn-primary" style="width:100%">Entrar</button>
-        <p class="form-msg" id="login-msg" role="status" aria-live="polite"></p>
-      </form>
+      <a href="/api/auth/login" class="btn btn-primary" id="login-btn" style="width:100%">
+        Entrar com GitHub
+      </a>
+
+      <p class="form-msg" id="login-msg" role="status" aria-live="polite"></p>
+
+      <p class="dim" style="font-size:.84rem;margin-top:20px;text-align:left">
+        Não há senha para lembrar nem para vazar. Quem pode escrever no
+        repositório pode publicar no site — e cada alteração fica registrada
+        no seu nome.
+      </p>
     </div>
 
     <p class="center dim" style="font-size:.84rem;margin-top:22px">
@@ -42,8 +41,6 @@
     </p>
   </main>
 
-  <script src="js/config.js"></script>
-  <script src="js/auth.js"></script>
   <script src="js/login.js" defer></script>
 </body>
 </html>

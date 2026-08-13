@@ -1,46 +1,31 @@
-/* js/login.js — tela de entrada da área restrita. */
+/* js/login.js — tela de entrada. Todo o trabalho de OAuth acontece no
+ * servidor; aqui só mostramos erro e evitamos login redundante.
+ */
 (function () {
   'use strict';
 
-  var form = document.getElementById('login-form');
   var msg = document.getElementById('login-msg');
-  var button = form.querySelector('button[type="submit"]');
+  var button = document.getElementById('login-btn');
 
-  /* Já autenticado? Vai direto para o destino. */
-  if (window.HTFAuth.readSession()) {
-    window.location.replace(nextTarget());
-  }
-
-  /* Só aceita caminho relativo do próprio site: evita open redirect. */
-  function nextTarget() {
-    var raw = new URLSearchParams(window.location.search).get('next') || 'dashboard.html';
-    return /^\/?[a-z0-9._-]+\.html$/i.test(raw) ? raw.replace(/^\//, '') : 'dashboard.html';
-  }
-
-  if (!window.HTFAuth.configured()) {
-    msg.textContent = 'Supabase ainda não configurado. Preencha js/config.js com a URL e a anon key do projeto.';
+  var erro = new URLSearchParams(window.location.search).get('erro');
+  if (erro) {
+    msg.textContent = erro;
     msg.className = 'form-msg err';
-    button.disabled = true;
   }
 
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    button.disabled = true;
-    button.setAttribute('aria-busy', 'true');
-    msg.textContent = 'Entrando…';
-    msg.className = 'form-msg';
-
-    window.HTFAuth.signIn(form.email.value.trim(), form.password.value)
-      .then(function () { window.location.replace(nextTarget()); })
-      .catch(function (err) {
-        msg.textContent = err.message;
+  fetch('/api/auth/session', { credentials: 'same-origin' })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (data.authenticated) {
+        window.location.replace('dashboard.html');
+        return;
+      }
+      if (!data.configured) {
+        msg.textContent = 'Servidor sem configuração: faltam ' + (data.missing || []).join(', ') + '.';
         msg.className = 'form-msg err';
-        form.password.value = '';
-        form.password.focus();
-      })
-      .finally(function () {
-        button.disabled = false;
-        button.removeAttribute('aria-busy');
-      });
-  });
+        button.setAttribute('aria-disabled', 'true');
+        button.removeAttribute('href');
+      }
+    })
+    .catch(function () { /* offline ou rodando estático: o botão segue visível */ });
 })();

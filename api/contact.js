@@ -1,17 +1,21 @@
-/* api/contact.js — formulário de contato.
- * POST { name, email, subject, message, website?, elapsed?, turnstileToken? }
+/* api/contact.js — formulário de contato, entregue por e-mail via Brevo.
+ * Nada fica armazenado: a mensagem vai direto para a caixa de entrada.
  */
-const {
-  EMAIL_RE, isSpam, verifyTurnstile, rateLimit, clientIp,
-  supabaseInsert, sendJson, fail
-} = require('./_lib');
+import {
+  config, EMAIL_RE, isSpam, rateLimit, clientIp, brevoSendContact, sendJson, fail,
+} from './_lib.js';
 
 const SUBJECTS = ['parceria', 'cliente', 'produto', 'imprensa', 'outro'];
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return fail(res, 405, 'Método não permitido.');
+  }
+
+  const cfg = config();
+  if (!cfg.brevoKey || !cfg.contactFrom) {
+    return fail(res, 503, 'O formulário ainda não está configurado. Escreva para contato@hacktechfarm.com.');
   }
 
   const ip = clientIp(req);
@@ -37,15 +41,11 @@ module.exports = async function handler(req, res) {
   if (message.length < 10) return fail(res, 400, 'Conte um pouco mais sobre o que você precisa.');
   if (message.length > 5000) return fail(res, 400, 'Mensagem longa demais. Resuma em até 5.000 caracteres.');
 
-  if (!(await verifyTurnstile(body.turnstileToken, ip))) {
-    return fail(res, 400, 'Não conseguimos confirmar que você não é um robô. Recarregue a página.');
-  }
-
   try {
-    await supabaseInsert('messages', { name, email, subject, body: message });
+    await brevoSendContact(cfg, { name, email, subject, message });
   } catch (err) {
     return fail(res, 502, 'A mensagem não foi enviada. Tente de novo ou escreva para contato@hacktechfarm.com.', err);
   }
 
   return sendJson(res, 200, { ok: true });
-};
+}

@@ -1,35 +1,23 @@
-/* js/dashboard.js — gestão de produtos e atualizações.
+/* js/dashboard.js — gestão do catálogo.
  *
- * Diferenças relevantes em relação ao rascunho anterior:
- *  - nada de onclick="fn(${id})" em string de HTML: os handlers são ligados
- *    por delegação de evento, então não há como um dado do banco virar código;
- *  - todo texto entra pelo DOM (textContent), não por innerHTML;
- *  - links passam por validação de protocolo, o que bloqueia javascript:;
- *  - "editar" faz UPDATE de verdade — antes o registro era apagado e recriado,
- *    e qualquer falha no meio do caminho perdia o conteúdo.
+ * Modelo de edição: as alterações ficam em memória e só vão para o GitHub
+ * quando você clica em "Publicar". Isso resolve o incômodo dos ~40 segundos
+ * de rebuild — cadastre cinco produtos, publique uma vez, espere uma vez.
  */
 (function () {
   'use strict';
 
-  var session = window.HTFAuth.requireSession();
-  if (!session) return; // dentro de IIFE, `return` aqui é válido
-
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
 
-  var updates = [];
   var products = [];
-  var editingUpdateId = null;
-  var editingProductId = null;
+  var sha = null;
+  var dirty = false;
+  var editingId = null;
 
-  var LABEL = {
-    kind: { social: 'Rede social', site: 'Site' },
-    platform: { linkedin: 'LinkedIn', instagram: 'Instagram', site: 'Site HTF' },
-    status: { published: 'Publicada', draft: 'Rascunho' },
-    stage: { alpha: 'Alpha', beta: 'Beta', planning: 'Planejamento' }
-  };
+  var STAGE_LABEL = { alpha: 'Alpha', beta: 'Beta', planning: 'Planejamento' };
 
-  /* ---------------- infraestrutura de UI ---------------- */
+  /* ------------------------------ UI ---------------------------------- */
 
   var toastTimer;
   function toast(message, isError) {
@@ -38,13 +26,13 @@
     el.classList.toggle('is-error', Boolean(isError));
     el.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { el.classList.remove('show'); }, 3600);
+    toastTimer = setTimeout(function () { el.classList.remove('show'); }, 4200);
   }
 
   function el(tag, className, text) {
     var node = document.createElement(tag);
     if (className) node.className = className;
-    if (text != null) node.textContent = text;
+    if (text != null) node.textContent = text;   // textContent, nunca innerHTML
     return node;
   }
 
@@ -56,6 +44,12 @@
     } catch (err) { return ''; }
   }
 
+  function setDirty(value) {
+    dirty = value;
+    $('#publish').disabled = !value;
+    $('#dirty-flag').hidden = !value;
+  }
+
   function showPanel(name) {
     $$('.dash-nav button').forEach(function (b) {
       b.setAttribute('aria-selected', String(b.dataset.panel === name));
@@ -63,234 +57,86 @@
     $$('.dash-panel').forEach(function (p) { p.hidden = p.id !== 'panel-' + name; });
   }
 
-  /* ---------------- carregamento ---------------- */
+  /* ------------------------------ API --------------------------------- */
 
-  function loadAll() {
-    return Promise.all([
-      window.HTFAuth.rest('updates?select=*&order=created_at.desc'),
-      window.HTFAuth.rest('products?select=*&order=sort_order.asc')
-    ]).then(function (results) {
-      updates = results[0] || [];
-      products = results[1] || [];
-      renderUpdates();
-      renderProducts();
-      renderStats();
-    }).catch(function (err) { toast(err.message, true); });
+  function api(path, options) {
+    options = options || {};
+    return fetch(path, {
+      method: options.method || 'GET',
+      credentials: 'same-origin',
+      headers: options.body ? { 'Content-Type': 'application/json' } : undefined,
+      body: options.body ? JSON.stringify(options.body) : undefined,
+    }).then(function (res) {
+      if (res.status === 401) {
+        window.location.replace('login.html');
+        throw new Error('Sessão expirada.');
+      }
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        if (!res.ok) throw new Error(data.error || 'Erro no servidor (' + res.status + ').');
+        return data;
+      });
+    });
   }
+
+  /* --------------------------- Renderização --------------------------- */
 
   function renderStats() {
-    $('#stat-updates').textContent = updates.length;
-    $('#stat-published').textContent = updates.filter(function (u) { return u.status === 'published'; }).length;
-    $('#stat-products').textContent = products.length;
+    $('#stat-live').textContent = products.filter(function (p) { return p.status === 'live'; }).length;
+    $('#stat-dev').textContent = products.filter(function (p) { return p.status === 'dev'; }).length;
+    $('#stat-total').textContent = products.length;
   }
 
-  /* ---------------- atualizações ---------------- */
-
-  function renderUpdates() {
-    var list = $('#updates-list');
-    var kind = $('#filter-kind').value;
-    var status = $('#filter-status').value;
+  function renderList() {
+    var list = $('#products-list');
+    var filter = $('#filter-status').value;
     list.textContent = '';
 
-    var filtered = updates.filter(function (u) {
-      return (kind === 'all' || u.kind === kind) && (status === 'all' || u.status === status);
-    });
+    var filtered = products
+      .filter(function (p) { return filter === 'all' || p.status === filter; })
+      .sort(function (a, b) { return a.sort_order - b.sort_order; });
 
     if (!filtered.length) {
       var empty = el('div', 'empty-state');
-      empty.appendChild(el('p', null, 'Nenhuma atualização com esses filtros.'));
-      empty.appendChild(el('p', 'dim', 'Crie uma em "Nova atualização" ou troque os filtros.'));
+      empty.appendChild(el('p', null, 'Nenhum produto com esse filtro.'));
+      empty.appendChild(el('p', 'dim', 'Cadastre o primeiro em "Novo produto".'));
       list.appendChild(empty);
       return;
     }
 
-    filtered.forEach(function (u) {
-      var row = el('div', 'row is-' + u.status);
-      row.dataset.id = u.id;
-
-      row.appendChild(el('h3', null, u.title));
-
-      var meta = el('div', 'meta');
-      meta.appendChild(el('span', 'badge badge-' + u.kind, LABEL.kind[u.kind] || u.kind));
-      meta.appendChild(el('span', 'badge badge-' + u.platform, LABEL.platform[u.platform] || u.platform));
-      meta.appendChild(el('span', 'badge badge-' + u.status, LABEL.status[u.status] || u.status));
-      meta.appendChild(el('span', 'dim', new Date(u.created_at).toLocaleDateString('pt-BR')));
-      row.appendChild(meta);
-
-      var img = safeUrl(u.image_url);
-      if (img) {
-        var thumb = el('img', 'thumb');
-        thumb.src = img;
-        thumb.alt = '';
-        thumb.loading = 'lazy';
-        thumb.addEventListener('error', function () { thumb.remove(); });
-        row.appendChild(thumb);
-      }
-
-      row.appendChild(el('div', 'body', u.body));
-
-      var link = safeUrl(u.link_url);
-      if (link) {
-        var a = el('a', null, link);
-        a.href = link; a.target = '_blank'; a.rel = 'noopener';
-        a.style.color = 'var(--emerald)';
-        var wrap = el('p'); wrap.style.marginBottom = '12px';
-        wrap.appendChild(a);
-        row.appendChild(wrap);
-      }
-
-      var actions = el('div', 'actions');
-      var toggle = el('button', 'btn btn-sm ' + (u.status === 'published' ? 'btn-ghost' : 'btn-success'),
-        u.status === 'published' ? 'Voltar para rascunho' : 'Publicar');
-      toggle.type = 'button'; toggle.dataset.action = 'toggle';
-
-      var edit = el('button', 'btn btn-sm btn-ghost', 'Editar');
-      edit.type = 'button'; edit.dataset.action = 'edit';
-
-      var del = el('button', 'btn btn-sm btn-danger', 'Excluir');
-      del.type = 'button'; del.dataset.action = 'delete';
-
-      actions.append(toggle, edit, del);
-      row.appendChild(actions);
-      list.appendChild(row);
-    });
-  }
-
-  /* Delegação: um listener só, e o id vem do dataset — nunca de string HTML. */
-  $('#updates-list').addEventListener('click', function (e) {
-    var button = e.target.closest('button[data-action]');
-    if (!button) return;
-    var id = Number(button.closest('.row').dataset.id);
-    var item = updates.find(function (u) { return u.id === id; });
-    if (!item) return;
-
-    if (button.dataset.action === 'toggle') {
-      var next = item.status === 'published' ? 'draft' : 'published';
-      window.HTFAuth.rest('updates?id=eq.' + id, {
-        method: 'PATCH',
-        body: { status: next, published_at: next === 'published' ? new Date().toISOString() : null }
-      }).then(loadAll)
-        .then(function () { toast(next === 'published' ? 'Publicada.' : 'Voltou para rascunho.'); })
-        .catch(function (err) { toast(err.message, true); });
-    }
-
-    if (button.dataset.action === 'edit') {
-      editingUpdateId = item.id;
-      var f = $('#update-form');
-      f.title_.value = item.title;
-      f.kind.value = item.kind;
-      f.platform.value = item.platform;
-      f.body_.value = item.body;
-      f.image_url.value = item.image_url || '';
-      f.link_url.value = item.link_url || '';
-      f.status.value = item.status;
-      $('#update-submit').textContent = 'Salvar alterações';
-      $('#update-cancel').hidden = false;
-      showPanel('create');
-      f.title_.focus();
-    }
-
-    if (button.dataset.action === 'delete') {
-      if (!window.confirm('Excluir "' + item.title + '"? Não dá para desfazer.')) return;
-      window.HTFAuth.rest('updates?id=eq.' + id, { method: 'DELETE' })
-        .then(loadAll).then(function () { toast('Atualização excluída.'); })
-        .catch(function (err) { toast(err.message, true); });
-    }
-  });
-
-  function resetUpdateForm() {
-    editingUpdateId = null;
-    $('#update-form').reset();
-    $('#update-submit').textContent = 'Salvar atualização';
-    $('#update-cancel').hidden = true;
-    syncPlatformField();
-  }
-
-  $('#update-cancel').addEventListener('click', resetUpdateForm);
-
-  function syncPlatformField() {
-    var isSocial = $('#update-form').kind.value === 'social';
-    $('#platform-group').hidden = !isSocial;
-    if (!isSocial) $('#update-form').platform.value = 'site';
-  }
-  $('#update-form').kind.addEventListener('change', syncPlatformField);
-
-  $('#update-form').addEventListener('submit', function (e) {
-    e.preventDefault();
-    var f = e.target;
-    var payload = {
-      title: f.title_.value.trim(),
-      kind: f.kind.value,
-      platform: f.platform.value,
-      body: f.body_.value.trim(),
-      image_url: safeUrl(f.image_url.value) || null,
-      link_url: safeUrl(f.link_url.value) || null,
-      status: f.status.value
-    };
-
-    if (f.image_url.value.trim() && !payload.image_url) {
-      return toast('A URL da imagem precisa começar com http:// ou https://.', true);
-    }
-    if (f.link_url.value.trim() && !payload.link_url) {
-      return toast('O link precisa começar com http:// ou https://.', true);
-    }
-    if (payload.status === 'published') payload.published_at = new Date().toISOString();
-
-    var request = editingUpdateId
-      ? window.HTFAuth.rest('updates?id=eq.' + editingUpdateId, { method: 'PATCH', body: payload })
-      : window.HTFAuth.rest('updates', { method: 'POST', body: payload, prefer: 'return=minimal' });
-
-    request.then(function () {
-      toast(editingUpdateId ? 'Alterações salvas.' : 'Atualização salva.');
-      resetUpdateForm();
-      return loadAll();
-    }).catch(function (err) { toast(err.message, true); });
-  });
-
-  /* ---------------- produtos ---------------- */
-
-  function renderProducts() {
-    var list = $('#products-list');
-    list.textContent = '';
-
-    if (!products.length) {
-      var empty = el('div', 'empty-state');
-      empty.appendChild(el('p', null, 'Nenhum produto cadastrado.'));
-      empty.appendChild(el('p', 'dim', 'O primeiro que você cadastrar já aparece no site.'));
-      list.appendChild(empty);
-      return;
-    }
-
-    products.forEach(function (p) {
+    filtered.forEach(function (p) {
       var row = el('div', 'row is-' + (p.status === 'live' ? 'published' : 'draft'));
       row.dataset.id = p.id;
 
-      row.appendChild(el('h3', null, p.name));
+      row.appendChild(el('h3', null, (p.icon ? p.icon + '  ' : '') + p.name));
 
       var meta = el('div', 'meta');
-      meta.appendChild(el('span', 'badge badge-' + p.status, p.status === 'live' ? 'No ar' : 'Em desenvolvimento'));
-      if (p.stage) meta.appendChild(el('span', 'badge badge-site', LABEL.stage[p.stage] || p.stage));
+      meta.appendChild(el('span', 'badge badge-' + p.status,
+        p.status === 'live' ? 'No ar' : 'Em desenvolvimento'));
+      if (p.stage) meta.appendChild(el('span', 'badge badge-site', STAGE_LABEL[p.stage] || p.stage));
       if (p.category) meta.appendChild(el('span', 'badge badge-social', p.category));
       meta.appendChild(el('span', 'dim', 'ordem ' + p.sort_order));
       row.appendChild(meta);
 
-      if (p.description) row.appendChild(el('div', 'body', p.description));
+      if (p.tagline) row.appendChild(el('div', 'body', p.tagline));
 
       var url = safeUrl(p.url);
       if (url) {
         var a = el('a', null, url);
         a.href = url; a.target = '_blank'; a.rel = 'noopener';
         a.style.color = 'var(--emerald)';
-        var wrap = el('p'); wrap.style.marginBottom = '12px';
+        var wrap = el('p');
+        wrap.style.marginBottom = '12px';
         wrap.appendChild(a);
         row.appendChild(wrap);
       }
 
       var actions = el('div', 'actions');
       var edit = el('button', 'btn btn-sm btn-ghost', 'Editar');
-      edit.type = 'button'; edit.dataset.action = 'edit';
+      edit.type = 'button';
+      edit.dataset.action = 'edit';
       var del = el('button', 'btn btn-sm btn-danger', 'Excluir');
-      del.type = 'button'; del.dataset.action = 'delete';
+      del.type = 'button';
+      del.dataset.action = 'delete';
       actions.append(edit, del);
       row.appendChild(actions);
 
@@ -298,6 +144,7 @@
     });
   }
 
+  /* Delegação: o id vem do dataset, nunca de HTML montado com dado externo. */
   $('#products-list').addEventListener('click', function (e) {
     var button = e.target.closest('button[data-action]');
     if (!button) return;
@@ -306,41 +153,40 @@
     if (!item) return;
 
     if (button.dataset.action === 'edit') {
-      editingProductId = item.id;
+      editingId = id;
       var f = $('#product-form');
-      f.slug.value = item.slug;
-      f.name.value = item.name;
-      f.tagline.value = item.tagline || '';
-      f.description.value = item.description || '';
-      f.url.value = item.url || '';
-      f.page_url.value = item.page_url || '';
-      f.icon.value = item.icon || '';
-      f.category.value = item.category || 'SaaS';
-      f.status.value = item.status;
+      ['slug', 'name', 'tagline', 'description', 'url', 'page_url', 'icon',
+       'category', 'status', 'sort_order'].forEach(function (field) {
+        f[field].value = item[field] == null ? '' : item[field];
+      });
       f.stage.value = item.stage || '';
-      f.sort_order.value = item.sort_order;
-      $('#product-submit').textContent = 'Salvar alterações';
+      syncStageField();
+      $('#product-submit').textContent = 'Atualizar produto';
       $('#product-cancel').hidden = false;
+      showPanel('create');
       f.name.focus();
     }
 
     if (button.dataset.action === 'delete') {
-      if (!window.confirm('Excluir "' + item.name + '"? Ele sai do site imediatamente.')) return;
-      window.HTFAuth.rest('products?id=eq.' + id, { method: 'DELETE' })
-        .then(loadAll).then(function () { toast('Produto excluído.'); })
-        .catch(function (err) { toast(err.message, true); });
+      if (!window.confirm('Remover "' + item.name + '" do catálogo?')) return;
+      products = products.filter(function (p) { return p.id !== id; });
+      setDirty(true);
+      renderList();
+      renderStats();
+      toast('Removido da lista. Clique em Publicar para valer no site.');
     }
   });
 
-  function resetProductForm() {
-    editingProductId = null;
-    $('#product-form').reset();
-    $('#product-submit').textContent = 'Cadastrar produto';
-    $('#product-cancel').hidden = true;
-  }
-  $('#product-cancel').addEventListener('click', resetProductForm);
+  /* ---------------------------- Formulário ---------------------------- */
 
-  /* Gera o slug a partir do nome, sem acento — o banco exige [a-z0-9-]. */
+  function syncStageField() {
+    var isDev = $('#product-form').status.value === 'dev';
+    $('#stage-group').hidden = !isDev;
+    if (!isDev) $('#product-form').stage.value = '';
+  }
+  $('#product-form').status.addEventListener('change', syncStageField);
+
+  /* Slug automático a partir do nome, sem acento — o servidor exige [a-z0-9-]. */
   $('#product-form').name.addEventListener('blur', function (e) {
     var slugField = $('#product-form').slug;
     if (slugField.value.trim() || !e.target.value.trim()) return;
@@ -349,6 +195,15 @@
       .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   });
 
+  function resetForm() {
+    editingId = null;
+    $('#product-form').reset();
+    $('#product-submit').textContent = 'Adicionar produto';
+    $('#product-cancel').hidden = true;
+    syncStageField();
+  }
+  $('#product-cancel').addEventListener('click', resetForm);
+
   $('#product-form').addEventListener('submit', function (e) {
     e.preventDefault();
     var f = e.target;
@@ -356,14 +211,20 @@
     var stage = f.stage.value || null;
 
     if (status === 'dev' && !stage) {
-      return toast('Produto em desenvolvimento precisa de um estágio (alpha, beta ou planejamento).', true);
+      return toast('Produto em desenvolvimento precisa de um estágio.', true);
     }
     if (f.url.value.trim() && !safeUrl(f.url.value)) {
-      return toast('O link de acesso precisa começar com http:// ou https://.', true);
+      return toast('O link de acesso precisa começar com https://.', true);
     }
 
-    var payload = {
-      slug: f.slug.value.trim(),
+    var slug = f.slug.value.trim().toLowerCase();
+    if (products.some(function (p) { return p.slug === slug && p.id !== editingId; })) {
+      return toast('Já existe um produto com o identificador "' + slug + '".', true);
+    }
+
+    var product = {
+      id: editingId || Date.now(),
+      slug: slug,
       name: f.name.value.trim(),
       tagline: f.tagline.value.trim() || null,
       description: f.description.value.trim() || null,
@@ -373,36 +234,92 @@
       category: f.category.value,
       status: status,
       stage: status === 'live' ? null : stage,
-      sort_order: Number(f.sort_order.value) || 0
+      sort_order: Number(f.sort_order.value) || 100,
+      is_public: true,
     };
 
-    var request = editingProductId
-      ? window.HTFAuth.rest('products?id=eq.' + editingProductId, { method: 'PATCH', body: payload })
-      : window.HTFAuth.rest('products', { method: 'POST', body: payload, prefer: 'return=minimal' });
+    if (editingId) {
+      products = products.map(function (p) { return p.id === editingId ? product : p; });
+      toast('Alterado na lista. Clique em Publicar para valer no site.');
+    } else {
+      products.push(product);
+      toast('Adicionado à lista. Clique em Publicar para valer no site.');
+    }
 
-    request.then(function () {
-      toast(editingProductId ? 'Produto atualizado. Já está no ar.' : 'Produto cadastrado. Já está no ar.');
-      resetProductForm();
-      return loadAll();
+    setDirty(true);
+    resetForm();
+    renderList();
+    renderStats();
+    showPanel('list');
+  });
+
+  /* ---------------------------- Publicação ---------------------------- */
+
+  $('#publish').addEventListener('click', function () {
+    var button = $('#publish');
+    button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+    button.textContent = 'Publicando…';
+
+    api('/api/products', {
+      method: 'PUT',
+      body: { products: products, sha: sha, message: 'atualização pelo dashboard' },
+    }).then(function (data) {
+      sha = data.sha;
+      products = data.products;
+      setDirty(false);
+      renderList();
+      renderStats();
+      toast('Publicado. O site fica atualizado em cerca de 40 segundos.');
     }).catch(function (err) {
-      toast(/duplicate key/i.test(err.message) ? 'Já existe um produto com esse identificador.' : err.message, true);
+      toast(err.message, true);
+      setDirty(true);
+    }).finally(function () {
+      button.removeAttribute('aria-busy');
+      button.textContent = 'Publicar no site';
     });
   });
 
-  /* ---------------- inicialização ---------------- */
+  /* Evita perder edições ao fechar a aba sem publicar. */
+  window.addEventListener('beforeunload', function (e) {
+    if (!dirty) return;
+    e.preventDefault();
+    e.returnValue = '';
+  });
+
+  /* ------------------------- Inicialização ---------------------------- */
 
   $$('.dash-nav button').forEach(function (b) {
     b.addEventListener('click', function () { showPanel(b.dataset.panel); });
   });
-  $('#filter-kind').addEventListener('change', renderUpdates);
-  $('#filter-status').addEventListener('change', renderUpdates);
+  $('#filter-status').addEventListener('change', renderList);
+
   $('#sign-out').addEventListener('click', function () {
-    window.HTFAuth.signOut();
-    window.location.replace('login.html');
+    if (dirty && !window.confirm('Há alterações não publicadas. Sair mesmo assim?')) return;
+    dirty = false;
+    fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' })
+      .finally(function () { window.location.replace('login.html'); });
   });
 
-  $('#admin-email').textContent = session.email;
-  syncPlatformField();
-  showPanel('overview');
-  loadAll();
+  fetch('/api/auth/session', { credentials: 'same-origin' })
+    .then(function (r) { return r.json(); })
+    .then(function (session) {
+      if (!session.authenticated) {
+        window.location.replace('login.html');
+        return null;
+      }
+      $('#admin-user').textContent = session.login;
+      $('#admin-repo').textContent = session.repo;
+      return api('/api/products');
+    })
+    .then(function (data) {
+      if (!data) return;
+      products = data.products;
+      sha = data.sha;
+      setDirty(false);
+      renderList();
+      renderStats();
+      showPanel('overview');
+    })
+    .catch(function (err) { toast(err.message, true); });
 })();

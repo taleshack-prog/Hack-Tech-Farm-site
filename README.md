@@ -4,194 +4,202 @@ Site multi-página + área restrita de gestão de conteúdo, conforme o PRD de
 13/08/2026.
 
 **Stack:** HTML/CSS/JS estático · Vercel (hospedagem + funções serverless) ·
-Supabase (Postgres + Auth).
+GitHub (armazenamento do conteúdo) · Brevo (e-mails).
+
+**Sem banco de dados.**
 
 ---
 
-## Por que esta arquitetura
+## Como funciona
 
-O PRD pedia Vercel ou AWS (§8) e colocava "backend próprio" fora de escopo
-(§3.2). O rascunho de código anterior fugia disso: era um servidor Express
-com Postgres no Railway. Aqui o site é **100% estático**, com duas funções
-serverless só para os formulários — nada que o PRD tenha excluído.
-
-O catálogo de produtos é lido do Postgres, mas com uma diferença importante:
-as páginas saem do build **já com os produtos dentro do HTML**. O JavaScript
-apenas atualiza se o banco divergir do build. Isso mantém o SEO (§8) e faz o
-site continuar funcionando mesmo com o banco fora do ar.
+O catálogo de produtos vive em `data/products.json`, versionado neste
+repositório. Quando alguém publica pelo dashboard, uma função serverless grava
+o arquivo pela API do GitHub. O commit dispara um build na Vercel, que roda
+`tools/build.mjs` e reescreve o HTML com o catálogo novo.
 
 ```
-                   ┌─────────────────────────────┐
-   visitante  ───► │ Vercel (estático + edge)    │
-                   │  HTML pré-renderizado       │
-                   └────────┬────────────────────┘
-                            │ leitura (anon key + RLS)
-                            ▼
-                   ┌─────────────────────────────┐
-   admin ─login──► │ Supabase Postgres + Auth    │
-                   │  products · updates         │
-                   └─────────────────────────────┘
-                            ▲
-                            │ service_role (nunca no navegador)
-                   ┌────────┴────────────────────┐
-   formulários ──► │ /api/subscribe /api/contact │
-                   └─────────────────────────────┘
+  dashboard ──► /api/products ──► commit no GitHub ──► build na Vercel ──► site
+   (browser)     (serverless)    (data/products.json)     (build.mjs)      ~40s
 ```
+
+Três consequências que valem entender:
+
+- **O HTML sai pronto do build.** Buscador e leitor de tela recebem os produtos
+  no HTML, não montados por JavaScript depois. É o que atende o PRD §8 (SEO).
+- **Cada alteração é um commit** com autor e data. Errou? `git revert`.
+- **Nada quebra se um serviço cair.** O site é estático; não há consulta a
+  banco no carregamento da página.
+
+### Por que Node no build
+
+`tools/build.mjs` roda no servidor da Vercel a cada publicação. Node é
+garantido lá; Python não. É por isso que o gerador está em JavaScript e só
+`tools/make_assets.py` (imagens, rodado localmente) segue em Python.
 
 ---
 
 ## Estrutura
 
 ```
-hacktechfarm/
-├── index.html sobre.html produtos.html …   ← gerados por tools/build.py
+Hack-Tech-Farm-site/
+├── index.html sobre.html produtos.html …   ← GERADOS por tools/build.mjs
 ├── login.html dashboard.html               ← área restrita (noindex)
+├── data/products.json                      ← fonte única de verdade
 ├── css/styles.css                          ← design system
 ├── css/dashboard.css                       ← só a área restrita
 ├── js/
-│   ├── config.js      configuração pública (preencher com o Supabase)
-│   ├── data.js        leitura do catálogo, com fallback em seed.json
-│   ├── catalog.js     renderização de produtos e roadmap
 │   ├── site.js        navegação, formulários, galeria
-│   ├── auth.js        sessão via Supabase Auth
 │   ├── login.js       tela de entrada
-│   └── dashboard.js   CRUD da área restrita
-├── data/seed.json                          ← fallback do catálogo
-├── api/                                    ← funções serverless da Vercel
-├── supabase/schema.sql                     ← tabelas, RLS e carga inicial
+│   └── dashboard.js   gestão do catálogo
+├── api/
+│   ├── _lib.js        sessão cifrada, GitHub, Brevo, anti-spam
+│   ├── auth/          login, callback, session, logout
+│   ├── products.js    lê e grava o catálogo
+│   ├── subscribe.js   newsletter → Brevo
+│   └── contact.js     formulário → e-mail via Brevo
 ├── img/                                    ← favicon, capa OG, galeria
-├── tools/                                  ← build, assets, verificação
-└── vercel.json                             ← CSP, HSTS e cache
+├── tools/build.mjs verify.mjs make_assets.py
+└── vercel.json                             ← CSP, HSTS, build e cache
 ```
+
+**Não edite os `.html` da raiz à mão.** Eles são sobrescritos a cada build.
+Para mudar texto de página, edite `tools/build.mjs`.
 
 ---
 
 ## Rodar localmente
 
 ```bash
-npm run dev            # http://localhost:4000
+npm run dev            # gera o HTML e serve em http://localhost:4000
+npm run verify         # links, CSP, contraste, coerência do catálogo
 ```
 
-Sem configurar nada, o site já funciona: o catálogo vem do `data/seed.json`.
-Os formulários vão falhar com mensagem clara, porque `/api/*` só existe na
-Vercel — use `vercel dev` se precisar testá-los.
-
-Depois de editar `tools/build.py` ou `data/seed.json`:
-
-```bash
-npm run build          # regenera o HTML
-npm run check          # sintaxe de todo o JS
-python3 tools/verify.py   # links, CSP, contraste, acessibilidade
-```
+O site carrega normalmente. O dashboard e os formulários precisam das funções
+em `/api`, que só existem na Vercel — use `vercel dev` se quiser testá-los.
 
 ---
 
 ## Deploy
 
-### 1. Supabase
+### 1. OAuth App no GitHub
 
-1. Crie o projeto em [supabase.com](https://supabase.com).
-2. SQL Editor → cole `supabase/schema.sql` → Run. Isso cria as tabelas, o RLS
-   e a carga inicial dos dez produtos.
-3. Authentication → Users → **Add user** para cada pessoa que vai administrar.
-4. Libere o acesso de escrita rodando, para cada uma:
+github.com → Settings → Developer settings → **OAuth Apps** → New OAuth App.
 
-   ```sql
-   insert into public.admins (user_id, email)
-   select id, email from auth.users where email = 'tales@hacktechfarm.com';
-   ```
+| Campo | Valor |
+|---|---|
+| Application name | Hack Tech Farm — dashboard |
+| Homepage URL | `https://hacktechfarm.com` |
+| Authorization callback URL | `https://hacktechfarm.com/api/auth/callback` |
 
-   Só quem está em `public.admins` escreve. Ter conta não basta.
-5. Settings → API → copie a **Project URL** e a **anon key** para `js/config.js`.
+Guarde o **Client ID** e gere um **Client Secret**.
 
-### 2. Vercel
+O callback precisa bater exatamente com o domínio final. Se for testar antes
+de apontar o domínio, use a URL `.vercel.app` primeiro e troque depois.
 
-1. Suba o repositório no GitHub.
-2. vercel.com → **Add New → Project** → selecione o repo. Framework: **Other**.
-   Não há build step: o HTML já está commitado.
-3. Settings → Environment Variables:
+### 2. Brevo
 
-   | Variável | Valor |
-   |---|---|
-   | `SUPABASE_URL` | Project URL do Supabase |
-   | `SUPABASE_SERVICE_ROLE_KEY` | service_role key |
-   | `TURNSTILE_SECRET` | opcional (Cloudflare Turnstile) |
+Crie a conta em [brevo.com](https://brevo.com), plano gratuito.
 
-4. Deploy. O `vercel.json` já aplica CSP, HSTS e as demais políticas do PRD §8.
-5. Aponte o domínio `hacktechfarm.com` em Settings → Domains.
+1. **SMTP & API → API Keys → Generate** — guarde a chave.
+2. **Contacts → Lists → Create** — anote o ID numérico da lista.
+3. **Senders & Domains** — verifique o domínio `hacktechfarm.com`. Sem isso o
+   remetente do formulário é recusado ou cai em spam.
 
----
+### 3. Vercel
 
-## Segurança — o que mudou e por quê
+vercel.com → **Add New → Project** → selecione o repositório.
+Framework: **Other**. O `vercel.json` já define o build.
 
-| Ponto | Rascunho anterior | Agora |
-|---|---|---|
-| Falta de variável de ambiente | `if (!ADMIN_PASSWORD) return next()` — a API inteira abria | Sem `SUPABASE_URL`/service key a função retorna erro; o RLS nega por padrão |
-| Senha | uma senha compartilhada, em texto puro no `.env` | conta por pessoa, hash gerido pelo Supabase Auth |
-| Token | HMAC com segredo aleatório a cada boot — invalidava sessões e quebrava com mais de uma instância | JWT do Supabase, com expiração e refresh |
-| Links vindos do banco | `escapeAttr` só trocava aspas: `javascript:alert(1)` passava | validação de protocolo no front **e** `CHECK` no Postgres |
-| Handlers | `onclick="del(${id})"` dentro de string HTML | delegação de evento; CSP `script-src 'self'` bloqueia inline |
-| Cabeçalhos | nenhum | CSP, HSTS, `nosniff`, `frame-ancestors 'none'`, Referrer-Policy |
+Em Settings → Environment Variables:
 
-A sessão fica em `sessionStorage`, o que a expõe caso haja XSS. A CSP restrita
-e a ausência total de `innerHTML` com dado de usuário são o que sustenta essa
-escolha; se a área restrita crescer, migre para cookie `HttpOnly` via uma
-função em `/api`.
+| Variável | Onde obter |
+|---|---|
+| `GITHUB_CLIENT_ID` | OAuth App |
+| `GITHUB_CLIENT_SECRET` | OAuth App |
+| `GITHUB_REPO` | `taleshack-prog/Hack-Tech-Farm-site` |
+| `AUTH_SECRET` | `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
+| `BREVO_API_KEY` | Brevo → API Keys |
+| `BREVO_LIST_ID` | Brevo → Lists |
+| `CONTACT_TO` | `contato@hacktechfarm.com` |
+| `CONTACT_FROM` | remetente no domínio verificado |
+
+Deploy. Depois aponte o domínio em Settings → Domains.
 
 ---
 
-## Acessibilidade (PRD §5)
+## Segurança
 
-Alvo: WCAG 2.1 AA. `tools/verify.py` roda as checagens automatizáveis a cada
-build — contraste calculado par a par, `alt` em toda imagem, `lang`, um `<h1>`
-por página.
+**Login.** Não existe senha. Quem tem permissão de escrita no repositório
+administra o site — a verificação é feita contra a própria API do GitHub a
+cada login, então revogar acesso no GitHub revoga o acesso ao dashboard.
 
-Corrigido em relação ao rascunho: o dropdown era `:hover` puro, impossível de
-abrir por teclado; não havia estilo de foco visível; o lightbox não prendia o
-foco; `scroll-behavior: smooth` ignorava `prefers-reduced-motion`; as bordas de
-campo tinham 1.3:1 contra os 3:1 exigidos pelo critério 1.4.11.
+**Sessão.** O token do GitHub é cifrado com AES-256-GCM e guardado num cookie
+`HttpOnly; Secure; SameSite=Lax`, com validade de 8 horas. O JavaScript da
+página nunca vê o token, nem em caso de XSS.
+
+**Escopo.** O OAuth pede `public_repo`, o mínimo para gravar num repositório
+público. Não há acesso a repositórios privados nem a nada além.
+
+**Validação.** Toda regra do catálogo é aplicada em `api/products.js`, no
+servidor. Validar só no navegador seria decorativo — qualquer pessoa
+autenticada poderia mandar um `PUT` direto pela linha de comando.
+
+**Concorrência.** A gravação usa o `sha` do arquivo. Se duas pessoas editarem
+ao mesmo tempo, a segunda recebe erro e a alteração da primeira não é
+sobrescrita em silêncio.
+
+**Cabeçalhos.** CSP com `script-src 'self'` (nenhum script inline em nenhuma
+página), HSTS, `frame-ancestors 'none'`, `nosniff`, Referrer-Policy.
+
+**Formulários.** Honeypot, verificação de tempo de preenchimento e rate limit
+por IP. Nenhum dado de visitante é armazenado aqui: a inscrição vai direto
+para o Brevo e a mensagem de contato vira e-mail.
+
+---
+
+## Acessibilidade
+
+Alvo: WCAG 2.1 AA. `npm run verify` roda as checagens automatizáveis —
+contraste calculado par a par, `alt` em toda imagem, `lang`, um `<h1>` por
+página, ausência de handlers inline.
 
 **Falta fazer manualmente:** teste com leitor de tela (NVDA ou VoiceOver) e
-navegação completa por teclado nas nove páginas.
+navegação completa por teclado.
 
 ---
 
 ## Pendências antes do lançamento
 
 1. **Imagens da galeria.** `img/obras/*.jpg` são placeholders gerados por
-   código. Substitua pelas fotos reais das obras, mantendo o par
-   `<slug>.jpg` + `<slug>-thumb.jpg`, e reescreva os títulos e as fichas
-   técnicas em `tools/build.py` → `build_galeria()`.
-2. **URL do NeuroArt.** O DApp não tem endereço público no material recebido.
-   A página está no ar com o CTA desativado; assim que houver domínio,
-   cadastre em Produtos no dashboard.
+   código. Substitua pelas fotos reais, mantendo o par `<slug>.jpg` +
+   `<slug>-thumb.jpg`, e ajuste títulos e fichas técnicas em
+   `tools/build.mjs` → `buildGaleria()`.
+2. **URL do NeuroArt.** O DApp não tem endereço público. A página está no ar
+   com o CTA desativado; quando houver domínio, cadastre pelo dashboard.
 3. **Descrições do roadmap.** Verdant, HackFinance Pro, FinanMap Cripto,
-   Second Soul, TPC e RadarPrevi estão com teaser provisório (marcados com
-   `_needs_review` no `seed.json`). Second Soul e TPC ficaram deliberadamente
-   vagos porque não havia informação — confirme antes de publicar.
-4. **Parceiros.** A página está honesta: diz que ainda não há parceria pública.
-   Preencha `build_parceiros()` quando houver a primeira.
+   Second Soul, TPC e RadarPrevi têm teaser provisório. Second Soul e TPC
+   ficaram deliberadamente vagos por falta de informação.
+4. **Parceiros.** A página diz honestamente que ainda não há parceria pública.
+   Preencha `buildParceiros()` quando houver a primeira.
 5. **Screenshots dos produtos.** O PRD §6.2 pede capturas de tela ou mockups
    nas páginas de produto. Hoje elas usam uma ficha técnica no lugar.
-6. **Confirmação de e-mail da newsletter.** A tabela `subscribers` já tem
-   `confirmed` e `confirm_token`; falta a função que dispara o e-mail de
-   double opt-in.
-7. **Turnstile.** O PRD pedia reCAPTCHA. Está preparado para Cloudflare
-   Turnstile — mesma função, sem enviar dados do visitante para uma empresa de
-   publicidade, o que é melhor para a LGPD. Basta definir `TURNSTILE_SECRET`
-   e adicionar o widget nos formulários.
+6. **Double opt-in.** O Brevo tem confirmação por e-mail nativa — ative em
+   Contacts → Forms para ficar em conformidade plena com a LGPD.
+7. **Turnstile.** O PRD pedia reCAPTCHA. Hoje há honeypot, time trap e rate
+   limit. Se aparecer spam de verdade, o Cloudflare Turnstile é o próximo
+   passo — cumpre a mesma função sem entregar dados do visitante a uma
+   empresa de publicidade.
 
 ---
 
 ## Gestão de conteúdo
 
-`/dashboard.html` (exige login). A tabela `products` é a fonte única de
-verdade:
+`/dashboard.html`, com login pelo GitHub.
+
+As edições ficam na tela até você clicar em **Publicar no site** — cadastre
+vários produtos e publique uma vez só. Depois de publicar, o site leva cerca
+de 40 segundos para refletir.
 
 - **No ar** → aparece em Produtos e na home
 - **Em desenvolvimento** → aparece no Roadmap, no estágio escolhido
 - **Ordem** → número menor primeiro; use múltiplos de 10
-
-Alterações refletem no site na hora, sem novo deploy. O `seed.json` continua
-sendo o retrato do catálogo para quem clona o repositório — vale atualizá-lo
-de vez em quando com um `select` da tabela.

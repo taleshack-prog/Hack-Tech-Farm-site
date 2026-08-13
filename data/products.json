@@ -1,5 +1,5 @@
 {
-  "_comment": "Fallback estático do catálogo. Mesmo formato da tabela `products` no Postgres. Os campos marcados com _needs_review foram escritos como teaser provisório — confirme com a equipe antes do lançamento.",
+  "_comment": "Fonte unica de verdade do catalogo. Editado pelo dashboard via API do GitHub; cada alteracao gera um commit e dispara um novo build na Vercel. Itens com _needs_review tem texto provisorio -- confirme antes do lancamento.",
   "products": [
     {
       "id": 1,
@@ -61,7 +61,6 @@
       "sort_order": 40,
       "is_public": true
     },
-
     {
       "id": 5,
       "slug": "verdant",
