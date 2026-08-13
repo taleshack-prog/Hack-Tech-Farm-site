@@ -154,8 +154,9 @@
       "status": "dev",
       "stage": "planning",
       "sort_order": 100,
-      "is_public": true,
-      "_needs_review": true
+      "is_public": false,
+      "_needs_review": true,
+      "_nota": "Oculto a pedido da cliente ate o lancamento. Marque is_public: true (ou o toggle no dashboard) para publicar."
     }
   ]
 }

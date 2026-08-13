@@ -114,6 +114,7 @@
         p.status === 'live' ? 'No ar' : 'Em desenvolvimento'));
       if (p.stage) meta.appendChild(el('span', 'badge badge-site', STAGE_LABEL[p.stage] || p.stage));
       if (p.category) meta.appendChild(el('span', 'badge badge-social', p.category));
+      if (p.is_public === false) meta.appendChild(el('span', 'badge badge-draft', 'Oculto do site'));
       meta.appendChild(el('span', 'dim', 'ordem ' + p.sort_order));
       row.appendChild(meta);
 
@@ -160,6 +161,7 @@
         f[field].value = item[field] == null ? '' : item[field];
       });
       f.stage.value = item.stage || '';
+      f.is_public.value = item.is_public === false ? 'false' : 'true';
       syncStageField();
       $('#product-submit').textContent = 'Atualizar produto';
       $('#product-cancel').hidden = false;
@@ -235,7 +237,7 @@
       status: status,
       stage: status === 'live' ? null : stage,
       sort_order: Number(f.sort_order.value) || 100,
-      is_public: true,
+      is_public: f.is_public.value !== 'false',
     };
 
     if (editingId) {

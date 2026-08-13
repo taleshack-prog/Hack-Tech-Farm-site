@@ -179,8 +179,11 @@ const STAGE_LABEL = { alpha: 'Alpha', beta: 'Beta', planning: 'Planejamento' };
 const STAGE_CLASS = { alpha: 'status-alpha', beta: 'status-beta', planning: 'status-planning' };
 
 const bySort = (a, b) => a.sort_order - b.sort_order || a.name.localeCompare(b.name, 'pt-BR');
-const live = () => PRODUCTS.filter((p) => p.status === 'live').sort(bySort);
-const dev = () => PRODUCTS.filter((p) => p.status === 'dev').sort(bySort);
+/* is_public === false esconde o produto do site sem apagar o registro.
+   Serve para produto sob NDA ou que o cliente só quer revelar no lançamento. */
+const visible = () => PRODUCTS.filter((p) => p.is_public !== false);
+const live = () => visible().filter((p) => p.status === 'live').sort(bySort);
+const dev = () => visible().filter((p) => p.status === 'dev').sort(bySort);
 
 function productCard(p) {
   let link = '';
@@ -204,6 +207,17 @@ const renderRoadmap = () => dev().map((p, i) =>
   + `<span class="tl-dot${p.stage === 'beta' ? ' art' : ''}" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>`
   + `<span class="tl-status ${STAGE_CLASS[p.stage] || 'status-planning'}">${STAGE_LABEL[p.stage] || 'Planejamento'}</span>`
   + `<h3>${esc(p.name)}</h3><p>${esc(p.description || p.tagline)}</p></li>`).join('');
+
+/* A meta description do roadmap sai do catálogo, não escrita à mão. Um produto
+   oculto (is_public: false) precisa sumir também daqui — e a meta description
+   é o texto que o Google exibe no resultado de busca. */
+function devDescription() {
+  const names = dev().map((p) => p.name);
+  if (!names.length) return 'Os produtos em desenvolvimento na Hack Tech Farm.';
+  const list = names.length === 1 ? names[0]
+    : names.slice(0, -1).join(', ') + ' e ' + names[names.length - 1];
+  return `${list}: os produtos em desenvolvimento na Hack Tech Farm.`;
+}
 
 const renderFurrows = () => live().slice(0, 4).map((p, i) =>
   `<li class="furrow"><span class="idx">${String(i + 1).padStart(2, '0')}</span>`
@@ -354,7 +368,7 @@ ${newsletter('Quer saber quando algum destes abrir?', 'Avisamos por e-mail no di
     </section>
 `;
   layout('roadmap.html', 'Roadmap — Hack Tech Farm',
-    'Verdant, HackFinance Pro, FinanMap Cripto, Second Soul, TPC e RadarPrevi: os produtos em desenvolvimento na Hack Tech Farm.',
+    devDescription(),
     body, { active: 'roadmap.html', trail: [['index.html', 'Início'], ['roadmap.html', 'Roadmap']] });
 }
 

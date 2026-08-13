@@ -131,9 +131,18 @@
                     </select>
                   </div>
                 </div>
-                <div class="form-group">
-                  <label for="p-order">Ordem <span class="hint">Menor aparece primeiro</span></label>
-                  <input type="number" id="p-order" name="sort_order" value="100" step="10">
+                <div class="form-cols">
+                  <div class="form-group">
+                    <label for="p-order">Ordem <span class="hint">Menor aparece primeiro</span></label>
+                    <input type="number" id="p-order" name="sort_order" value="100" step="10">
+                  </div>
+                  <div class="form-group">
+                    <label for="p-public">Visível no site <span class="hint">Desligue para esconder sem apagar</span></label>
+                    <select id="p-public" name="is_public">
+                      <option value="true">Sim — aparece no site</option>
+                      <option value="false">Não — fica só no catálogo</option>
+                    </select>
+                  </div>
                 </div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap">
                   <button type="submit" class="btn btn-primary" id="product-submit">Adicionar produto</button>
