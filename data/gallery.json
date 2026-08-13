@@ -1,4 +1,11 @@
 {
   "_comment": "Galeria do ArtHack. Editada pelo dashboard. Imagens em img/obras/<slug>.jpg e <slug>-thumb.jpg.",
-  "obras": []
+  "obras": [
+    {
+      "slug": "der-traumer",
+      "title": "Der Traümer",
+      "meta": "Escultura em tronco reciclado e tinta automotiva",
+      "order": 100
+    }
+  ]
 }
