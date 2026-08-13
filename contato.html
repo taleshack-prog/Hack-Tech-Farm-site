@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contato — Hack Tech Farm</title>
+  <meta name="description" content="Fale com a Hack Tech Farm: parcerias, contratação e suporte aos produtos.">
+  <link rel="canonical" href="https://hacktechfarm.com/contato.html">
+  <meta name="theme-color" content="#0B0F1A">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Hack Tech Farm">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:title" content="Contato — Hack Tech Farm">
+  <meta property="og:description" content="Fale com a Hack Tech Farm: parcerias, contratação e suporte aos produtos.">
+  <meta property="og:url" content="https://hacktechfarm.com/contato.html">
+  <meta property="og:image" content="https://hacktechfarm.com/img/og-cover.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Contato — Hack Tech Farm">
+  <meta name="twitter:description" content="Fale com a Hack Tech Farm: parcerias, contratação e suporte aos produtos.">
+  <meta name="twitter:image" content="https://hacktechfarm.com/img/og-cover.png">
+
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Início", "item": "https://hacktechfarm.com/index.html"}, {"@type": "ListItem", "position": 2, "name": "Contato", "item": "https://hacktechfarm.com/contato.html"}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+  <nav class="nav" aria-label="Navegação principal">
+    <div class="container nav-inner">
+      <a href="index.html" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+      <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu">☰</button>
+      <div class="nav-links" id="nav-links" data-open="false">
+        <a href="index.html">Início</a><div class="dropdown"><button type="button" class="dropdown-toggle" aria-expanded="false" aria-controls="menu-produtos">Produtos<span class="chev" aria-hidden="true">▾</span></button><div class="dropdown-menu" id="menu-produtos"><a href="produtos.html">Todos os produtos</a><a href="neuroart.html">NeuroArt DApp</a><a href="posthink.html">Posthink</a><a href="asphalt.html">Asphalt Hoops</a><a href="galeria.html">ArtHack</a></div></div><a href="roadmap.html">Roadmap</a><a href="sobre.html">Sobre</a><a href="parceiros.html">Parceiros</a><a href="contato.html" aria-current="page">Contato</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="conteudo">
+    <header class="page-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Você está aqui"><ol><li><a href="index.html">Início</a></li><li aria-current="page">Contato</li></ol></nav>
+        <p class="eyebrow">Contato</p>
+        <h1>Vamos conversar</h1>
+        <p>Parcerias, contratação ou uma dúvida sobre um dos produtos. A porta da fazenda está aberta.</p>
+      </div>
+    </header>
+
+    <section class="section" style="padding-top:24px">
+      <div class="container">
+        <div class="split" style="align-items:start">
+          <div>
+            <h2 style="margin-bottom:22px">Envie uma mensagem</h2>
+            <form data-form="contact" novalidate>
+              <div class="form-group">
+                <label for="name">Nome</label>
+                <input type="text" id="name" name="name" autocomplete="name" required aria-describedby="err-name">
+                <span class="field-error" id="err-name" role="alert"></span>
+              </div>
+              <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" autocomplete="email" required aria-describedby="err-email">
+                <span class="field-error" id="err-email" role="alert"></span>
+              </div>
+              <div class="form-group">
+                <label for="subject">Assunto</label>
+                <select id="subject" name="subject">
+                  <option value="parceria">Quero propor uma parceria</option>
+                  <option value="cliente">Quero contratar a HTF</option>
+                  <option value="produto">Dúvida sobre um produto</option>
+                  <option value="imprensa">Imprensa</option>
+                  <option value="outro">Outro assunto</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="message">Mensagem</label>
+                <textarea id="message" name="message" required aria-describedby="err-message"></textarea>
+                <span class="field-error" id="err-message" role="alert"></span>
+              </div>
+              <div class="hp-field" aria-hidden="true">
+                <label for="website">Não preencha este campo</label>
+                <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+              </div>
+              <button type="submit" class="btn btn-primary">Enviar mensagem</button>
+              <p class="form-msg" role="status" aria-live="polite"></p>
+              <p class="dim" style="font-size:.82rem;margin-top:14px">Usamos seus dados apenas para responder este contato. Nada de lista de disparo sem você pedir.</p>
+            </form>
+          </div>
+          <div class="stack">
+            <h2 style="margin-bottom:6px">Outros caminhos</h2>
+            <div class="card">
+              <h3>E-mail</h3>
+              <p><a href="mailto:contato@hacktechfarm.com">contato@hacktechfarm.com</a></p>
+            </div>
+            <div class="card">
+              <h3>Onde estamos</h3>
+              <p>Porto Alegre, RS — Brasil. Trabalhamos remoto com clientes de qualquer lugar.</p>
+            </div>
+            <div class="card">
+              <h3>Suporte de produto</h3>
+              <p>Para dúvidas sobre o Posthink, o suporte fica dentro do próprio app — a resposta é mais rápida por lá.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+          <p>Software house familiar em Porto Alegre. Apps e SaaS com propósito, arte e tecnologia.</p>
+        </div>
+        <div><h2>Produtos</h2><ul><li><a href="neuroart.html">NeuroArt DApp</a></li><li><a href="posthink.html">Posthink</a></li><li><a href="asphalt.html">Asphalt Hoops</a></li><li><a href="galeria.html">ArtHack</a></li></ul></div>
+        <div><h2>Empresa</h2><ul><li><a href="sobre.html">Sobre nós</a></li><li><a href="roadmap.html">Roadmap</a></li><li><a href="parceiros.html">Parceiros</a></li><li><a href="contato.html">Contato</a></li></ul></div>
+        <div><h2>Contato</h2><ul><li><a href="mailto:contato@hacktechfarm.com">contato@hacktechfarm.com</a></li><li><a href="contato.html">Fale conosco</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; <span data-year>2026</span> Hack Tech Farm. Todos os direitos reservados.</span>
+        <span>Porto Alegre, RS &mdash; Brasil</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/site.js" defer></script>
+  
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard — Hack Tech Farm</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0B0F1A">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="admin-bar">
+    <div class="container">
+      <a href="index.html" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+      <div style="display:flex;align-items:center;gap:16px">
+        <span class="admin-who" id="admin-email"></span>
+        <button type="button" class="btn btn-ghost btn-sm" id="sign-out">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" class="section" style="padding:44px 0">
+    <div class="container">
+      <h1 class="visually-hidden">Dashboard de conteúdo da Hack Tech Farm</h1>
+      <div class="dash-layout">
+
+        <nav class="dash-nav" aria-label="Seções do dashboard">
+          <button type="button" data-panel="overview" aria-selected="true">Visão geral</button>
+          <button type="button" data-panel="create" aria-selected="false">Nova atualização</button>
+          <button type="button" data-panel="updates" aria-selected="false">Atualizações</button>
+          <button type="button" data-panel="products" aria-selected="false">Produtos</button>
+        </nav>
+
+        <div>
+          <!-- Visão geral -->
+          <section class="dash-panel" id="panel-overview" aria-label="Visão geral">
+            <div class="dash-head">
+              <h2>Visão geral</h2>
+              <p>O que está no catálogo e o que já foi publicado.</p>
+            </div>
+            <div class="stat-cards">
+              <div class="stat-card"><div class="num" id="stat-updates">–</div><div class="lbl">Atualizações</div></div>
+              <div class="stat-card"><div class="num" id="stat-published">–</div><div class="lbl">Publicadas</div></div>
+              <div class="stat-card"><div class="num" id="stat-products">–</div><div class="lbl">Produtos no catálogo</div></div>
+            </div>
+            <div class="card">
+              <h3>Como o catálogo chega no site</h3>
+              <p class="dim" style="margin-bottom:12px">A tabela <code>products</code> é a fonte única de verdade. Você não edita HTML para publicar um produto.</p>
+              <ul class="dim" style="line-height:2">
+                <li><strong>Status "No ar"</strong> — aparece em <a href="produtos.html">Produtos</a> e no início.</li>
+                <li><strong>Status "Em desenvolvimento"</strong> — aparece no <a href="roadmap.html">Roadmap</a>, no estágio que você escolher.</li>
+                <li><strong>Ordem</strong> — número menor aparece primeiro. Use múltiplos de 10 para caber coisa no meio depois.</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- Nova atualização -->
+          <section class="dash-panel" id="panel-create" aria-label="Nova atualização" hidden>
+            <div class="dash-head">
+              <h2>Nova atualização</h2>
+              <p>Rascunhos ficam guardados; só o que estiver publicado aparece publicamente.</p>
+            </div>
+            <div class="card">
+              <form id="update-form" novalidate>
+                <div class="form-group">
+                  <label for="u-title">Título</label>
+                  <input type="text" id="u-title" name="title_" required maxlength="200" placeholder="Lançamento do Verdant em alpha">
+                </div>
+                <div class="form-cols">
+                  <div class="form-group">
+                    <label for="u-kind">Tipo</label>
+                    <select id="u-kind" name="kind">
+                      <option value="social">Rede social</option>
+                      <option value="site">Atualização do site</option>
+                    </select>
+                  </div>
+                  <div class="form-group" id="platform-group">
+                    <label for="u-platform">Plataforma</label>
+                    <select id="u-platform" name="platform">
+                      <option value="linkedin">LinkedIn</option>
+                      <option value="instagram">Instagram</option>
+                      <option value="site">Site HTF</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="u-body">Texto</label>
+                  <textarea id="u-body" name="body_" required placeholder="Escreva o conteúdo da postagem…"></textarea>
+                </div>
+                <div class="form-cols">
+                  <div class="form-group">
+                    <label for="u-image">URL da imagem <span class="hint">Opcional. Precisa começar com https://</span></label>
+                    <input type="url" id="u-image" name="image_url" placeholder="https://…">
+                  </div>
+                  <div class="form-group">
+                    <label for="u-link">Link relacionado <span class="hint">Opcional</span></label>
+                    <input type="url" id="u-link" name="link_url" placeholder="https://…">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="u-status">Status</label>
+                  <select id="u-status" name="status">
+                    <option value="draft">Rascunho</option>
+                    <option value="published">Publicada</option>
+                  </select>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <button type="submit" class="btn btn-primary" id="update-submit">Salvar atualização</button>
+                  <button type="button" class="btn btn-ghost" id="update-cancel" hidden>Cancelar edição</button>
+                </div>
+              </form>
+            </div>
+          </section>
+
+          <!-- Atualizações -->
+          <section class="dash-panel" id="panel-updates" aria-label="Atualizações salvas" hidden>
+            <div class="dash-head">
+              <h2>Atualizações</h2>
+              <p>Tudo que já foi criado, publicado ou não.</p>
+            </div>
+            <div class="filter-bar">
+              <label class="visually-hidden" for="filter-kind">Filtrar por tipo</label>
+              <select id="filter-kind">
+                <option value="all">Todos os tipos</option>
+                <option value="social">Rede social</option>
+                <option value="site">Site</option>
+              </select>
+              <label class="visually-hidden" for="filter-status">Filtrar por status</label>
+              <select id="filter-status">
+                <option value="all">Todos os status</option>
+                <option value="draft">Rascunho</option>
+                <option value="published">Publicada</option>
+              </select>
+            </div>
+            <div id="updates-list"></div>
+          </section>
+
+          <!-- Produtos -->
+          <section class="dash-panel" id="panel-products" aria-label="Produtos" hidden>
+            <div class="dash-head">
+              <h2>Produtos</h2>
+              <p>Cadastrar aqui publica no site. Não precisa mexer em HTML.</p>
+            </div>
+
+            <div class="card" style="margin-bottom:24px">
+              <form id="product-form" novalidate>
+                <div class="form-cols">
+                  <div class="form-group">
+                    <label for="p-name">Nome</label>
+                    <input type="text" id="p-name" name="name" required maxlength="120" placeholder="Verdant">
+                  </div>
+                  <div class="form-group">
+                    <label for="p-slug">Identificador <span class="hint">Só letras minúsculas, números e hífen</span></label>
+                    <input type="text" id="p-slug" name="slug" required pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="verdant">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="p-tagline">Frase curta <span class="hint">É o que aparece no card do site</span></label>
+                  <input type="text" id="p-tagline" name="tagline" maxlength="160">
+                </div>
+                <div class="form-group">
+                  <label for="p-desc">Descrição</label>
+                  <textarea id="p-desc" name="description" style="min-height:100px"></textarea>
+                </div>
+                <div class="form-cols">
+                  <div class="form-group">
+                    <label for="p-url">Link de acesso <span class="hint">Domínio do app, se já estiver no ar</span></label>
+                    <input type="url" id="p-url" name="url" placeholder="https://…">
+                  </div>
+                  <div class="form-group">
+                    <label for="p-page">Página interna <span class="hint">Opcional, ex.: posthink.html</span></label>
+                    <input type="text" id="p-page" name="page_url" placeholder="posthink.html">
+                  </div>
+                </div>
+                <div class="form-cols">
+                  <div class="form-group">
+                    <label for="p-category">Categoria</label>
+                    <select id="p-category" name="category">
+                      <option value="SaaS">SaaS</option>
+                      <option value="IA">IA</option>
+                      <option value="Web3">Web3</option>
+                      <option value="PWA">PWA</option>
+                      <option value="Arte">Arte</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="p-icon">Ícone <span class="hint">Um emoji</span></label>
+                    <input type="text" id="p-icon" name="icon" maxlength="4" placeholder="🌱">
+                  </div>
+                </div>
+                <div class="form-cols">
+                  <div class="form-group">
+                    <label for="p-status">Situação</label>
+                    <select id="p-status" name="status">
+                      <option value="live">No ar</option>
+                      <option value="dev">Em desenvolvimento</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="p-stage">Estágio <span class="hint">Obrigatório para o roadmap</span></label>
+                    <select id="p-stage" name="stage">
+                      <option value="">—</option>
+                      <option value="alpha">Alpha</option>
+                      <option value="beta">Beta</option>
+                      <option value="planning">Planejamento</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="p-order">Ordem <span class="hint">Menor aparece primeiro</span></label>
+                  <input type="number" id="p-order" name="sort_order" value="100" step="10">
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <button type="submit" class="btn btn-primary" id="product-submit">Cadastrar produto</button>
+                  <button type="button" class="btn btn-ghost" id="product-cancel" hidden>Cancelar edição</button>
+                </div>
+              </form>
+            </div>
+
+            <div id="products-list"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js" defer></script>
+</body>
+</html>

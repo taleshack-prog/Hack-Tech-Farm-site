@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard.html
+Disallow: /login.html
+Disallow: /api/
+
+Sitemap: https://hacktechfarm.com/sitemap.xml
