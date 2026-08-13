@@ -37,6 +37,7 @@
           <button type="button" data-panel="overview" aria-selected="true">Visão geral</button>
           <button type="button" data-panel="create" aria-selected="false">Novo produto</button>
           <button type="button" data-panel="list" aria-selected="false">Catálogo</button>
+          <button type="button" data-panel="gallery" aria-selected="false">Galeria</button>
         </nav>
 
         <div>
@@ -167,6 +168,49 @@
             </div>
             <div id="products-list"></div>
           </section>
+
+          <!-- Galeria -->
+          <section class="dash-panel" id="panel-gallery" aria-label="Galeria" hidden>
+            <div class="dash-head" style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap">
+              <div>
+                <h2>Galeria do ArtHack</h2>
+                <p>As obras que aparecem na página da galeria.</p>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                <span class="badge badge-draft" id="gallery-dirty" hidden>Não publicado</span>
+                <button type="button" class="btn btn-primary btn-sm" id="gallery-publish" disabled>Publicar galeria</button>
+              </div>
+            </div>
+
+            <div class="card" style="margin-bottom:24px">
+              <form id="gallery-form" novalidate>
+                <div class="form-group">
+                  <label for="g-title">Título da obra</label>
+                  <input type="text" id="g-title" name="title_" required maxlength="120" placeholder="Sulco">
+                </div>
+                <div class="form-group">
+                  <label for="g-meta">Ficha técnica <span class="hint">Técnica e ano</span></label>
+                  <input type="text" id="g-meta" name="meta" maxlength="160" placeholder="Acrílica sobre tela, 2023">
+                </div>
+                <div class="form-group">
+                  <label for="g-image">Imagem
+                    <span class="hint" id="gallery-file-hint">JPG ou PNG. A imagem é reduzida automaticamente antes de subir.</span>
+                  </label>
+                  <input type="file" id="g-image" name="image" accept="image/jpeg,image/png,image/webp">
+                </div>
+                <div class="form-group">
+                  <label for="g-order">Ordem <span class="hint">Menor aparece primeiro</span></label>
+                  <input type="number" id="g-order" name="order" value="100" step="10">
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <button type="submit" class="btn btn-primary" id="gallery-submit">Adicionar obra</button>
+                  <button type="button" class="btn btn-ghost" id="gallery-cancel" hidden>Cancelar edição</button>
+                </div>
+              </form>
+            </div>
+
+            <div id="gallery-list"></div>
+          </section>
         </div>
       </div>
     </div>
@@ -174,6 +218,7 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+  <script src="js/gallery-admin.js" defer></script>
   <script src="js/dashboard.js" defer></script>
 </body>
 </html>

@@ -22,6 +22,7 @@ const SITE_URL = 'https://hacktechfarm.com.br';
 const CONTACT_EMAIL = 'hacktechfarm@proton.me';
 
 const PRODUCTS = JSON.parse(readFileSync(join(ROOT, 'data/products.json'), 'utf8')).products;
+const OBRAS = JSON.parse(readFileSync(join(ROOT, 'data/gallery.json'), 'utf8')).obras;
 
 const esc = (v) => String(v ?? '')
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -663,17 +664,16 @@ function buildContato() {
 }
 
 function buildGaleria() {
-  const obras = [
-    ['obra-01', 'Sulco', 'Acrílica sobre tela, 2023'],
-    ['obra-02', 'Ruído branco', 'Técnica mista, 2022'],
-    ['obra-03', 'Colheita', 'Acrílica sobre tela, 2024'],
-    ['obra-04', 'Sinapse', 'Óleo sobre tela, 2021'],
-    ['obra-05', 'Terra batida', 'Técnica mista, 2023'],
-    ['obra-06', 'Segunda leitura', 'Acrílica sobre papel, 2024'],
-  ].map(([s, t, m]) =>
-    `<li class="gallery-item"><button type="button" class="gallery-btn" data-full="img/obras/${s}.jpg" data-title="${t}" data-meta="${m}">`
-    + `<img src="img/obras/${s}-thumb.jpg" alt="${t}, de Tales Hack. ${m}." loading="lazy" width="600" height="600">`
-    + `<span class="meta">${t}<span>${m}</span></span></button></li>`).join('');
+  const obras = [...OBRAS]
+    .sort((a, b) => (a.order || 0) - (b.order || 0))
+    .map((o) => {
+      const t = esc(o.title);
+      const m = esc(o.meta || '');
+      const s = esc(o.slug);
+      return `<li class="gallery-item"><button type="button" class="gallery-btn" data-full="img/obras/${s}.jpg" data-title="${t}" data-meta="${m}">`
+        + `<img src="img/obras/${s}-thumb.jpg" alt="${t}, de Tales Hack.${m ? ' ' + m + '.' : ''}" loading="lazy" width="600" height="600">`
+        + `<span class="meta">${t}<span>${m}</span></span></button></li>`;
+    }).join('');
 
   const body = `    <header class="page-hero">
       <div class="container">

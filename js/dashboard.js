@@ -283,8 +283,12 @@
   });
 
   /* Evita perder edições ao fechar a aba sem publicar. */
+  function anyDirty() {
+    return dirty || (window.HTFGallery && window.HTFGallery.isDirty());
+  }
+
   window.addEventListener('beforeunload', function (e) {
-    if (!dirty) return;
+    if (!anyDirty()) return;
     e.preventDefault();
     e.returnValue = '';
   });
@@ -297,7 +301,7 @@
   $('#filter-status').addEventListener('change', renderList);
 
   $('#sign-out').addEventListener('click', function () {
-    if (dirty && !window.confirm('Há alterações não publicadas. Sair mesmo assim?')) return;
+    if (anyDirty() && !window.confirm('Há alterações não publicadas. Sair mesmo assim?')) return;
     dirty = false;
     fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' })
       .finally(function () { window.location.replace('login.html'); });
@@ -322,6 +326,7 @@
       renderList();
       renderStats();
       showPanel('overview');
+      if (window.HTFGallery) window.HTFGallery.init(api, toast).catch(function (err) { toast(err.message, true); });
     })
     .catch(function (err) { toast(err.message, true); });
 })();
