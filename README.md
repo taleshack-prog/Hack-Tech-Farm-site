@@ -88,8 +88,8 @@ github.com → Settings → Developer settings → **OAuth Apps** → New OAuth 
 | Campo | Valor |
 |---|---|
 | Application name | Hack Tech Farm — dashboard |
-| Homepage URL | `https://hacktechfarm.com` |
-| Authorization callback URL | `https://hacktechfarm.com/api/auth/callback` |
+| Homepage URL | `https://hacktechfarm.com.br.br` |
+| Authorization callback URL | `https://hacktechfarm.com.br.br/api/auth/callback` |
 
 Guarde o **Client ID** e gere um **Client Secret**.
 
@@ -102,7 +102,7 @@ Crie a conta em [brevo.com](https://brevo.com), plano gratuito.
 
 1. **SMTP & API → API Keys → Generate** — guarde a chave.
 2. **Contacts → Lists → Create** — anote o ID numérico da lista.
-3. **Senders & Domains** — verifique o domínio `hacktechfarm.com`. Sem isso o
+3. **Senders & Domains** — verifique o domínio `hacktechfarm.com.br.br`. Sem isso o
    remetente do formulário é recusado ou cai em spam.
 
 ### 3. Vercel
@@ -120,7 +120,7 @@ Em Settings → Environment Variables:
 | `AUTH_SECRET` | `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
 | `BREVO_API_KEY` | Brevo → API Keys |
 | `BREVO_LIST_ID` | Brevo → Lists |
-| `CONTACT_TO` | `contato@hacktechfarm.com` |
+| `CONTACT_TO` | `contato@hacktechfarm.com.br.br` |
 | `CONTACT_FROM` | remetente no domínio verificado |
 
 Deploy. Depois aponte o domínio em Settings → Domains.

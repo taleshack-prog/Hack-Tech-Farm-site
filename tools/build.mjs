@@ -13,7 +13,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const SITE_URL = 'https://hacktechfarm.com';
+const SITE_URL = 'https://hacktechfarm.com.br.br';
 
 const PRODUCTS = JSON.parse(readFileSync(join(ROOT, 'data/products.json'), 'utf8')).products;
 
@@ -41,7 +41,7 @@ const FOOTER = [
                 ['asphalt.html', 'Asphalt Hoops'], ['galeria.html', 'ArtHack']]],
   ['Empresa', [['sobre.html', 'Sobre nós'], ['roadmap.html', 'Roadmap'],
                ['parceiros.html', 'Parceiros'], ['contato.html', 'Contato']]],
-  ['Contato', [['mailto:contato@hacktechfarm.com', 'contato@hacktechfarm.com'],
+  ['Contato', [['mailto:contato@hacktechfarm.com.br.br', 'contato@hacktechfarm.com.br.br'],
                ['contato.html', 'Fale conosco']]],
 ];
 
@@ -228,7 +228,7 @@ const ORG_LD = JSON.stringify({
   name: 'Hack Tech Farm',
   alternateName: 'HTF',
   url: SITE_URL,
-  email: 'contato@hacktechfarm.com',
+  email: 'contato@hacktechfarm.com.br.br',
   description: 'Software house familiar de Porto Alegre. Desenvolvimento de software, tokenização de arte e IA para LinkedIn.',
   address: { '@type': 'PostalAddress', addressLocality: 'Porto Alegre', addressRegion: 'RS', addressCountry: 'BR' },
   founder: [{ '@type': 'Person', name: 'Tales Hack' },
@@ -430,25 +430,28 @@ function buildProductPages() {
 
   productPage({
     file: 'neuroart.html', name: 'NeuroArt DApp',
-    tagline: 'Arte neurodivergente, tokenizada e com procedência verificável.',
+    tagline: 'Arte que financia ciência.',
     paragraphs: [
-      'O NeuroArt tokeniza e vende obras criadas por artistas neurodivergentes e simpatizantes. Cada obra vira um token, o que dá a compradores e artistas um histórico de procedência que não depende da palavra de ninguém.',
-      'Parte de cada venda financia pesquisa não medicamentosa em neurodivergência — a linha que trata variação neurobiológica como diferença, não como déficit.',
-      'Não é só um marketplace: é uma ponte entre expressão artística e financiamento de pesquisa.',
+      'O NeuroArt fraciona obras de artistas neurodivergentes em tokens ERC-20 na rede Base. Comprar uma fração é comprar uma parte real da obra — e financiar pesquisa no mesmo gesto.',
+      'Quem reúne 100% das frações de uma peça pode resgatá-la: o contrato queima os tokens e a obra física é entregue. É o <em>Threshold Redemption</em>, e é o que separa o NeuroArt de um NFT que só aponta para uma imagem.',
+      'Cada transação no marketplace destina recursos ao Fundo de Pesquisa NeuroArt, que financia protocolos não medicamentosos — de Jiu-Jitsu a interfaces cérebro-computador. É DeSci aplicada, não promessa de impacto.',
+      'O projeto é cofundado por Tales Hack e pelo Prof. Alexandre de Souza Fortis, em Porto Alegre.',
     ],
-    specs: [['Categoria', 'DApp / Web3'], ['Função', 'Tokenização e venda de obras'],
-            ['Destino social', 'Pesquisa não medicamentosa'], ['Público', 'Artistas neurodivergentes e colecionadores']],
-    ctaLabel: 'Acessar o DApp', ctaUrl: '',
+    specs: [['Rede', 'Base L2'], ['Padrão', 'ERC-20 fracionado'],
+            ['Resgate', 'Threshold Redemption'], ['Split', '80/20 artista/DApp'],
+            ['Destino social', 'Fundo de Pesquisa NeuroArt'],
+            ['Cofundação', 'Tales Hack e Prof. Alexandre de Souza Fortis']],
+    ctaLabel: 'Acessar o DApp', ctaUrl: 'https://neuro-art-d-app.vercel.app',
     features: [
-      ['Procedência', 'O histórico de cada obra fica registrado on-chain.'],
-      ['Neurodiversidade', 'Trata variação neurobiológica como força criativa.'],
-      ['Pesquisa', 'Parte da venda financia ciência não medicamentosa.'],
-      ['Curadoria', 'Seleção conduzida por quem entende de arte, não por algoritmo.'],
-      ['Artista no centro', 'O criador acompanha para onde a obra vai.'],
-      ['Sem intermediário oculto', 'As regras de repasse ficam visíveis no contrato.'],
+      ['Tokenização fracionada', 'A obra vira frações ERC-20. Dá para participar sem comprar a peça inteira.'],
+      ['Resgate da obra física', 'Consolidou 100% das frações? O contrato queima os tokens e entrega a obra.'],
+      ['BCI e neuroplasticidade', 'Interfaces cérebro-computador capturam estados de hiperfoco e viram metadado da obra.'],
+      ['Fundo de pesquisa', 'Cada transação no marketplace alimenta o financiamento de ciência não medicamentosa.'],
+      ['Split transparente', '80% para o artista, 20% para o DApp. A regra está no contrato, não numa promessa.'],
+      ['Liberdade cognitiva', 'O whitepaper é um manifesto: neurodivergência como diferença, não como déficit.'],
     ],
-    description: 'NeuroArt DApp: tokenização e venda de obras de artistas neurodivergentes, financiando pesquisa não medicamentosa.',
-    keywords: 'tokenização de arte, DApp arte, arte neurodivergente, NFT arte Brasil',
+    description: 'NeuroArt DApp: tokenização fracionada de arte neurodivergente na rede Base L2, financiando pesquisa não medicamentosa.',
+    keywords: 'tokenização de arte, arte neurodivergente, DeSci Brasil, Base L2, tokenização fracionada',
     appCategory: 'WebApplication',
   });
 
@@ -626,7 +629,7 @@ function buildContato() {
           </div>
           <div class="stack">
             <h2 style="margin-bottom:6px">Outros caminhos</h2>
-            <div class="card"><h3>E-mail</h3><p><a href="mailto:contato@hacktechfarm.com">contato@hacktechfarm.com</a></p></div>
+            <div class="card"><h3>E-mail</h3><p><a href="mailto:contato@hacktechfarm.com.br.br">contato@hacktechfarm.com.br.br</a></p></div>
             <div class="card"><h3>Onde estamos</h3><p>Porto Alegre, RS — Brasil. Trabalhamos remoto com clientes de qualquer lugar.</p></div>
             <div class="card"><h3>Suporte de produto</h3><p>Para dúvidas sobre o Posthink, o suporte fica dentro do próprio app — a resposta é mais rápida por lá.</p></div>
           </div>
