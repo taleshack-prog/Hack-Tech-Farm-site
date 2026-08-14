@@ -172,6 +172,59 @@ function markdownToHtml(markdown) {
   return { html: html.join('\n'), headings };
 }
 
+/* ======================= Extração de FAQ =============================== */
+
+/* Detecta a seção de perguntas frequentes e transforma cada H3 em par
+   pergunta/resposta. O redator escreve a seção normalmente; o schema sai daqui.
+   Isso evita pedir YAML ao LLM — YAML gerado por modelo quebra em qualquer
+   título com dois-pontos, e o schema é a parte que não pode falhar.
+   FAQPage é o formato que o Google usa em resultados enriquecidos e que
+   motores de resposta extraem com mais frequência. */
+
+const FAQ_HEADING = /^#{2,3}\s*(perguntas frequentes|faq|dúvidas frequentes|perguntas comuns)\s*$/i;
+
+function extractFaq(markdown) {
+  const lines = String(markdown || '').replace(/\r\n/g, '\n').split('\n');
+  const items = [];
+
+  let i = lines.findIndex((l) => FAQ_HEADING.test(l.trim()));
+  if (i === -1) return items;
+
+  const sectionLevel = (/^(#{2,3})/.exec(lines[i].trim()) || [])[1].length;
+  i += 1;
+
+  let question = null;
+  let answer = [];
+
+  const push = () => {
+    const text = answer.join(' ').replace(/\s+/g, ' ').trim();
+    /* Resposta longa demais não é citável e o Google ignora. Curta demais
+       não responde nada. */
+    if (question && text.length >= 40 && text.length <= 800) {
+      items.push({ question, answer: text });
+    }
+    question = null;
+    answer = [];
+  };
+
+  for (; i < lines.length; i += 1) {
+    const line = lines[i];
+    const heading = /^(#{1,6})\s+(.*)$/.exec(line.trim());
+
+    if (heading) {
+      const level = heading[1].length;
+      if (level <= sectionLevel) { push(); break; }   /* acabou a seção */
+      push();
+      question = heading[2].trim();
+      continue;
+    }
+    if (question && line.trim()) answer.push(line.trim());
+  }
+  push();
+
+  return items.slice(0, 12);
+}
+
 /* =========================== Artigos =================================== */
 
 function readArticles(srcDir) {
@@ -183,6 +236,7 @@ function readArticles(srcDir) {
       const { meta, body } = parseFrontmatter(readFileSync(join(srcDir, file), 'utf8'));
       const slug = meta.slug || file.replace(/\.md$/, '');
       const { html, headings } = markdownToHtml(body);
+      const faq = extractFaq(body);
       const words = body.split(/\s+/).filter(Boolean).length;
 
       return {
@@ -199,6 +253,7 @@ function readArticles(srcDir) {
         cover: safeHref(meta.cover || ''),
         html,
         headings,
+        faq,
         words,
         readingMinutes: Math.max(1, Math.round(words / 200)),
       };
@@ -263,6 +318,19 @@ ${a.tags.length ? `      <p class="post-tags">${a.tags.map((t) => `<span class="
       </footer>
     </article>
 `;
+}
+
+function faqLd(a) {
+  if (a.faq.length < 2) return '';   /* o Google exige ao menos duas perguntas */
+  return JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: a.faq.map((f) => ({
+      '@type': 'Question',
+      name: f.question,
+      acceptedAnswer: { '@type': 'Answer', text: f.answer },
+    })),
+  });
 }
 
 function articleLd(a, cfg) {
@@ -372,7 +440,7 @@ export function buildBlog(cfg) {
       title: `${a.title} — ${cfg.orgName}`,
       description: a.description,
       body: articleBody(a, cfg),
-      jsonld: [articleLd(a, cfg)],
+      jsonld: [articleLd(a, cfg), faqLd(a)].filter(Boolean),
     });
   }
 

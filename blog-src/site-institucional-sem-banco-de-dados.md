@@ -44,3 +44,17 @@ Três situações mudariam nossa escolha:
 - **Consulta analítica.** Séries temporais e agregações são trabalho de SQL. Filtrar isso na memória é reimplementar um banco pior.
 
 Nenhuma delas se aplica a um site institucional com quatro produtos no ar. Por isso a arquitetura mais simples também é, aqui, a mais rápida e a mais barata.
+
+## Perguntas frequentes
+
+### Um site sem banco de dados consegue ter área administrativa?
+
+Sim. O painel grava o conteúdo em arquivos versionados pela API do provedor de repositório, e o build regenera as páginas. A diferença em relação a um painel tradicional é que a alteração leva alguns segundos para aparecer, em vez de ser instantânea.
+
+### O buscador consegue ler um site gerado no build?
+
+Sim, e com vantagem. O HTML já chega pronto na primeira resposta, sem depender de JavaScript. Sites que buscam dados no navegador entregam HTML vazio ao crawler, e nem todo crawler executa JavaScript.
+
+### Quando um banco de dados passa a ser necessário?
+
+Quando existem dados por visitante, como conta de usuário ou histórico pessoal, quando o volume de registros cresce a ponto de o build ficar lento, ou quando é preciso fazer consultas analíticas sobre séries temporais.

@@ -117,6 +117,13 @@ for (const page of allPages) {
 /* -------------------------------- blog ----------------------------------- */
 problems.push(...validateArticles(join(ROOT, 'blog-src')));
 
+/* Quantos artigos ganharam FAQPage — é o schema mais citado por motores de IA. */
+let comFaq = 0;
+for (const page of blogPages) {
+  if (page.endsWith('index.html')) continue;
+  if (readPage(page).includes('"FAQPage"')) comFaq += 1;
+}
+
 /* Whitelist: nenhuma tag ou atributo além do que o conversor sabe emitir.
    É esta checagem que impede um artigo de introduzir HTML executável. */
 const TAG_OK = new Set(['p','h1','h2','h3','h4','h5','h6','ul','ol','li','strong','em','del',
@@ -151,7 +158,7 @@ const hidden = catalog.length - shown.length;
 console.log(`\nCatálogo: ${shown.filter((p) => p.status === 'live').length} no ar, `
   + `${shown.filter((p) => p.status === 'dev').length} em desenvolvimento`
   + (hidden ? `, ${hidden} oculto(s) do site` : ''));
-console.log(`Páginas verificadas: ${allPages.length} (${blogPages.length} do blog)\n`);
+console.log(`Páginas verificadas: ${allPages.length} (${blogPages.length} do blog, ${comFaq} com FAQPage)\n`);
 
 if (problems.length) {
   console.log(`${problems.length} problema(s):`);

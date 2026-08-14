@@ -28,6 +28,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
   <link rel="stylesheet" href="../css/styles.css">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Por que o site da HTF não usa banco de dados","description":"Um site institucional com dez produtos não precisa de Postgres. Explicamos a decisão técnica, o que ela custa e em que ponto ela deixaria de valer.","datePublished":"2026-08-14","dateModified":"2026-08-14","author":{"@type":"Person","name":"Heitor Hack"},"publisher":{"@type":"Organization","name":"Hack Tech Farm","url":"https://hacktechfarm.com.br"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://hacktechfarm.com.br/blog/site-institucional-sem-banco-de-dados.html"},"keywords":"arquitetura, jamstack, seo","inLanguage":"pt-BR"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Um site sem banco de dados consegue ter área administrativa?","acceptedAnswer":{"@type":"Answer","text":"Sim. O painel grava o conteúdo em arquivos versionados pela API do provedor de repositório, e o build regenera as páginas. A diferença em relação a um painel tradicional é que a alteração leva alguns segundos para aparecer, em vez de ser instantânea."}},{"@type":"Question","name":"O buscador consegue ler um site gerado no build?","acceptedAnswer":{"@type":"Answer","text":"Sim, e com vantagem. O HTML já chega pronto na primeira resposta, sem depender de JavaScript. Sites que buscam dados no navegador entregam HTML vazio ao crawler, e nem todo crawler executa JavaScript."}},{"@type":"Question","name":"Quando um banco de dados passa a ser necessário?","acceptedAnswer":{"@type":"Answer","text":"Quando existem dados por visitante, como conta de usuário ou histórico pessoal, quando o volume de registros cresce a ponto de o build ficar lento, ou quando é preciso fazer consultas analíticas sobre séries temporais."}}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -54,11 +55,11 @@
         <p class="post-meta">
           <span>Heitor Hack</span>
           <time datetime="2026-08-14">13 de agosto de 2026</time>
-          <span>2 min de leitura</span>
+          <span>3 min de leitura</span>
         </p>
       </header>
       <div class="post-summary"><p><strong>Em resumo:</strong> Conteúdo versionado em Git e HTML gerado no build entregam SEO melhor, custo zero e histórico de alterações. O preço são 40 segundos entre publicar e ver no ar.</p></div>
-      <nav class="post-toc" aria-label="Neste artigo"><p>Neste artigo</p><ul><li><a href="#o-que-o-buscador-realmente-le">O que o buscador realmente lê</a></li><li><a href="#como-funciona-na-pratica">Como funciona na prática</a></li><li><a href="#o-que-isso-custa">O que isso custa</a></li><li><a href="#onde-a-decisao-deixaria-de-valer">Onde a decisão deixaria de valer</a></li></ul></nav>
+      <nav class="post-toc" aria-label="Neste artigo"><p>Neste artigo</p><ul><li><a href="#o-que-o-buscador-realmente-le">O que o buscador realmente lê</a></li><li><a href="#como-funciona-na-pratica">Como funciona na prática</a></li><li><a href="#o-que-isso-custa">O que isso custa</a></li><li><a href="#onde-a-decisao-deixaria-de-valer">Onde a decisão deixaria de valer</a></li><li><a href="#perguntas-frequentes">Perguntas frequentes</a></li></ul></nav>
       <div class="post-body">
 <p>Quando começamos o site institucional da Hack Tech Farm, a primeira proposta de arquitetura incluía Postgres, um servidor Express e um painel administrativo conversando com o banco em tempo real. Descartamos tudo isso. O site hoje não tem banco de dados, e a decisão melhorou três coisas ao mesmo tempo.</p>
 <h2 id="o-que-o-buscador-realmente-le">O que o buscador realmente lê</h2>
@@ -75,6 +76,13 @@
 <p>Três situações mudariam nossa escolha:</p>
 <ul><li><strong>Dados por visitante.</strong> Conta de usuário, carrinho, histórico pessoal. Nada disso cabe num arquivo versionado.</li><li><strong>Volume alto.</strong> Um catálogo com milhares de itens vira um JSON que o build precisa ler inteiro a cada deploy.</li><li><strong>Consulta analítica.</strong> Séries temporais e agregações são trabalho de SQL. Filtrar isso na memória é reimplementar um banco pior.</li></ul>
 <p>Nenhuma delas se aplica a um site institucional com quatro produtos no ar. Por isso a arquitetura mais simples também é, aqui, a mais rápida e a mais barata.</p>
+<h2 id="perguntas-frequentes">Perguntas frequentes</h2>
+<h3 id="um-site-sem-banco-de-dados-consegue-ter-area-administrativa">Um site sem banco de dados consegue ter área administrativa?</h3>
+<p>Sim. O painel grava o conteúdo em arquivos versionados pela API do provedor de repositório, e o build regenera as páginas. A diferença em relação a um painel tradicional é que a alteração leva alguns segundos para aparecer, em vez de ser instantânea.</p>
+<h3 id="o-buscador-consegue-ler-um-site-gerado-no-build">O buscador consegue ler um site gerado no build?</h3>
+<p>Sim, e com vantagem. O HTML já chega pronto na primeira resposta, sem depender de JavaScript. Sites que buscam dados no navegador entregam HTML vazio ao crawler, e nem todo crawler executa JavaScript.</p>
+<h3 id="quando-um-banco-de-dados-passa-a-ser-necessario">Quando um banco de dados passa a ser necessário?</h3>
+<p>Quando existem dados por visitante, como conta de usuário ou histórico pessoal, quando o volume de registros cresce a ponto de o build ficar lento, ou quando é preciso fazer consultas analíticas sobre séries temporais.</p>
       </div>
       <p class="post-tags"><span class="card-tag tag-pwa">arquitetura</span> <span class="card-tag tag-pwa">jamstack</span> <span class="card-tag tag-pwa">seo</span></p>
       <footer class="post-foot">
