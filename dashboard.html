@@ -22,6 +22,7 @@
       <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
         <span class="admin-who"><span id="admin-user">…</span> · <span id="admin-repo"></span></span>
         <span class="badge badge-draft" id="dirty-flag" hidden>Alterações não publicadas</span>
+        <span class="badge badge-draft" id="blog-badge" hidden></span>
         <button type="button" class="btn btn-primary btn-sm" id="publish" disabled>Publicar no site</button>
         <button type="button" class="btn btn-ghost btn-sm" id="sign-out">Sair</button>
       </div>
@@ -38,6 +39,7 @@
           <button type="button" data-panel="create" aria-selected="false">Novo produto</button>
           <button type="button" data-panel="list" aria-selected="false">Catálogo</button>
           <button type="button" data-panel="gallery" aria-selected="false">Galeria</button>
+          <button type="button" data-panel="blog" aria-selected="false">Blog</button>
         </nav>
 
         <div>
@@ -211,6 +213,29 @@
 
             <div id="gallery-list"></div>
           </section>
+
+          <!-- Blog -->
+          <section class="dash-panel" id="panel-blog" aria-label="Blog" hidden>
+            <div class="dash-head">
+              <h2>Artigos</h2>
+              <p>Rascunhos entram por aqui. Nada vai ao ar sem alguém ler antes.</p>
+            </div>
+
+            <div class="card" style="margin-bottom:24px">
+              <h3><span id="blog-pending">0</span> aguardando revisão</h3>
+              <p class="dim" style="margin-top:10px">Antes de publicar, confira três coisas: todo número tem fonte linkada, nenhuma afirmação em primeira pessoa é inventada, e o texto acrescenta algo que já não está nos resultados de busca. Artigo raso prejudica o domínio inteiro, não só a própria página.</p>
+            </div>
+
+            <div class="filter-bar">
+              <label class="visually-hidden" for="blog-filter">Filtrar por status</label>
+              <select id="blog-filter">
+                <option value="all">Todos</option>
+                <option value="draft">Rascunhos</option>
+                <option value="published">Publicados</option>
+              </select>
+            </div>
+            <div id="blog-list"></div>
+          </section>
         </div>
       </div>
     </div>
@@ -219,6 +244,7 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="js/gallery-admin.js" defer></script>
+  <script src="js/blog-admin.js" defer></script>
   <script src="js/dashboard.js" defer></script>
 </body>
 </html>
