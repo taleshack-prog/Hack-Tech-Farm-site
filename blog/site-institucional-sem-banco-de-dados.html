@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Por que o site da HTF não usa banco de dados — Hack Tech Farm</title>
+  <meta name="description" content="Um site institucional com dez produtos não precisa de Postgres. Explicamos a decisão técnica, o que ela custa e em que ponto ela deixaria de valer.">
+  <link rel="canonical" href="https://hacktechfarm.com.br/blog/site-institucional-sem-banco-de-dados.html">
+  <meta name="theme-color" content="#0B0F1A">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Hack Tech Farm">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:title" content="Por que o site da HTF não usa banco de dados — Hack Tech Farm">
+  <meta property="og:description" content="Um site institucional com dez produtos não precisa de Postgres. Explicamos a decisão técnica, o que ela custa e em que ponto ela deixaria de valer.">
+  <meta property="og:url" content="https://hacktechfarm.com.br/blog/site-institucional-sem-banco-de-dados.html">
+  <meta property="og:image" content="https://hacktechfarm.com.br/img/og-cover.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Por que o site da HTF não usa banco de dados — Hack Tech Farm">
+  <meta name="twitter:description" content="Um site institucional com dez produtos não precisa de Postgres. Explicamos a decisão técnica, o que ela custa e em que ponto ela deixaria de valer.">
+  <meta name="twitter:image" content="https://hacktechfarm.com.br/img/og-cover.png">
+
+  <link rel="icon" href="../img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="../css/styles.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Por que o site da HTF não usa banco de dados","description":"Um site institucional com dez produtos não precisa de Postgres. Explicamos a decisão técnica, o que ela custa e em que ponto ela deixaria de valer.","datePublished":"2026-08-14","dateModified":"2026-08-14","author":{"@type":"Person","name":"Heitor Hack"},"publisher":{"@type":"Organization","name":"Hack Tech Farm","url":"https://hacktechfarm.com.br"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://hacktechfarm.com.br/blog/site-institucional-sem-banco-de-dados.html"},"keywords":"arquitetura, jamstack, seo","inLanguage":"pt-BR"}</script>
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+  <nav class="nav" aria-label="Navegação principal">
+    <div class="container nav-inner">
+      <a href="../index.html" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+      <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu">☰</button>
+      <div class="nav-links" id="nav-links" data-open="false">
+        <a href="../index.html">Início</a><div class="dropdown"><button type="button" class="dropdown-toggle" aria-expanded="false" aria-controls="menu-produtos">Produtos<span class="chev" aria-hidden="true">▾</span></button><div class="dropdown-menu" id="menu-produtos"><a href="../produtos.html">Todos os produtos</a><a href="../neuroart.html">NeuroArt DApp</a><a href="../posthink.html">Posthink</a><a href="../asphalt.html">Asphalt Hoops</a><a href="../galeria.html">ArtHack</a></div></div><a href="../roadmap.html">Roadmap</a><a href="../blog/" aria-current="page">Blog</a><a href="../sobre.html">Sobre</a><a href="../parceiros.html">Parceiros</a><a href="../contato.html">Contato</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="conteudo">
+    <article class="post">
+      <header class="post-head">
+        <nav class="breadcrumb" aria-label="Você está aqui"><ol>
+          <li><a href="../index.html">Início</a></li>
+          <li><a href="index.html">Blog</a></li>
+          <li aria-current="page">Por que o site da HTF não usa banco de dados</li>
+        </ol></nav>
+        <h1>Por que o site da HTF não usa banco de dados</h1>
+        <p class="post-meta">
+          <span>Heitor Hack</span>
+          <time datetime="2026-08-14">13 de agosto de 2026</time>
+          <span>2 min de leitura</span>
+        </p>
+      </header>
+      <div class="post-summary"><p><strong>Em resumo:</strong> Conteúdo versionado em Git e HTML gerado no build entregam SEO melhor, custo zero e histórico de alterações. O preço são 40 segundos entre publicar e ver no ar.</p></div>
+      <nav class="post-toc" aria-label="Neste artigo"><p>Neste artigo</p><ul><li><a href="#o-que-o-buscador-realmente-le">O que o buscador realmente lê</a></li><li><a href="#como-funciona-na-pratica">Como funciona na prática</a></li><li><a href="#o-que-isso-custa">O que isso custa</a></li><li><a href="#onde-a-decisao-deixaria-de-valer">Onde a decisão deixaria de valer</a></li></ul></nav>
+      <div class="post-body">
+<p>Quando começamos o site institucional da Hack Tech Farm, a primeira proposta de arquitetura incluía Postgres, um servidor Express e um painel administrativo conversando com o banco em tempo real. Descartamos tudo isso. O site hoje não tem banco de dados, e a decisão melhorou três coisas ao mesmo tempo.</p>
+<h2 id="o-que-o-buscador-realmente-le">O que o buscador realmente lê</h2>
+<p>Existe uma confusão comum: a de que o banco de dados alimenta o Google. Não alimenta. Nenhum crawler tem acesso ao seu Postgres. O que o Google, o ChatGPT e a Perplexity fazem é uma requisição HTTP no domínio e a leitura do HTML que volta.</p>
+<p>Isso significa que a pergunta certa não é onde o conteúdo está guardado, mas <strong>em que estado ele chega ao crawler</strong>.</p>
+<p>Um site que busca dados de um banco pelo navegador entrega HTML vazio e preenche depois com JavaScript. Muitos crawlers não executam JavaScript. Um site que gera HTML no momento do build entrega o conteúdo pronto na primeira resposta.</p>
+<h2 id="como-funciona-na-pratica">Como funciona na prática</h2>
+<p>O catálogo de produtos vive num arquivo JSON versionado no repositório. Quando alguém publica pelo painel, uma função serverless grava o arquivo pela API do GitHub. O commit dispara um build, que reescreve as páginas HTML com o conteúdo novo.</p>
+<div class="table-wrap"><table><thead><tr><th>Aspecto</th><th>Com banco</th><th>Sem banco</th></tr></thead><tbody><tr><td>Tempo até refletir</td><td>imediato</td><td>cerca de 40 segundos</td></tr><tr><td>Custo mensal</td><td>plano do provedor</td><td>zero</td></tr><tr><td>Histórico de alterações</td><td>precisa configurar</td><td>cada commit é uma versão</td></tr><tr><td>Se o serviço cair</td><td>site perde o conteúdo</td><td>site continua no ar</td></tr></tbody></table></div>
+<h2 id="o-que-isso-custa">O que isso custa</h2>
+<p>Quarenta segundos entre salvar e ver no ar. Para conteúdo institucional que muda uma vez por mês, é irrelevante. Para um painel de dados atualizado a cada minuto, seria inviável.</p>
+<blockquote><p>A pergunta que decide não é &quot;banco é melhor que arquivo&quot;, e sim &quot;com que frequência isso muda e quem precisa ver a mudança na hora&quot;.</p></blockquote>
+<h2 id="onde-a-decisao-deixaria-de-valer">Onde a decisão deixaria de valer</h2>
+<p>Três situações mudariam nossa escolha:</p>
+<ul><li><strong>Dados por visitante.</strong> Conta de usuário, carrinho, histórico pessoal. Nada disso cabe num arquivo versionado.</li><li><strong>Volume alto.</strong> Um catálogo com milhares de itens vira um JSON que o build precisa ler inteiro a cada deploy.</li><li><strong>Consulta analítica.</strong> Séries temporais e agregações são trabalho de SQL. Filtrar isso na memória é reimplementar um banco pior.</li></ul>
+<p>Nenhuma delas se aplica a um site institucional com quatro produtos no ar. Por isso a arquitetura mais simples também é, aqui, a mais rápida e a mais barata.</p>
+      </div>
+      <p class="post-tags"><span class="card-tag tag-pwa">arquitetura</span> <span class="card-tag tag-pwa">jamstack</span> <span class="card-tag tag-pwa">seo</span></p>
+      <footer class="post-foot">
+        <p><a class="card-link" href="index.html"><span aria-hidden="true">←</span> Todos os artigos</a></p>
+      </footer>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="../index.html" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+          <p>Software house familiar em Porto Alegre. Apps e SaaS com propósito, arte e tecnologia.</p>
+        </div>
+        <div><h2>Produtos</h2><ul><li><a href="../neuroart.html">NeuroArt DApp</a></li><li><a href="../posthink.html">Posthink</a></li><li><a href="../asphalt.html">Asphalt Hoops</a></li><li><a href="../galeria.html">ArtHack</a></li></ul></div>
+        <div><h2>Empresa</h2><ul><li><a href="../sobre.html">Sobre nós</a></li><li><a href="../blog/">Blog</a></li><li><a href="../roadmap.html">Roadmap</a></li><li><a href="../parceiros.html">Parceiros</a></li><li><a href="../contato.html">Contato</a></li></ul></div>
+        <div><h2>Contato</h2><ul><li><a href="mailto:hacktechfarm@proton.me">hacktechfarm@proton.me</a></li><li><a href="../contato.html">Fale conosco</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; <span data-year>2026</span> Hack Tech Farm. Todos os direitos reservados.</span>
+        <span>Porto Alegre, RS &mdash; Brasil</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/site.js" defer></script>
+  
+</body>
+</html>

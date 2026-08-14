@@ -459,3 +459,75 @@ body::after {
   body { background: #fff; color: #000; }
   body::before, body::after { display: none; }
 }
+
+/* ============================== Blog =================================== */
+.post { max-width: 74ch; margin: 0 auto; padding: 72px 24px 0; }
+.post-head { margin-bottom: 34px; }
+.post-head h1 { font-size: clamp(1.9rem, 4.4vw, 2.9rem); margin-bottom: 18px; }
+.post-meta {
+  display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center;
+  font-family: var(--font-mono); font-size: 0.76rem; letter-spacing: 0.04em;
+  color: var(--muted); text-transform: uppercase;
+}
+.post-meta span:first-child { color: var(--sienna); }
+
+/* Bloco de resumo: é o trecho que motores de resposta mais citam. */
+.post-summary {
+  background: var(--slate); border: 1px solid var(--line);
+  border-left: 3px solid var(--emerald);
+  border-radius: var(--radius); padding: 20px 24px; margin-bottom: 34px;
+}
+.post-summary p { color: var(--bone); font-size: 0.98rem; }
+
+.post-toc {
+  border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 20px 24px; margin-bottom: 38px;
+}
+.post-toc p {
+  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+}
+.post-toc ul { list-style: none; display: grid; gap: 6px; }
+.post-toc a { color: var(--emerald); font-size: 0.94rem; }
+.post-toc a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.post-body { font-size: 1.06rem; }
+.post-body > * + * { margin-top: 22px; }
+.post-body h2 { font-size: 1.55rem; margin-top: 52px; scroll-margin-top: 96px; }
+.post-body h3 { font-size: 1.22rem; margin-top: 38px; scroll-margin-top: 96px; }
+.post-body p { color: #D6DAE4; }
+.post-body ul, .post-body ol { padding-left: 22px; color: #D6DAE4; list-style-position: outside; }
+.post-body li + li { margin-top: 8px; }
+.post-body a { color: var(--emerald); text-decoration: underline; text-underline-offset: 3px; }
+.post-body strong { color: var(--bone); }
+.post-body img { border-radius: var(--radius); border: 1px solid var(--line); }
+.post-body hr { border: none; border-top: 1px solid var(--line); margin: 44px 0; }
+
+.post-body blockquote {
+  border-left: 3px solid var(--sienna); padding: 6px 0 6px 22px;
+  font-family: var(--font-display); font-size: 1.18rem; line-height: 1.5;
+}
+.post-body blockquote p { color: var(--bone); }
+
+.post-body code {
+  font-family: var(--font-mono); font-size: 0.88em;
+  background: var(--slate-soft); border: 1px solid var(--line);
+  border-radius: 5px; padding: 2px 6px;
+}
+.post-body pre {
+  background: var(--slate); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 20px; overflow-x: auto;
+}
+.post-body pre code { background: none; border: none; padding: 0; font-size: 0.86rem; }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); }
+.post-body table { width: 100%; border-collapse: collapse; font-size: 0.94rem; }
+.post-body th, .post-body td { padding: 13px 18px; text-align: left; }
+.post-body th {
+  background: var(--slate); font-family: var(--font-mono);
+  font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+}
+.post-body td { border-top: 1px solid var(--line); color: #D6DAE4; }
+
+.post-tags { margin-top: 44px; display: flex; gap: 8px; flex-wrap: wrap; }
+.post-foot { margin-top: 20px; padding-top: 26px; border-top: 1px solid var(--line); }

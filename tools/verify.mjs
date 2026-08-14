@@ -8,6 +8,7 @@
  */
 
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
+import { validateArticles, markdownToHtml } from './blog.mjs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -16,6 +17,10 @@ const problems = [];
 const notes = [];
 
 const pages = readdirSync(ROOT).filter((f) => f.endsWith('.html'));
+const blogPages = existsSync(join(ROOT, 'blog'))
+  ? readdirSync(join(ROOT, 'blog')).filter((f) => f.endsWith('.html')).map((f) => 'blog/' + f)
+  : [];
+const allPages = [...pages, ...blogPages];
 const readPage = (f) => readFileSync(join(ROOT, f), 'utf8');
 
 /* ------------------------------- links ---------------------------------- */
@@ -33,7 +38,7 @@ for (const page of pages) {
 }
 
 /* --------------------------------- CSP ---------------------------------- */
-for (const page of pages) {
+for (const page of allPages) {
   const html = readPage(page);
   for (const m of html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>/g)) {
     if (m[0].includes('application/ld+json')) continue;  // JSON-LD é dado
@@ -84,6 +89,7 @@ const PAIRS = [
   ['texto secundário sobre o fundo', '#A3AEC2', '#0B0F1A', 4.5],
   ['texto secundário sobre card', '#A3AEC2', '#141B2B', 4.5],
   ['texto primário sobre o fundo', '#EDEFF4', '#0B0F1A', 4.5],
+  ['corpo do artigo sobre o fundo', '#D6DAE4', '#0B0F1A', 4.5],
   ['acento sienna sobre o fundo', '#D07231', '#0B0F1A', 4.5],
   ['acento esmeralda sobre o fundo', '#2FA37A', '#0B0F1A', 4.5],
   ['texto do botão primário', '#0B0F1A', '#D07231', 4.5],
@@ -99,12 +105,41 @@ for (const [label, fg, bg, min] of PAIRS) {
 }
 
 /* -------------------------------- a11y ----------------------------------- */
-for (const page of pages) {
+for (const page of allPages) {
   const html = readPage(page);
   if (!html.includes('<h1')) problems.push(`${page}: página sem <h1>`);
   if (!html.includes('lang="pt-BR"')) problems.push(`${page}: <html> sem lang`);
   for (const m of html.matchAll(/<img\b[^>]*>/g)) {
     if (!m[0].includes('alt=')) problems.push(`${page}: <img> sem alt -> ${m[0].slice(0, 60)}`);
+  }
+}
+
+/* -------------------------------- blog ----------------------------------- */
+problems.push(...validateArticles(join(ROOT, 'blog-src')));
+
+/* Whitelist: nenhuma tag ou atributo além do que o conversor sabe emitir.
+   É esta checagem que impede um artigo de introduzir HTML executável. */
+const TAG_OK = new Set(['p','h1','h2','h3','h4','h5','h6','ul','ol','li','strong','em','del',
+  'code','pre','blockquote','hr','a','img','table','thead','tbody','tr','th','td','div','span',
+  'article','header','footer','nav','time','figure','figcaption']);
+const ATTR_OK = new Set(['href','src','alt','loading','target','rel','id','class','datetime','aria-label','aria-current','aria-hidden']);
+
+for (const page of blogPages) {
+  const html = readPage(page);
+  /* Escopo: só o corpo do artigo. É a única parte que vem de Markdown externo;
+     o resto da página é layout nosso e não precisa passar pela whitelist. */
+  const bodyOnly = (html.split('<div class="post-body">')[1] || '').split('</div>')[0];
+  if (!bodyOnly) continue;
+  for (const [, tag, attrs] of bodyOnly.matchAll(/<\/?([a-z0-9]+)((?:\s+[^>]*)?)>/gi)) {
+    if (!TAG_OK.has(tag.toLowerCase())) problems.push(`${page}: tag fora da whitelist -> <${tag}>`);
+    for (const [, name] of (attrs || '').matchAll(/([a-z-]+)\s*=/gi)) {
+      if (!ATTR_OK.has(name.toLowerCase())) problems.push(`${page}: atributo fora da whitelist -> ${name}`);
+    }
+  }
+  for (const [, url] of bodyOnly.matchAll(/(?:href|src)="([^"]*)"/gi)) {
+    if (!/^(https?:\/\/|\.\.\/|\/|#|mailto:|[a-z0-9-]+\.html)/i.test(url)) {
+      problems.push(`${page}: URL suspeita -> ${url.slice(0, 40)}`);
+    }
   }
 }
 
@@ -116,7 +151,7 @@ const hidden = catalog.length - shown.length;
 console.log(`\nCatálogo: ${shown.filter((p) => p.status === 'live').length} no ar, `
   + `${shown.filter((p) => p.status === 'dev').length} em desenvolvimento`
   + (hidden ? `, ${hidden} oculto(s) do site` : ''));
-console.log(`Páginas verificadas: ${pages.length}\n`);
+console.log(`Páginas verificadas: ${allPages.length} (${blogPages.length} do blog)\n`);
 
 if (problems.length) {
   console.log(`${problems.length} problema(s):`);

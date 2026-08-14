@@ -9,6 +9,7 @@
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
+import { buildBlog } from './blog.mjs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -38,6 +39,7 @@ const NAV = [
     ['galeria.html', 'ArtHack'],
   ]],
   ['roadmap.html', 'Roadmap', null],
+  ['blog/', 'Blog', null],
   ['sobre.html', 'Sobre', null],
   ['parceiros.html', 'Parceiros', null],
   ['contato.html', 'Contato', null],
@@ -46,37 +48,37 @@ const NAV = [
 const FOOTER = [
   ['Produtos', [['neuroart.html', 'NeuroArt DApp'], ['posthink.html', 'Posthink'],
                 ['asphalt.html', 'Asphalt Hoops'], ['galeria.html', 'ArtHack']]],
-  ['Empresa', [['sobre.html', 'Sobre nós'], ['roadmap.html', 'Roadmap'],
+  ['Empresa', [['sobre.html', 'Sobre nós'], ['blog/', 'Blog'], ['roadmap.html', 'Roadmap'],
                ['parceiros.html', 'Parceiros'], ['contato.html', 'Contato']]],
   ['Contato', [[`mailto:${CONTACT_EMAIL}`, CONTACT_EMAIL],
                ['contato.html', 'Fale conosco']]],
 ];
 
-function navHtml(active) {
+function navHtml(active, assetPrefix = '') {
   return NAV.map(([href, label, children]) => {
     if (!children) {
-      return `<a href="${href}"${active === href ? ' aria-current="page"' : ''}>${label}</a>`;
+      return `<a href="${assetPrefix}${href}"${active === href ? ' aria-current="page"' : ''}>${label}</a>`;
     }
     const subs = children.map(([h, l]) =>
-      `<a href="${h}"${active === h ? ' aria-current="page"' : ''}>${l}</a>`).join('');
+      `<a href="${assetPrefix}${h}"${active === h ? ' aria-current="page"' : ''}>${l}</a>`).join('');
     return `<div class="dropdown">`
       + `<button type="button" class="dropdown-toggle" aria-expanded="false" aria-controls="menu-produtos">`
       + `${label}<span class="chev" aria-hidden="true">▾</span></button>`
       + `<div class="dropdown-menu" id="menu-produtos">`
-      + `<a href="${href}"${active === href ? ' aria-current="page"' : ''}>Todos os produtos</a>${subs}</div></div>`;
+      + `<a href="${assetPrefix}${href}"${active === href ? ' aria-current="page"' : ''}>Todos os produtos</a>${subs}</div></div>`;
   }).join('');
 }
 
-function footerHtml() {
+function footerHtml(assetPrefix = '') {
   const cols = FOOTER.map(([title, links]) =>
-    `<div><h2>${title}</h2><ul>${links.map(([h, l]) => `<li><a href="${h}">${l}</a></li>`).join('')}</ul></div>`
+    `<div><h2>${title}</h2><ul>${links.map(([h, l]) => `<li><a href="${/^(https?:|mailto:)/.test(h) ? '' : assetPrefix}${h}">${l}</a></li>`).join('')}</ul></div>`
   ).join('\n        ');
 
   return `  <footer class="footer">
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <a href="index.html" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+          <a href="${assetPrefix}index.html" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
           <p>Software house familiar em Porto Alegre. Apps e SaaS com propósito, arte e tecnologia.</p>
         </div>
         ${cols}
@@ -111,11 +113,12 @@ function breadcrumbLd(trail) {
 /* ============================== Layout =================================== */
 
 function layout(filename, title, description, body, opts = {}) {
-  const { active = null, trail = [], scripts = [], jsonld = [], noindex = false, keywords = null } = opts;
+  const { active = null, trail = [], scripts = [], jsonld = [], noindex = false, keywords = null,
+          assetPrefix = '', canonicalPath = null } = opts;
   const ld = [...jsonld, breadcrumbLd(trail)].filter(Boolean)
     .map((j) => `<script type="application/ld+json">${j}</script>`).join('\n  ');
   const scriptTags = scripts.map((s) => `<script src="${s}" defer></script>`).join('\n  ');
-  const canonical = `${SITE_URL}/${filename === 'index.html' ? '' : filename}`;
+  const canonical = `${SITE_URL}/${canonicalPath !== null ? canonicalPath : (filename === 'index.html' ? '' : filename)}`;
 
   const html = `<!DOCTYPE html>
 <html lang="pt-BR">
@@ -141,11 +144,11 @@ function layout(filename, title, description, body, opts = {}) {
   <meta name="twitter:description" content="${description}">
   <meta name="twitter:image" content="${SITE_URL}/img/og-cover.png">
 
-  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="${assetPrefix}img/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="${assetPrefix}css/styles.css">
   ${ld}
 </head>
 <body>
@@ -153,10 +156,10 @@ function layout(filename, title, description, body, opts = {}) {
 
   <nav class="nav" aria-label="Navegação principal">
     <div class="container nav-inner">
-      <a href="index.html" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+      <a href="${assetPrefix}index.html" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
       <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu">☰</button>
       <div class="nav-links" id="nav-links" data-open="false">
-        ${navHtml(active)}
+        ${navHtml(active, assetPrefix)}
       </div>
     </div>
   </nav>
@@ -164,13 +167,13 @@ function layout(filename, title, description, body, opts = {}) {
   <main id="conteudo">
 ${body}  </main>
 
-${footerHtml()}
-  <script src="js/site.js" defer></script>
+${footerHtml(assetPrefix)}
+  <script src="${assetPrefix}js/site.js" defer></script>
   ${scriptTags}
 </body>
 </html>
 `;
-  writeFileSync(join(ROOT, filename), html, 'utf8');
+  writeFileSync(filename.includes('/') ? filename : join(ROOT, filename), html, 'utf8');
 }
 
 /* ======================= Pré-renderização do catálogo ==================== */
@@ -723,10 +726,11 @@ function build404() {
   layout('404.html', 'Página não encontrada — Hack Tech Farm', 'A página procurada não existe.', body, { noindex: true });
 }
 
-function buildSitemap() {
+function buildSitemap(posts = []) {
   const pages = ['', 'produtos.html', 'posthink.html', 'neuroart.html', 'asphalt.html',
                  'galeria.html', 'roadmap.html', 'sobre.html', 'parceiros.html', 'contato.html'];
-  const urls = pages.map((p) => {
+  const blogUrls = ['blog/', ...posts.map((a) => `blog/${a.slug}.html`)];
+  const urls = [...pages, ...blogUrls].map((p) => {
     const freq = ['', 'produtos.html', 'roadmap.html'].includes(p) ? 'weekly' : 'monthly';
     const prio = p === '' ? '1.0' : ['produtos.html', 'posthink.html'].includes(p) ? '0.8' : '0.6';
     return `  <url><loc>${SITE_URL}/${p}</loc><changefreq>${freq}</changefreq><priority>${prio}</priority></url>`;
@@ -748,7 +752,25 @@ buildSobre();
 buildParceiros();
 buildContato();
 build404();
-buildSitemap();
+/* Blog: as páginas ficam em /blog e usam o mesmo layout do site.
+   O prefixo '../' ajusta os caminhos relativos de CSS, JS e navegação. */
+const posts = buildBlog({
+  srcDir: join(ROOT, 'blog-src'),
+  outDir: join(ROOT, 'blog'),
+  siteUrl: SITE_URL,
+  orgName: 'Hack Tech Farm',
+  blogTitle: 'Blog',
+  blogEyebrow: 'Bastidores',
+  blogDescription: 'Decisões técnicas, aprendizados de produto e o que descobrimos construindo software na fazenda.',
+  renderPage: ({ filename, title, description, body, jsonld, canonicalPath }) => {
+    layout(filename, title, description, body, {
+      jsonld, canonicalPath, active: 'blog/', assetPrefix: '../',
+    });
+  },
+});
+
+buildSitemap(posts);
+console.log(`Blog: ${posts.length} artigo(s) publicado(s).`);
 
 console.log(`Build concluído — ${live().length} produtos no ar, ${dev().length} em desenvolvimento.`);
 console.log('Páginas: index, produtos, posthink, neuroart, asphalt, galeria, roadmap, sobre, parceiros, contato, 404');

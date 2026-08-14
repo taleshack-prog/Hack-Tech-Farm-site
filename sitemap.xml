@@ -10,4 +10,6 @@
   <url><loc>https://hacktechfarm.com.br/sobre.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://hacktechfarm.com.br/parceiros.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://hacktechfarm.com.br/contato.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://hacktechfarm.com.br/blog/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://hacktechfarm.com.br/blog/site-institucional-sem-banco-de-dados.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
 </urlset>
