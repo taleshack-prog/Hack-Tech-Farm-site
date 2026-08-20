@@ -1,6 +1,14 @@
+# Crawlers de IA são bem-vindos: é o pré-requisito de aparecer em respostas
+# do ChatGPT, da Perplexity e do AI Overviews. O Allow abaixo cobre GPTBot,
+# ClaudeBot, PerplexityBot, Google-Extended e os demais.
 User-agent: *
 Allow: /
+
+# Área restrita. Com cleanUrls a URL real não tem .html — as duas formas
+# precisam constar, senão o bloqueio não pega.
+Disallow: /dashboard
 Disallow: /dashboard.html
+Disallow: /login
 Disallow: /login.html
 Disallow: /api/
 

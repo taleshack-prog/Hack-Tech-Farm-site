@@ -25,6 +25,16 @@ const CONTACT_EMAIL = 'hacktechfarm@proton.me';
 const PRODUCTS = JSON.parse(readFileSync(join(ROOT, 'data/products.json'), 'utf8')).products;
 const OBRAS = JSON.parse(readFileSync(join(ROOT, 'data/gallery.json'), 'utf8')).obras;
 
+/* Com cleanUrls na Vercel, /produtos.html redireciona para /produtos. Declarar
+   o .html no canonical e no sitemap aponta para uma URL que redireciona — sinal
+   contraditório. Aqui tudo vira caminho absoluto e limpo. */
+const clean = (path) => {
+  const p = String(path || '').replace(/^\.?\//, '');
+  if (!p || p === 'index.html') return '/';
+  if (p === 'blog/') return '/blog';
+  return '/' + p.replace(/index\.html$/, '').replace(/\.html$/, '');
+};
+
 const esc = (v) => String(v ?? '')
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -57,28 +67,28 @@ const FOOTER = [
 function navHtml(active, assetPrefix = '') {
   return NAV.map(([href, label, children]) => {
     if (!children) {
-      return `<a href="${assetPrefix}${href}"${active === href ? ' aria-current="page"' : ''}>${label}</a>`;
+      return `<a href="${clean(href)}"${active === href ? ' aria-current="page"' : ''}>${label}</a>`;
     }
     const subs = children.map(([h, l]) =>
-      `<a href="${assetPrefix}${h}"${active === h ? ' aria-current="page"' : ''}>${l}</a>`).join('');
+      `<a href="${clean(h)}"${active === h ? ' aria-current="page"' : ''}>${l}</a>`).join('');
     return `<div class="dropdown">`
       + `<button type="button" class="dropdown-toggle" aria-expanded="false" aria-controls="menu-produtos">`
       + `${label}<span class="chev" aria-hidden="true">▾</span></button>`
       + `<div class="dropdown-menu" id="menu-produtos">`
-      + `<a href="${assetPrefix}${href}"${active === href ? ' aria-current="page"' : ''}>Todos os produtos</a>${subs}</div></div>`;
+      + `<a href="${clean(href)}"${active === href ? ' aria-current="page"' : ''}>Todos os produtos</a>${subs}</div></div>`;
   }).join('');
 }
 
 function footerHtml(assetPrefix = '') {
   const cols = FOOTER.map(([title, links]) =>
-    `<div><h2>${title}</h2><ul>${links.map(([h, l]) => `<li><a href="${/^(https?:|mailto:)/.test(h) ? '' : assetPrefix}${h}">${l}</a></li>`).join('')}</ul></div>`
+    `<div><h2>${title}</h2><ul>${links.map(([h, l]) => `<li><a href="${/^(https?:|mailto:)/.test(h) ? h : clean(h)}">${l}</a></li>`).join('')}</ul></div>`
   ).join('\n        ');
 
   return `  <footer class="footer">
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <a href="${assetPrefix}index.html" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+          <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
           <p>Software house familiar em Porto Alegre. Apps e SaaS com propósito, arte e tecnologia.</p>
         </div>
         ${cols}
@@ -118,7 +128,7 @@ function layout(filename, title, description, body, opts = {}) {
   const ld = [...jsonld, breadcrumbLd(trail)].filter(Boolean)
     .map((j) => `<script type="application/ld+json">${j}</script>`).join('\n  ');
   const scriptTags = scripts.map((s) => `<script src="${s}" defer></script>`).join('\n  ');
-  const canonical = `${SITE_URL}/${canonicalPath !== null ? canonicalPath : (filename === 'index.html' ? '' : filename)}`;
+  const canonical = SITE_URL + clean(canonicalPath !== null ? canonicalPath : filename.split('/').slice(-2).join('/').replace(/^blog\//, 'blog/'));
 
   const html = `<!DOCTYPE html>
 <html lang="pt-BR">
@@ -144,11 +154,11 @@ function layout(filename, title, description, body, opts = {}) {
   <meta name="twitter:description" content="${description}">
   <meta name="twitter:image" content="${SITE_URL}/img/og-cover.png">
 
-  <link rel="icon" href="${assetPrefix}img/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
-  <link rel="stylesheet" href="${assetPrefix}css/styles.css">
+  <link rel="stylesheet" href="/css/styles.css">
   ${ld}
 </head>
 <body>
@@ -156,7 +166,7 @@ function layout(filename, title, description, body, opts = {}) {
 
   <nav class="nav" aria-label="Navegação principal">
     <div class="container nav-inner">
-      <a href="${assetPrefix}index.html" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+      <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
       <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu">☰</button>
       <div class="nav-links" id="nav-links" data-open="false">
         ${navHtml(active, assetPrefix)}
@@ -168,7 +178,7 @@ function layout(filename, title, description, body, opts = {}) {
 ${body}  </main>
 
 ${footerHtml(assetPrefix)}
-  <script src="${assetPrefix}js/site.js" defer></script>
+  <script src="/js/site.js" defer></script>
   ${scriptTags}
 </body>
 </html>
@@ -733,14 +743,29 @@ function buildSitemap(posts = []) {
   const urls = [...pages, ...blogUrls].map((p) => {
     const freq = ['', 'produtos.html', 'roadmap.html'].includes(p) ? 'weekly' : 'monthly';
     const prio = p === '' ? '1.0' : ['produtos.html', 'posthink.html'].includes(p) ? '0.8' : '0.6';
-    return `  <url><loc>${SITE_URL}/${p}</loc><changefreq>${freq}</changefreq><priority>${prio}</priority></url>`;
+    return `  <url><loc>${SITE_URL}${clean(p)}</loc><changefreq>${freq}</changefreq><priority>${prio}</priority></url>`;
   }).join('\n');
 
   writeFileSync(join(ROOT, 'sitemap.xml'),
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`, 'utf8');
 
   writeFileSync(join(ROOT, 'robots.txt'),
-    `User-agent: *\nAllow: /\nDisallow: /dashboard.html\nDisallow: /login.html\nDisallow: /api/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`, 'utf8');
+    `# Crawlers de IA são bem-vindos: é o pré-requisito de aparecer em respostas
+# do ChatGPT, da Perplexity e do AI Overviews. O Allow abaixo cobre GPTBot,
+# ClaudeBot, PerplexityBot, Google-Extended e os demais.
+User-agent: *
+Allow: /
+
+# Área restrita. Com cleanUrls a URL real não tem .html — as duas formas
+# precisam constar, senão o bloqueio não pega.
+Disallow: /dashboard
+Disallow: /dashboard.html
+Disallow: /login
+Disallow: /login.html
+Disallow: /api/
+
+Sitemap: ${SITE_URL}/sitemap.xml
+`, 'utf8');
 }
 
 buildHome();

@@ -69,7 +69,7 @@
 
       if (a.status === 'published') {
         var view = el('a', 'btn btn-sm btn-ghost', 'Ver no site');
-        view.href = 'blog/' + a.slug + '.html';
+        view.href = '/blog/' + a.slug;
         view.target = '_blank';
         view.rel = 'noopener';
         actions.appendChild(view);

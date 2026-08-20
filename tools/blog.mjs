@@ -298,8 +298,8 @@ function articleBody(a, cfg) {
   return `    <article class="post">
       <header class="post-head">
         <nav class="breadcrumb" aria-label="Você está aqui"><ol>
-          <li><a href="../index.html">Início</a></li>
-          <li><a href="index.html">Blog</a></li>
+          <li><a href="/">Início</a></li>
+          <li><a href="/blog">Blog</a></li>
           <li aria-current="page">${esc(a.title)}</li>
         </ol></nav>
         <h1>${esc(a.title)}</h1>
@@ -314,7 +314,7 @@ ${a.summary ? `      <div class="post-summary"><p><strong>Em resumo:</strong> ${
 ${a.html}
       </div>
 ${a.tags.length ? `      <p class="post-tags">${a.tags.map((t) => `<span class="card-tag tag-pwa">${esc(t)}</span>`).join(' ')}</p>\n` : ''}      <footer class="post-foot">
-        <p><a class="card-link" href="index.html"><span aria-hidden="true">←</span> Todos os artigos</a></p>
+        <p><a class="card-link" href="/blog"><span aria-hidden="true">←</span> Todos os artigos</a></p>
       </footer>
     </article>
 `;
@@ -343,7 +343,7 @@ function articleLd(a, cfg) {
     dateModified: a.updatedAt || a.publishedAt,
     author: { '@type': 'Person', name: a.author },
     publisher: { '@type': 'Organization', name: cfg.orgName, url: cfg.siteUrl },
-    mainEntityOfPage: { '@type': 'WebPage', '@id': `${cfg.siteUrl}/blog/${a.slug}.html` },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `${cfg.siteUrl}/blog/${a.slug}` },
     ...(a.cover ? { image: a.cover } : {}),
     keywords: a.tags.join(', '),
     inLanguage: 'pt-BR',
@@ -355,13 +355,13 @@ function indexBody(articles, cfg) {
           <p class="post-meta"><time datetime="${esc(a.publishedAt)}">${fmtDate(a.publishedAt)}</time><span>${a.readingMinutes} min</span></p>
           <h3>${esc(a.title)}</h3>
           <p>${esc(a.description)}</p>
-          <a class="card-link card-stretch" href="${esc(a.slug)}.html">Ler artigo <span aria-hidden="true">→</span></a>
+          <a class="card-link card-stretch" href="/blog/${esc(a.slug)}">Ler artigo <span aria-hidden="true">→</span></a>
         </article>`).join('\n        ');
 
   return `    <header class="page-hero">
       <div class="container">
         <nav class="breadcrumb" aria-label="Você está aqui"><ol>
-          <li><a href="../index.html">Início</a></li>
+          <li><a href="/">Início</a></li>
           <li aria-current="page">Blog</li>
         </ol></nav>
         <p class="eyebrow">${esc(cfg.blogEyebrow)}</p>
@@ -436,7 +436,7 @@ export function buildBlog(cfg) {
   for (const a of articles) {
     cfg.renderPage({
       filename: join(cfg.outDir, `${a.slug}.html`),
-      canonicalPath: `blog/${a.slug}.html`,
+      canonicalPath: `blog/${a.slug}`,
       title: `${a.title} — ${cfg.orgName}`,
       description: a.description,
       body: articleBody(a, cfg),

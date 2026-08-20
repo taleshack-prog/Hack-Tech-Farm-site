@@ -29,11 +29,14 @@ for (const page of pages) {
   for (const m of html.matchAll(/(?:href|src)\s*=\s*"([^"]+)"/g)) {
     const target = m[1];
     if (/^(https?:|mailto:|#|data:|\/\/|\/api\/)/.test(target)) continue;
-    const clean = target.split('#')[0].split('?')[0];
-    if (!clean) continue;
-    if (!existsSync(join(ROOT, clean.replace(/^\//, '')))) {
-      problems.push(`${page}: alvo inexistente -> ${target}`);
-    }
+    const path = target.split('#')[0].split('?')[0];
+    if (!path) continue;
+    /* URLs limpas: /produtos precisa achar produtos.html, /blog precisa achar
+       blog/index.html — mesma resolução que a Vercel faz. */
+    const base = path.replace(/^\//, '');
+    const found = [base, `${base}.html`, `${base}/index.html`.replace(/^\//, '')]
+      .some((c) => c && existsSync(join(ROOT, c)));
+    if (!found) problems.push(`${page}: alvo inexistente -> ${target}`);
   }
 }
 
