@@ -8,7 +8,6 @@
  */
 
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
-import { validateArticles, markdownToHtml } from './blog.mjs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -17,10 +16,7 @@ const problems = [];
 const notes = [];
 
 const pages = readdirSync(ROOT).filter((f) => f.endsWith('.html'));
-const blogPages = existsSync(join(ROOT, 'blog'))
-  ? readdirSync(join(ROOT, 'blog')).filter((f) => f.endsWith('.html')).map((f) => 'blog/' + f)
-  : [];
-const allPages = [...pages, ...blogPages];
+const allPages = pages;
 const readPage = (f) => readFileSync(join(ROOT, f), 'utf8');
 
 /* ------------------------------- links ---------------------------------- */
@@ -28,7 +24,8 @@ for (const page of pages) {
   const html = readPage(page);
   for (const m of html.matchAll(/(?:href|src)\s*=\s*"([^"]+)"/g)) {
     const target = m[1];
-    if (/^(https?:|mailto:|#|data:|\/\/|\/api\/)/.test(target)) continue;
+    /* /blog/ pertence ao SEOHack e pode ainda não existir localmente. */
+    if (/^(https?:|mailto:|#|data:|\/\/|\/api\/|\/blog)/.test(target)) continue;
     const path = target.split('#')[0].split('?')[0];
     if (!path) continue;
     /* URLs limpas: /produtos precisa achar produtos.html, /blog precisa achar
@@ -117,41 +114,8 @@ for (const page of allPages) {
   }
 }
 
-/* -------------------------------- blog ----------------------------------- */
-problems.push(...validateArticles(join(ROOT, 'blog-src')));
-
-/* Quantos artigos ganharam FAQPage — é o schema mais citado por motores de IA. */
-let comFaq = 0;
-for (const page of blogPages) {
-  if (page.endsWith('index.html')) continue;
-  if (readPage(page).includes('"FAQPage"')) comFaq += 1;
-}
-
-/* Whitelist: nenhuma tag ou atributo além do que o conversor sabe emitir.
-   É esta checagem que impede um artigo de introduzir HTML executável. */
-const TAG_OK = new Set(['p','h1','h2','h3','h4','h5','h6','ul','ol','li','strong','em','del',
-  'code','pre','blockquote','hr','a','img','table','thead','tbody','tr','th','td','div','span',
-  'article','header','footer','nav','time','figure','figcaption']);
-const ATTR_OK = new Set(['href','src','alt','loading','target','rel','id','class','datetime','aria-label','aria-current','aria-hidden']);
-
-for (const page of blogPages) {
-  const html = readPage(page);
-  /* Escopo: só o corpo do artigo. É a única parte que vem de Markdown externo;
-     o resto da página é layout nosso e não precisa passar pela whitelist. */
-  const bodyOnly = (html.split('<div class="post-body">')[1] || '').split('</div>')[0];
-  if (!bodyOnly) continue;
-  for (const [, tag, attrs] of bodyOnly.matchAll(/<\/?([a-z0-9]+)((?:\s+[^>]*)?)>/gi)) {
-    if (!TAG_OK.has(tag.toLowerCase())) problems.push(`${page}: tag fora da whitelist -> <${tag}>`);
-    for (const [, name] of (attrs || '').matchAll(/([a-z-]+)\s*=/gi)) {
-      if (!ATTR_OK.has(name.toLowerCase())) problems.push(`${page}: atributo fora da whitelist -> ${name}`);
-    }
-  }
-  for (const [, url] of bodyOnly.matchAll(/(?:href|src)="([^"]*)"/gi)) {
-    if (!/^(https?:\/\/|\.\.\/|\/|#|mailto:|[a-z0-9-]+\.html)/i.test(url)) {
-      problems.push(`${page}: URL suspeita -> ${url.slice(0, 40)}`);
-    }
-  }
-}
+/* /blog/ é gerado pelo SEOHack, fora deste repositório. Não auditamos esses
+   arquivos: reprovar aqui só produziria erro sobre código que não controlamos. */
 
 /* ------------------------------- saída ----------------------------------- */
 console.log('Contraste WCAG 2.1 AA');
@@ -161,7 +125,7 @@ const hidden = catalog.length - shown.length;
 console.log(`\nCatálogo: ${shown.filter((p) => p.status === 'live').length} no ar, `
   + `${shown.filter((p) => p.status === 'dev').length} em desenvolvimento`
   + (hidden ? `, ${hidden} oculto(s) do site` : ''));
-console.log(`Páginas verificadas: ${allPages.length} (${blogPages.length} do blog, ${comFaq} com FAQPage)\n`);
+console.log(`Páginas verificadas: ${allPages.length} (o /blog/ é do SEOHack e não é auditado aqui)\n`);
 
 if (problems.length) {
   console.log(`${problems.length} problema(s):`);

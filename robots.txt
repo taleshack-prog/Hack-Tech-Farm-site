@@ -1,15 +1,45 @@
-# Crawlers de IA são bem-vindos: é o pré-requisito de aparecer em respostas
-# do ChatGPT, da Perplexity e do AI Overviews. O Allow abaixo cobre GPTBot,
-# ClaudeBot, PerplexityBot, Google-Extended e os demais.
 User-agent: *
 Allow: /
 
-# Área restrita. Com cleanUrls a URL real não tem .html — as duas formas
-# precisam constar, senão o bloqueio não pega.
+# Area restrita. Com cleanUrls a URL real nao tem .html - as duas formas
+# precisam constar, senao o bloqueio nao pega.
 Disallow: /dashboard
 Disallow: /dashboard.html
 Disallow: /login
 Disallow: /login.html
 Disallow: /api/
 
+# --- Buscadores de IA (necessario para citacao em respostas geradas) ---
+# Sao user-agents distintos: liberar GPTBot nao libera OAI-SearchBot.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
 Sitemap: https://hacktechfarm.com.br/sitemap.xml
+Sitemap: https://hacktechfarm.com.br/sitemap-blog.xml

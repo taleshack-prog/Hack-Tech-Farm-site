@@ -327,7 +327,6 @@
       renderStats();
       showPanel('overview');
       if (window.HTFGallery) window.HTFGallery.init(api, toast).catch(function (err) { toast(err.message, true); });
-      if (window.HTFBlog) window.HTFBlog.init(api, toast).catch(function (err) { toast(err.message, true); });
     })
     .catch(function (err) { toast(err.message, true); });
 })();

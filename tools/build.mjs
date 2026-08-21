@@ -9,7 +9,6 @@
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
-import { buildBlog } from './blog.mjs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -736,11 +735,12 @@ function build404() {
   layout('404.html', 'Página não encontrada — Hack Tech Farm', 'A página procurada não existe.', body, { noindex: true });
 }
 
-function buildSitemap(posts = []) {
+function buildSitemap() {
   const pages = ['', 'produtos.html', 'posthink.html', 'neuroart.html', 'asphalt.html',
                  'galeria.html', 'roadmap.html', 'sobre.html', 'parceiros.html', 'contato.html'];
-  const blogUrls = ['blog/', ...posts.map((a) => `blog/${a.slug}.html`)];
-  const urls = [...pages, ...blogUrls].map((p) => {
+  /* Sem URLs de /blog/ aqui: elas vivem em sitemap-blog.xml, do SEOHack.
+     Um dono por arquivo. */
+  const urls = pages.map((p) => {
     const freq = ['', 'produtos.html', 'roadmap.html'].includes(p) ? 'weekly' : 'monthly';
     const prio = p === '' ? '1.0' : ['produtos.html', 'posthink.html'].includes(p) ? '0.8' : '0.6';
     return `  <url><loc>${SITE_URL}${clean(p)}</loc><changefreq>${freq}</changefreq><priority>${prio}</priority></url>`;
@@ -749,23 +749,28 @@ function buildSitemap(posts = []) {
   writeFileSync(join(ROOT, 'sitemap.xml'),
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`, 'utf8');
 
+  const aiBots = ['GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot',
+    'Claude-SearchBot', 'Claude-User', 'PerplexityBot', 'Perplexity-User',
+    'Google-Extended', 'Applebot-Extended'];
+
   writeFileSync(join(ROOT, 'robots.txt'),
-    `# Crawlers de IA são bem-vindos: é o pré-requisito de aparecer em respostas
-# do ChatGPT, da Perplexity e do AI Overviews. O Allow abaixo cobre GPTBot,
-# ClaudeBot, PerplexityBot, Google-Extended e os demais.
-User-agent: *
+    `User-agent: *
 Allow: /
 
-# Área restrita. Com cleanUrls a URL real não tem .html — as duas formas
-# precisam constar, senão o bloqueio não pega.
+# Area restrita. Com cleanUrls a URL real nao tem .html - as duas formas
+# precisam constar, senao o bloqueio nao pega.
 Disallow: /dashboard
 Disallow: /dashboard.html
 Disallow: /login
 Disallow: /login.html
 Disallow: /api/
 
+# --- Buscadores de IA (necessario para citacao em respostas geradas) ---
+# Sao user-agents distintos: liberar GPTBot nao libera OAI-SearchBot.
+${aiBots.map((bot) => `User-agent: ${bot}\nAllow: /\n`).join('\n')}
 Sitemap: ${SITE_URL}/sitemap.xml
-`, 'utf8');
+Sitemap: ${SITE_URL}/sitemap-blog.xml
+`);
 }
 
 buildHome();
@@ -777,25 +782,14 @@ buildSobre();
 buildParceiros();
 buildContato();
 build404();
-/* Blog: as páginas ficam em /blog e usam o mesmo layout do site.
-   O prefixo '../' ajusta os caminhos relativos de CSS, JS e navegação. */
-const posts = buildBlog({
-  srcDir: join(ROOT, 'blog-src'),
-  outDir: join(ROOT, 'blog'),
-  siteUrl: SITE_URL,
-  orgName: 'Hack Tech Farm',
-  blogTitle: 'Blog',
-  blogEyebrow: 'Bastidores',
-  blogDescription: 'Decisões técnicas, aprendizados de produto e o que descobrimos construindo software na fazenda.',
-  renderPage: ({ filename, title, description, body, jsonld, canonicalPath }) => {
-    layout(filename, title, description, body, {
-      jsonld, canonicalPath, active: 'blog/', assetPrefix: '../',
-    });
-  },
-});
 
-buildSitemap(posts);
-console.log(`Blog: ${posts.length} artigo(s) publicado(s).`);
+/* /blog/ e escrito pelo SEOHack, num projeto separado. Este build NAO toca em
+   nada sob /blog/. Se voltasse a gerar blog/index.html, sobrescreveria o indice
+   dele a cada deploy - dois donos do mesmo arquivo.
+   O sitemap dos artigos tambem e dele: sitemap-blog.xml. */
 
-console.log(`Build concluído — ${live().length} produtos no ar, ${dev().length} em desenvolvimento.`);
-console.log('Páginas: index, produtos, posthink, neuroart, asphalt, galeria, roadmap, sobre, parceiros, contato, 404');
+buildSitemap();
+
+console.log(`Build concluido - ${live().length} produtos no ar, ${dev().length} em desenvolvimento.`);
+console.log('Paginas: index, produtos, posthink, neuroart, asphalt, galeria, roadmap, sobre, parceiros, contato, 404');
+console.log('/blog/ nao e tocado por este build.');
