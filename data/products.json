@@ -1,5 +1,5 @@
 {
-  "_comment": "Fonte unica de verdade do catalogo. Editado pelo dashboard via API do GitHub; cada alteracao gera um commit e dispara um novo build na Vercel. Itens com _needs_review tem texto provisorio -- confirme antes do lancamento.",
+  "_comment": "Fonte unica de verdade do catalogo. Editado pelo dashboard; cada alteracao gera um commit e dispara um novo build na Vercel.",
   "products": [
     {
       "id": 1,
@@ -7,7 +7,7 @@
       "name": "Posthink",
       "tagline": "A IA escreve, você continua sendo o autor.",
       "description": "O Posthink pesquisa o tema, escreve no seu tom e publica no LinkedIn pela API oficial, no horário que você marcar. Nada vai ao ar sem a sua aprovação.",
-      "url": "https://posthink.com.br",
+      "url": "https://posthink.com.br/",
       "page_url": "posthink.html",
       "icon": "✍️",
       "category": "IA",
@@ -22,7 +22,7 @@
       "name": "NeuroArt DApp",
       "tagline": "Arte que financia ciência.",
       "description": "Tokenização fracionada de obras de artistas neurodivergentes na rede Base L2. Cada fração adquirida financia pesquisa bioinspirada e não medicamentosa.",
-      "url": "https://neuro-art-d-app.vercel.app",
+      "url": "https://neuro-art-d-app.vercel.app/",
       "page_url": "neuroart.html",
       "icon": "🎨",
       "category": "Web3",
@@ -37,7 +37,7 @@
       "name": "Asphalt Hoops",
       "tagline": "Marque um rachão de basquete nas praças de Porto Alegre.",
       "description": "PWA leve para criar e entrar em rachões nas quadras públicas da cidade. Combine local e horário, veja quem confirmou e vá jogar.",
-      "url": "https://asphalt-hoops-pwa.vercel.app",
+      "url": "https://asphalt-hoops-pwa.vercel.app/",
       "page_url": "asphalt.html",
       "icon": "🏀",
       "category": "PWA",
@@ -52,7 +52,7 @@
       "name": "ArtHack",
       "tagline": "O ateliê digital de Tales Hack.",
       "description": "A galeria do artista plástico por trás da HTF — as obras que dão a textura visual de tudo o que a fazenda constrói.",
-      "url": "https://www.taleshack.com.br",
+      "url": "https://www.taleshack.com.br/",
       "page_url": "galeria.html",
       "icon": "🖼️",
       "category": "Arte",
@@ -63,19 +63,18 @@
     },
     {
       "id": 5,
-      "slug": "verdant",
-      "name": "Verdant",
+      "slug": "hackseed3",
+      "name": "HackSeed3",
       "tagline": "Impacto ambiental medido com dados, não com promessas.",
       "description": "Em desenvolvimento. Ferramentas para quem precisa acompanhar e comprovar indicadores ambientais de forma auditável.",
-      "url": "",
-      "page_url": "",
+      "url": null,
+      "page_url": null,
       "icon": "🌱",
       "category": "SaaS",
       "status": "dev",
       "stage": "alpha",
       "sort_order": 50,
-      "is_public": true,
-      "_needs_review": true
+      "is_public": true
     },
     {
       "id": 6,
@@ -83,15 +82,14 @@
       "name": "HackFinance Pro",
       "tagline": "Gestão financeira para quem toca o próprio negócio.",
       "description": "Em desenvolvimento. Controle de fluxo de caixa e projeções sem precisar virar contador.",
-      "url": "",
-      "page_url": "",
+      "url": null,
+      "page_url": null,
       "icon": "📈",
       "category": "SaaS",
       "status": "dev",
       "stage": "alpha",
       "sort_order": 60,
-      "is_public": true,
-      "_needs_review": true
+      "is_public": true
     },
     {
       "id": 7,
@@ -99,15 +97,14 @@
       "name": "FinanMap Cripto",
       "tagline": "Seus criptoativos, espalhados por várias carteiras, num mapa só.",
       "description": "Em beta. Consolidação e acompanhamento de posições em cripto a partir de múltiplas carteiras e exchanges.",
-      "url": "",
-      "page_url": "",
+      "url": null,
+      "page_url": null,
       "icon": "🗺️",
       "category": "Web3",
       "status": "dev",
       "stage": "beta",
       "sort_order": 70,
-      "is_public": true,
-      "_needs_review": true
+      "is_public": true
     },
     {
       "id": 8,
@@ -115,15 +112,14 @@
       "name": "Second Soul",
       "tagline": "Em beta fechado.",
       "description": "Em beta fechado com um grupo pequeno de testadores. Abrimos os detalhes quando o produto estiver de pé.",
-      "url": "",
-      "page_url": "",
+      "url": null,
+      "page_url": null,
       "icon": "🌀",
       "category": "SaaS",
       "status": "dev",
       "stage": "beta",
       "sort_order": 80,
-      "is_public": true,
-      "_needs_review": true
+      "is_public": true
     },
     {
       "id": 9,
@@ -131,15 +127,14 @@
       "name": "TPC",
       "tagline": "Em definição.",
       "description": "Ainda no papel. O nome fica; o escopo sai no próximo ciclo de planejamento.",
-      "url": "",
-      "page_url": "",
+      "url": null,
+      "page_url": null,
       "icon": "📐",
       "category": "SaaS",
       "status": "dev",
       "stage": "planning",
       "sort_order": 90,
-      "is_public": true,
-      "_needs_review": true
+      "is_public": true
     },
     {
       "id": 10,
@@ -147,16 +142,14 @@
       "name": "RadarPrevi",
       "tagline": "Mudanças nas regras de previdência, antes que elas te peguem de surpresa.",
       "description": "Em planejamento. Acompanhamento de alterações regulatórias em previdência e o efeito prático delas em quem contribui.",
-      "url": "",
-      "page_url": "",
+      "url": null,
+      "page_url": null,
       "icon": "📡",
       "category": "SaaS",
       "status": "dev",
       "stage": "planning",
       "sort_order": 100,
-      "is_public": false,
-      "_needs_review": true,
-      "_nota": "Oculto a pedido da cliente ate o lancamento. Marque is_public: true (ou o toggle no dashboard) para publicar."
+      "is_public": false
     }
   ]
 }
