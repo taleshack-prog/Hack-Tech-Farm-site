@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://hacktechfarm.com.br/blog/quanto-custa-manter-um-saas-pequeno-na-vercel</loc>
+    <lastmod>2026-08-21</lastmod>
+  </url>
+  <url>
     <loc>https://hacktechfarm.com.br/blog/guia-definitivo-de-arquitetura-saas-em-2026</loc>
     <lastmod>2026-08-21</lastmod>
   </url>

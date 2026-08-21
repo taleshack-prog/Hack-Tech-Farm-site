@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quanto Custa Manter um SaaS Pequeno na Vercel</title>
+<meta name="description" content="Entenda os custos reais de hospedar um SaaS pequeno na Vercel: planos, limites de banda, funções serverless e quando migrar de arquitetura.">
+<link rel="canonical" href="https://hacktechfarm.com.br/blog/quanto-custa-manter-um-saas-pequeno-na-vercel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Quanto Custa Manter um SaaS Pequeno na Vercel">
+<meta property="og:description" content="Um detalhamento dos custos de infraestrutura da Vercel para SaaS em estágio inicial, com foco em planos, limites e armadilhas de billing.">
+<meta property="og:url" content="https://hacktechfarm.com.br/blog/quanto-custa-manter-um-saas-pequeno-na-vercel">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"Quanto Custa Manter um SaaS Pequeno na Vercel","description":"Entenda os custos reais de hospedar um SaaS pequeno na Vercel: planos, limites de banda, funções serverless e quando migrar de arquitetura.","datePublished":"2026-08-21T18:56:18Z","dateModified":"2026-08-21T19:16:16Z","inLanguage":"pt-BR","mainEntityOfPage":{"@type":"WebPage","@id":"https://hacktechfarm.com.br/blog/quanto-custa-manter-um-saas-pequeno-na-vercel"},"author":{"@type":"Person","name":"Tales Hack","url":"https://hacktechfarm.com.br/sobre"},"publisher":{"@type":"Organization","name":"Hack Tech Farm"},"keywords":"saas, vercel, serverless-functions, mrr"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Vercel é grátis para SaaS pequeno?","acceptedAnswer":{"@type":"Answer","text":"Não para uso comercial. O plano Hobby é gratuito, mas seus termos de serviço proíbem projetos comerciais — um SaaS com clientes pagantes precisa do plano Pro ou superior."}},{"@type":"Question","name":"Quanto custa o plano Pro da Vercel por mês?","acceptedAnswer":{"@type":"Answer","text":"O valor exato e as cotas incluídas mudam com frequência. Consulte sempre o pricing oficial da Vercel antes de orçamentar, em vez de confiar em números desatualizados de terceiros."}},{"@type":"Question","name":"O que mais consome banda na Vercel além do frontend?","acceptedAnswer":{"@type":"Answer","text":"Chamadas de API via Serverless Functions, otimização automática de imagens e assets estáticos servidos pela Edge Network somam-se ao consumo de banda, muitas vezes superando o tráfego de páginas HTML puras."}},{"@type":"Question","name":"Dá para prever a fatura da Vercel antes de escalar?","acceptedAnswer":{"@type":"Answer","text":"Sim, de forma aproximada. A calculadora de preços oficial permite simular usuários ativos, chamadas de API e payload médio antes do lançamento, reduzindo o risco de surpresas na fatura."}},{"@type":"Question","name":"Quando vale a pena sair da Vercel para um VPS?","acceptedAnswer":{"@type":"Answer","text":"Quando o custo variável de uso, somado ao longo dos meses, supera com folga o custo fixo de manter um VPS mais o tempo de engenharia necessário para operá-lo com segurança e escala equivalente."}}]}]}</script>
+</head>
+<body>
+<nav class="nav" aria-label="Navegação principal">
+  <div class="container nav-inner">
+    <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+    <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu">☰</button>
+    <div class="nav-links" id="nav-links" data-open="false">
+      <a href="/">Início</a><div class="dropdown"><button type="button" class="dropdown-toggle" aria-expanded="false" aria-controls="menu-produtos">Produtos<span class="chev" aria-hidden="true">▾</span></button><div class="dropdown-menu" id="menu-produtos"><a href="/produtos">Todos os produtos</a><a href="/neuroart">NeuroArt DApp</a><a href="/posthink">Posthink</a><a href="/asphalt">Asphalt Hoops</a><a href="/galeria">ArtHack</a></div></div><a href="/roadmap">Roadmap</a><a href="/blog" aria-current="page">Blog</a><a href="/sobre">Sobre</a><a href="/parceiros">Parceiros</a><a href="/contato">Contato</a>
+    </div>
+  </div>
+</nav>
+<main>
+<article>
+<h1>Quanto Custa Manter um SaaS Pequeno na Vercel</h1>
+<p class="meta">
+<time datetime="2026-08-21T18:56:18Z">2026-08-21</time>
+· 7 min de leitura
+· atualizado em <time datetime="2026-08-21T19:16:16Z">2026-08-21</time>
+</p>
+<h2>O que compõe o custo de um SaaS na Vercel</h2>
+<p>O custo de hospedar um SaaS pequeno na Vercel não é um número único — é a soma de um plano base fixo mais uma camada variável que cresce com o uso. Essa distinção importa porque muita gente orçamenta só o primeiro item e é surpreendida pelo segundo.</p>
+<p>A <a href="https://vercel.com/pricing" rel="noopener noreferrer" target="_blank">Vercel</a> opera com três camadas de plano (Hobby, Pro e Enterprise) e, a partir do Pro, adiciona cobrança por consumo acima de cotas incluídas: banda de rede (bandwidth), execuções de <strong>Serverless Functions</strong>, minutos de build e uso da <strong>Edge Network</strong>.</p>
+<p>Essas três entidades — Serverless Functions, Bandwidth e Edge Network — se relacionam diretamente: toda requisição que chega ao seu SaaS passa pela Edge Network da Vercel, que roteia para uma Serverless Function (ou Edge Function) quando há lógica de backend, e cada resposta enviada de volta ao cliente consome Bandwidth. Quanto mais chamadas de API o seu app fizer por usuário ativo, mais essas três linhas de custo sobem juntas.</p>
+<p>O ponto prático para um fundador técnico é relacionar esse custo variável ao <strong>MRR</strong> do produto. Se a infraestrutura consome uma fatia crescente da receita recorrente mensal conforme a base de usuários cresce, o modelo de billing por uso deixou de ser vantagem e virou risco. Isso é diferente de um custo fixo previsível, que você consegue provisionar no orçamento sem sustos.</p>
+<h2>Planos da Vercel e para quem cada um serve</h2>
+<p>O plano <strong>Hobby</strong> é gratuito, mas os <a href="https://vercel.com/docs/plans/hobby" rel="noopener noreferrer" target="_blank">termos de uso da Vercel</a> deixam explícito que ele é destinado a projetos pessoais e não-comerciais. Rodar um SaaS com clientes pagantes no Hobby viola os termos de serviço, independentemente de tecnicamente funcionar.</p>
+<p>O plano <strong>Pro</strong> é o ponto de entrada real para produtos comerciais. Ele cobra uma mensalidade fixa por membro do time, mais consumo acima das cotas incluídas de banda, execuções de função e build minutes — os valores exatos e as cotas incluídas mudam com frequência, então o <a href="https://vercel.com/pricing" rel="noopener noreferrer" target="_blank">pricing oficial da Vercel</a> é a única fonte confiável no momento em que você for orçamentar.</p>
+<p>O plano <strong>Enterprise</strong> entra em cena quando o SaaS precisa de SLA contratual, suporte dedicado, controles de compliance mais rígidos ou volume de tráfego que já ultrapassa qualquer estimativa de self-service. Para um SaaS em estágio inicial, raramente faz sentido — o custo de negociação e o compromisso mínimo geralmente superam o problema que ele resolve.</p>
+<table>
+<thead>
+<tr>
+<th scope="col">Plano</th>
+<th scope="col">Uso comercial permitido</th>
+<th scope="col">Modelo de billing</th>
+<th scope="col">Indicado para</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hobby</td>
+<td>Não</td>
+<td>Gratuito, com limites</td>
+<td>Projetos pessoais, protótipos</td>
+</tr>
+<tr>
+<td>Pro</td>
+<td>Sim</td>
+<td>Fixo por membro + uso variável</td>
+<td>SaaS em estágio inicial a médio</td>
+</tr>
+<tr>
+<td>Enterprise</td>
+<td>Sim</td>
+<td>Negociado, com SLA</td>
+<td>Alto tráfego, requisitos de compliance</td>
+</tr>
+</tbody></table>
+<h2>Onde o custo surpreende: funções serverless e edge</h2>
+<p>A maior parte das faturas inesperadas na Vercel não vem do plano em si, vem do comportamento das funções.</p>
+<p>Cold starts — o tempo que uma função leva para "acordar" quando não foi invocada recentemente — não são cobrados como uma linha separada, mas afetam a duração de execução medida, e duração de execução é exatamente o que compõe parte do custo de Serverless Functions. Uma função mal otimizada, com dependências pesadas carregadas a cada invocação, paga esse preço de forma silenciosa.</p>
+<p>Edge Functions e Serverless Functions têm modelos de billing diferentes na Vercel — a documentação de <a href="https://vercel.com/docs/functions" rel="noopener noreferrer" target="_blank">runtimes da Vercel</a> detalha o comportamento de cada uma. Migrar lógica para Edge sem entender essa diferença pode tanto economizar quanto piorar a fatura, dependendo do padrão de uso.</p>
+<p>Outra linha de custo frequentemente esquecida é a otimização automática de imagens. Ela é conveniente — reduz payload para o usuário final — mas cada transformação de imagem consome cota própria, separada da banda geral do projeto, segundo a <a href="https://vercel.com/docs/image-optimization" rel="noopener noreferrer" target="_blank">documentação de Image Optimization</a>. Um SaaS com muitos uploads de usuário (avatares, thumbnails, galerias) pode ver essa linha crescer mais rápido que o tráfego de página.</p>
+<p>Um endpoint de API que faz fetch redundante, não usa cache e responde payloads maiores que o necessário infla três métricas ao mesmo tempo: duração de função, banda e, indiretamente, o número de invocações se o cliente reage a timeouts com retry automático.</p>
+<pre><code class="language-javascript">// Exemplo de handler que reduz payload e evita trabalho redundante
+export const config = { runtime: 'edge' };
+
+export default async function handler(req) {
+  const cached = await caches.default.match(req);
+  if (cached) return cached;
+
+  const data = await getMinimalUserPayload(req);
+  const response = new Response(JSON.stringify(data), {
+    headers: { 'Cache-Control': 's-maxage=60' },
+  });
+
+  return response;
+}
+</code></pre>
+<h2>Tabela comparativa: Vercel vs alternativas de deploy</h2>
+<p>Nenhuma plataforma é objetivamente melhor em todos os critérios — a escolha depende do estágio do SaaS e da tolerância a esforço operacional.</p>
+<table>
+<thead>
+<tr>
+<th scope="col">Critério</th>
+<th scope="col">Vercel Pro</th>
+<th scope="col">VPS próprio</th>
+<th scope="col">Railway / Render</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Previsibilidade de custo</td>
+<td>Baixa a média (uso variável)</td>
+<td>Alta (custo fixo)</td>
+<td>Média</td>
+</tr>
+<tr>
+<td>Esforço de manutenção</td>
+<td>Baixo</td>
+<td>Alto</td>
+<td>Baixo a médio</td>
+</tr>
+<tr>
+<td>Escalabilidade automática</td>
+<td>Nativa</td>
+<td>Manual</td>
+<td>Parcial</td>
+</tr>
+<tr>
+<td>Velocidade de deploy</td>
+<td>Alta</td>
+<td>Baixa</td>
+<td>Alta</td>
+</tr>
+<tr>
+<td>Controle de infraestrutura</td>
+<td>Baixo</td>
+<td>Total</td>
+<td>Médio</td>
+</tr>
+</tbody></table>
+<p>Sair da Vercel compensa financeiramente quando o tráfego é grande o suficiente para que o custo de uso variável ultrapasse, com folga, o custo fixo de operar um VPS mais o tempo de engenharia necessário para mantê-lo. Abaixo desse ponto de equilíbrio, a velocidade de deploy da Vercel geralmente vale o prêmio pago.</p>
+<h2>Como estimar seu custo mensal antes de lançar</h2>
+<p>Uma estimativa grosseira, mas útil, parte de três variáveis: usuários ativos, chamadas de API por usuário e tamanho médio de payload por chamada. Multiplicando essas três variáveis você chega a um volume de dados e de invocações que pode ser confrontado com as cotas incluídas do plano Pro.</p>
+<p>A Vercel disponibiliza uma calculadora de preços no próprio <a href="https://vercel.com/pricing" rel="noopener noreferrer" target="_blank">site de pricing</a>, que permite simular cenários de tráfego antes de comprometer orçamento. Rodar essa simulação antes do lançamento é mais barato do que descobrir o número na fatura seguinte.</p>
+<p>É prudente adicionar uma margem de segurança de tráfego para eventos pontuais de pico — um lançamento em canais como Product Hunt pode multiplicar o volume normal de requisições por um fator alto e imprevisível em poucas horas.</p>
+<p>Há também uma relação pouco discutida entre churn e desperdício de infraestrutura: usuários que assinam, geram tráfego intenso nos primeiros dias e cancelam antes de gerar MRR suficiente para cobrir o custo variável que consumiram representam prejuízo direto de infraestrutura, não só perda de receita futura. Monitorar esse padrão é parte do controle de custo, não só de retenção.</p>
+<p>Esse artigo é muito útil para quem está começando a desenvolver seus próprios produtos. Previsibilidade e escalabilidade do produto devem ser levaods em conta, para não haver surpresas posteriores.</p>
+<h2>Quando migrar de arquitetura faz sentido</h2>
+<p>O sinal mais claro de que chegou a hora de migrar é quando o custo de infraestrutura, como percentual do MRR, para de cair ou começa a subir mesmo com otimizações de código já aplicadas. Isso indica que o modelo de billing por uso deixou de acompanhar a economia do negócio.</p>
+<p>O trade-off central é entre velocidade de deploy e controle de custo. A Vercel otimiza para a primeira; uma arquitetura própria com VPS ou Kubernetes otimiza para a segunda, ao custo de mais engenharia de infraestrutura contínua.</p>
+<p>Essa decisão não deveria ser tomada isoladamente — ela é parte de uma discussão maior sobre arquitetura de SaaS, que cobrimos com mais profundidade no <a href="/blog/guia-definitivo-de-arquitetura-saas-em-2026">Guia Definitivo de Arquitetura SaaS em 2026</a>.</p>
+<blockquote>
+<p>Se sua equipe está tentando decidir entre continuar na Vercel ou migrar para uma arquitetura própria, vale conversar com quem já desenhou essa transição para outros produtos — fale com o time da Hack Tech Farm através da <a href="/contato">página de contato</a>.</p>
+</blockquote>
+<h2>Perguntas Frequentes</h2>
+<h3>Vercel é grátis para SaaS pequeno?</h3>
+<p>Não para uso comercial. O plano Hobby é gratuito, mas seus termos de serviço proíbem projetos comerciais — um SaaS com clientes pagantes precisa do plano Pro ou superior.</p>
+<h3>Quanto custa o plano Pro da Vercel por mês?</h3>
+<p>O valor exato e as cotas incluídas mudam com frequência. Consulte sempre o <a href="https://vercel.com/pricing" rel="noopener noreferrer" target="_blank">pricing oficial da Vercel</a> antes de orçamentar, em vez de confiar em números desatualizados de terceiros.</p>
+<h3>O que mais consome banda na Vercel além do frontend?</h3>
+<p>Chamadas de API via Serverless Functions, otimização automática de imagens e assets estáticos servidos pela Edge Network somam-se ao consumo de banda, muitas vezes superando o tráfego de páginas HTML puras.</p>
+<h3>Dá para prever a fatura da Vercel antes de escalar?</h3>
+<p>Sim, de forma aproximada. A calculadora de preços oficial permite simular usuários ativos, chamadas de API e payload médio antes do lançamento, reduzindo o risco de surpresas na fatura.</p>
+<h3>Quando vale a pena sair da Vercel para um VPS?</h3>
+<p>Quando o custo variável de uso, somado ao longo dos meses, supera com folga o custo fixo de manter um VPS mais o tempo de engenharia necessário para operá-lo com segurança e escala equivalente.</p>
+
+</article>
+</main>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+        <p>Software house familiar em Porto Alegre. Apps e SaaS com propósito, arte e tecnologia.</p>
+      </div>
+      <div><h2>Produtos</h2><ul><li><a href="/neuroart">NeuroArt DApp</a></li><li><a href="/posthink">Posthink</a></li><li><a href="/asphalt">Asphalt Hoops</a></li><li><a href="/galeria">ArtHack</a></li></ul></div>
+      <div><h2>Empresa</h2><ul><li><a href="/sobre">Sobre nós</a></li><li><a href="/blog">Blog</a></li><li><a href="/roadmap">Roadmap</a></li><li><a href="/parceiros">Parceiros</a></li><li><a href="/contato">Contato</a></li></ul></div>
+      <div><h2>Contato</h2><ul><li><a href="mailto:hacktechfarm@proton.me">hacktechfarm@proton.me</a></li><li><a href="/contato">Fale conosco</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Hack Tech Farm. Todos os direitos reservados.</span>
+      <span>Porto Alegre, RS &mdash; Brasil</span>
+    </div>
+  </div>
+</footer>
+<script src="/js/site.js" defer></script>
+</body>
+</html>
