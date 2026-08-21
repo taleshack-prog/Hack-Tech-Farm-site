@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Como Calcular MRR, Churn e LTV na Prática</title>
+<meta name="description" content="Aprenda a calcular MRR, churn e LTV com fórmulas, exemplos numéricos hipotéticos e código para automatizar as métricas do seu SaaS.">
+<link rel="canonical" href="https://hacktechfarm.com.br/blog/como-calcular-mrr-churn-e-ltv-na-pratica">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Como Calcular MRR, Churn e LTV na Prática">
+<meta property="og:description" content="Um guia prático com fórmulas e exemplos de código para calcular MRR, churn e LTV em um SaaS.">
+<meta property="og:url" content="https://hacktechfarm.com.br/blog/como-calcular-mrr-churn-e-ltv-na-pratica">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"Como Calcular MRR, Churn e LTV na Prática","description":"Aprenda a calcular MRR, churn e LTV com fórmulas, exemplos numéricos hipotéticos e código para automatizar as métricas do seu SaaS.","datePublished":"2026-08-21T19:38:25Z","dateModified":"2026-08-21T19:40:44Z","inLanguage":"pt-BR","mainEntityOfPage":{"@type":"WebPage","@id":"https://hacktechfarm.com.br/blog/como-calcular-mrr-churn-e-ltv-na-pratica"},"author":{"@type":"Person","name":"Tales Hack","url":"https://hacktechfarm.com.br/sobre"},"publisher":{"@type":"Organization","name":"Hack Tech Farm"},"keywords":"saas, mrr, churn, ltv"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Qual a diferença entre MRR e ARR?","acceptedAnswer":{"@type":"Answer","text":"ARR (Annual Recurring Revenue) é o MRR multiplicado por 12. Empresas com contratos anuais tendem a reportar ARR; SaaS com cobrança mensal predominante costuma reportar MRR, por ser mais sensível a mudanças de curto prazo."}},{"@type":"Question","name":"Como calcular churn quando o SaaS tem poucos clientes?","acceptedAnswer":{"@type":"Answer","text":"Com poucos clientes, cada cancelamento gera uma variação percentual grande e instável. Nesse cenário, olhe o número absoluto de cancelamentos e o motivo de cada um, em vez de confiar na taxa percentual isolada."}},{"@type":"Question","name":"O que é um bom LTV/CAC para um SaaS?","acceptedAnswer":{"@type":"Answer","text":"Não existe um número único válido para todo modelo de negócio — o ideal depende de margem, ciclo de vendas e categoria. Em vez de buscar um valor de referência genérico, compare a relação LTV/CAC da sua empresa ao longo do tempo e observe a tendência."}},{"@type":"Question","name":"Churn negativo é possível?","acceptedAnswer":{"@type":"Answer","text":"Sim, em termos de receita. Quando a expansão de clientes existentes (upgrades) supera a receita perdida por cancelamentos e downgrades, o churn líquido de receita fica negativo — a base atual cresce sozinha, mesmo sem clientes novos."}},{"@type":"Question","name":"Com que frequência devo recalcular essas métricas?","acceptedAnswer":{"@type":"Answer","text":"MRR e churn fazem sentido em cadência mensal, alinhados ao ciclo de cobrança da maioria dos planos. LTV pode ser recalculado trimestralmente, já que depende de médias que mudam mais devagar."}}]}]}</script>
+</head>
+<body>
+<nav class="nav" aria-label="Navegação principal">
+  <div class="container nav-inner">
+    <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+    <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu">☰</button>
+    <div class="nav-links" id="nav-links" data-open="false">
+      <a href="/">Início</a><div class="dropdown"><button type="button" class="dropdown-toggle" aria-expanded="false" aria-controls="menu-produtos">Produtos<span class="chev" aria-hidden="true">▾</span></button><div class="dropdown-menu" id="menu-produtos"><a href="/produtos">Todos os produtos</a><a href="/neuroart">NeuroArt DApp</a><a href="/posthink">Posthink</a><a href="/asphalt">Asphalt Hoops</a><a href="/galeria">ArtHack</a></div></div><a href="/roadmap">Roadmap</a><a href="/blog" aria-current="page">Blog</a><a href="/sobre">Sobre</a><a href="/parceiros">Parceiros</a><a href="/contato">Contato</a>
+    </div>
+  </div>
+</nav>
+<main>
+<article>
+<h1>Como Calcular MRR, Churn e LTV na Prática</h1>
+<p class="meta">
+<time datetime="2026-08-21T19:38:25Z">2026-08-21</time>
+· 9 min de leitura
+· atualizado em <time datetime="2026-08-21T19:40:44Z">2026-08-21</time>
+</p>
+<h2>O que é MRR e como ele se relaciona com churn e LTV</h2>
+<p>MRR (Monthly Recurring Revenue, ou receita recorrente mensal) é a soma de toda a receita de assinaturas normalizada para um período de 30 dias. Se um cliente paga anualmente, o valor é dividido por 12 antes de entrar na conta. Se paga trimestralmente, divide por 3. O MRR existe para dar uma métrica comparável mês a mês, independente do ciclo de cobrança de cada plano.</p>
+<p>Churn é a taxa de clientes ou de receita que sai da base em um período. Todo mês, uma fração dos assinantes cancela — isso reduz o MRR diretamente, e quanto maior o churn, menor o tempo médio que um cliente permanece pagando.</p>
+<p>LTV (Lifetime Value) é quanto um cliente gera de receita durante todo o tempo em que fica ativo. O LTV depende matematicamente do churn: quanto menor o churn, mais tempo o cliente fica, mais receita ele acumula. CAC (Customer Acquisition Cost) é o custo médio para conquistar um cliente novo — marketing, vendas, onboarding.</p>
+<p>A cadeia de causalidade é direta: <strong>MRR mede a receita hoje. Churn mede a velocidade de erosão dessa receita. LTV projeta quanto cada cliente vale ao longo do tempo, usando o churn como base de cálculo. CAC compara esse valor com o custo de aquisição.</strong> Sem entender essa cadeia, é impossível decidir se vale a pena aumentar o investimento em aquisição ou se o problema do negócio está em retenção.</p>
+<p>Cohort (coorte) é o grupo de clientes que entraram na base no mesmo período — por exemplo, todos que assinaram em janeiro. Analisar churn e LTV por cohort revela se a retenção está melhorando ou piorando ao longo do tempo, algo que uma média geral esconde.</p>
+<p>Para quem está desenhando a arquitetura de um SaaS do zero, vale ler o <a href="/blog/guia-definitivo-de-arquitetura-saas-em-2026">guia definitivo de arquitetura SaaS em 2026</a> antes de instrumentar essas métricas — a forma como você estrutura assinaturas e eventos de cobrança no banco de dados afeta diretamente a facilidade de calcular MRR e churn depois.</p>
+<h2>Como calcular o MRR passo a passo</h2>
+<p>A fórmula base do MRR é simples:</p>
+<pre><code>MRR = soma(valor mensal normalizado de cada assinatura ativa)
+</code></pre>
+<p>Mas MRR "bruto" esconde movimento. É mais útil decompor em quatro componentes:</p>
+<ul>
+<li><strong>MRR novo</strong>: receita de clientes que assinaram no período.</li>
+<li><strong>MRR de expansão</strong>: receita adicional de clientes existentes que fizeram upgrade.</li>
+<li><strong>MRR de contração</strong>: receita perdida de clientes que fizeram downgrade, mas continuam ativos.</li>
+<li><strong>MRR de churn</strong>: receita perdida de clientes que cancelaram.</li>
+</ul>
+<pre><code>MRR do mês = MRR do mês anterior + MRR novo + MRR de expansão - MRR de contração - MRR de churn
+</code></pre>
+<p>Suponha um SaaS hipotético com 4 clientes em fevereiro:</p>
+<table>
+<thead>
+<tr>
+<th scope="col">Cliente</th>
+<th scope="col">Plano fevereiro</th>
+<th scope="col">Plano março</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A</td>
+<td>R$ 100</td>
+<td>R$ 100</td>
+</tr>
+<tr>
+<td>B</td>
+<td>R$ 200</td>
+<td>cancelou</td>
+</tr>
+<tr>
+<td>C</td>
+<td>R$ 150</td>
+<td>R$ 250 (upgrade)</td>
+</tr>
+<tr>
+<td>D</td>
+<td>— (novo em março)</td>
+<td>R$ 100</td>
+</tr>
+</tbody></table>
+<p>MRR de fevereiro: R$ 450. Em março: MRR novo = R$ 100 (cliente D), MRR de expansão = R$ 100 (cliente C), MRR de churn = R$ 200 (cliente B). MRR de março = 450 + 100 + 100 - 200 = R$ 450. O total ficou igual, mas a composição mudou completamente — e é essa composição que interessa para diagnóstico.</p>
+<h2>Como calcular churn de clientes e de receita</h2>
+<p>Churn de clientes (customer churn) mede quantos assinantes saíram, sem olhar para valor:</p>
+<pre><code>Churn de clientes = clientes que cancelaram no período / clientes ativos no início do período
+</code></pre>
+<p>Churn de receita (revenue churn) mede o valor perdido:</p>
+<pre><code>Churn de receita = MRR perdido no período / MRR no início do período
+</code></pre>
+<p>Os dois números costumam divergir, e a diferença é informativa. Usando o exemplo anterior: churn de clientes em março foi 1/4 = 25% (o cliente B saiu de uma base de 4). Churn de receita foi 200/450 ≈ 44,4%. Isso acontece porque o cliente que cancelou pagava um plano mais caro que a média — perder um cliente grande dói mais na receita do que na contagem.</p>
+<p>Também existe o <strong>churn líquido de receita</strong>, que soma expansão e contração ao churn bruto. Quando a expansão supera o churn, o resultado é negativo — a base de clientes existentes gera mais receita mesmo perdendo alguns assinantes. Isso é tratado na seção de FAQ.</p>
+<h2>Como calcular o LTV a partir do MRR e do churn</h2>
+<p>A fórmula mais simples de LTV usa o ticket médio e o churn de clientes:</p>
+<pre><code>LTV = ticket médio mensal / churn de clientes (em decimal)
+</code></pre>
+<p>O raciocínio: se o churn mensal é de 5%, o tempo médio de vida do cliente é 1 / 0,05 = 20 meses. Multiplicando pelo ticket médio, chega-se à receita total esperada por cliente.</p>
+<p>Suponha um SaaS hipotético com ticket médio de R$ 150/mês e churn de clientes de 4% ao mês:</p>
+<pre><code>LTV = 150 / 0,04 = R$ 3.750
+</code></pre>
+<p>Esse LTV só faz sentido comparado ao CAC. A relação LTV/CAC é o indicador mais citado para saúde de unit economics em SaaS — quanto maior, melhor a margem para reinvestir em aquisição. Um LTV alto com CAC descontrolado ainda pode significar um negócio que queima caixa, porque a fórmula não considera o tempo até recuperar o CAC (payback period), que é outra métrica separada.</p>
+<p>Essa fórmula simplificada assume churn constante ao longo do tempo, o que raramente é verdade — clientes novos tendem a cancelar mais rápido que clientes antigos, um efeito que só aparece analisando LTV por cohort em vez de usar a média da base inteira.</p>
+<blockquote>
+<p>Se sua equipe ainda calcula essas métricas em planilha manual todo mês, a Hack Tech Farm monta dashboards de métricas de SaaS integrados direto ao seu banco de assinaturas — veja mais em <a href="/produtos">nossos produtos</a>.</p>
+</blockquote>
+<h2>Automatizando o cálculo com código</h2>
+<p>Calcular manualmente funciona com poucos clientes. Passa de algumas dezenas de assinaturas com upgrades e downgrades frequentes, e a planilha vira fonte de erro. Um script simples resolve isso, desde que os dados de assinatura estejam estruturados de forma consistente.</p>
+<p>Estrutura mínima de dados por assinatura:</p>
+<pre><code class="language-json">{
+  "customer_id": "c001",
+  "monthly_value": 150,
+  "status": "active",
+  "started_at": "2026-01-10",
+  "canceled_at": null
+}
+</code></pre>
+<p>Script em Python para calcular MRR e churn de clientes de um mês para o outro:</p>
+<pre><code class="language-python">def calcular_mrr(assinaturas, mes_referencia):
+    ativos = [
+        a for a in assinaturas
+        if a["status"] == "active" or (
+            a["canceled_at"] and a["canceled_at"] &gt; mes_referencia
+        )
+    ]
+    return sum(a["monthly_value"] for a in ativos)
+
+def calcular_churn_clientes(ativos_inicio, cancelados_periodo):
+    if ativos_inicio == 0:
+        return 0
+    return cancelados_periodo / ativos_inicio
+
+# Exemplo com dados hipotéticos
+mrr_atual = calcular_mrr(assinaturas, "2026-03-01")
+churn = calcular_churn_clientes(ativos_inicio=4, cancelados_periodo=1)
+print(f"MRR: R$ {mrr_atual}, Churn: {churn:.2%}")
+</code></pre>
+<p>O trade-off entre planilha e automação é claro: planilha é mais rápida de montar no início e não exige deploy de nada, mas escala mal e é fácil de quebrar com uma fórmula colada errada. Um script versionado no Git é mais trabalho inicial, mas roda de forma confiável todo mês e pode virar um cron job ou um endpoint interno. Para times pequenos que hospedam a aplicação principal na Vercel, vale considerar o custo de rodar esse job — o artigo sobre <a href="/blog/quanto-custa-manter-um-saas-pequeno-na-vercel">quanto custa manter um SaaS pequeno na Vercel</a> detalha os limites do plano gratuito e quando migrar.</p>
+<h2>Tabela comparativa de métricas</h2>
+<table>
+<thead>
+<tr>
+<th scope="col">Métrica</th>
+<th scope="col">Fórmula resumida</th>
+<th scope="col">Frequência ideal de cálculo</th>
+<th scope="col">Decisão que ajuda a tomar</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MRR</td>
+<td>Soma das assinaturas ativas normalizadas por mês</td>
+<td>Mensal</td>
+<td>Se a receita recorrente está crescendo ou estagnando</td>
+</tr>
+<tr>
+<td>Churn de clientes</td>
+<td>Cancelamentos / clientes ativos no início</td>
+<td>Mensal</td>
+<td>Se o produto está retendo usuários</td>
+</tr>
+<tr>
+<td>Churn de receita</td>
+<td>MRR perdido / MRR inicial</td>
+<td>Mensal</td>
+<td>Se os cancelamentos afetam clientes grandes ou pequenos</td>
+</tr>
+<tr>
+<td>LTV</td>
+<td>Ticket médio / churn de clientes</td>
+<td>Trimestral</td>
+<td>Se vale investir mais em aquisição</td>
+</tr>
+<tr>
+<td>CAC</td>
+<td>Custo total de aquisição / clientes novos</td>
+<td>Mensal ou trimestral</td>
+<td>Se o custo de vendas está sustentável</td>
+</tr>
+</tbody></table>
+<h2>Erros comuns ao calcular essas métricas</h2>
+<p><strong>Misturar churn de clientes com churn de receita.</strong> São números diferentes e respondem perguntas diferentes. Reportar só um deles esconde metade do problema — perder muitos clientes pequenos é um sintoma diferente de perder poucos clientes grandes.</p>
+<p><strong>Ignorar upgrades e downgrades no cálculo de MRR.</strong> Olhar só o MRR total mês a mês sem decompor em novo, expansão, contração e churn faz o time achar que está tudo estável quando, na verdade, está perdendo clientes antigos e compensando com vendas novas — um padrão insustentável no médio prazo.</p>
+<p><strong>Usar LTV sem considerar o CAC.</strong> Um LTV de R$ 3.750 parece ótimo isoladamente, mas se o CAC for R$ 3.000, a margem real é apertada e o payback pode levar muitos meses — tempo em que o caixa fica exposto. Automação de canais de aquisição também tem regras próprias; para quem usa LinkedIn como canal de prospecção B2B, vale conferir as práticas descritas em <a href="/blog/automacao-de-linkedin-sem-violar-os-termos-de-uso">automação de LinkedIn sem violar os termos de uso</a>, já que uma conta banida some com o CAC calculado.</p>
+<h2>Perguntas Frequentes</h2>
+<h3>Qual a diferença entre MRR e ARR?</h3>
+<p>ARR (Annual Recurring Revenue) é o MRR multiplicado por 12. Empresas com contratos anuais tendem a reportar ARR; SaaS com cobrança mensal predominante costuma reportar MRR, por ser mais sensível a mudanças de curto prazo.</p>
+<h3>Como calcular churn quando o SaaS tem poucos clientes?</h3>
+<p>Com poucos clientes, cada cancelamento gera uma variação percentual grande e instável. Nesse cenário, olhe o número absoluto de cancelamentos e o motivo de cada um, em vez de confiar na taxa percentual isolada.</p>
+<h3>O que é um bom LTV/CAC para um SaaS?</h3>
+<p>Não existe um número único válido para todo modelo de negócio — o ideal depende de margem, ciclo de vendas e categoria. Em vez de buscar um valor de referência genérico, compare a relação LTV/CAC da sua empresa ao longo do tempo e observe a tendência.</p>
+<h3>Churn negativo é possível?</h3>
+<p>Sim, em termos de receita. Quando a expansão de clientes existentes (upgrades) supera a receita perdida por cancelamentos e downgrades, o churn líquido de receita fica negativo — a base atual cresce sozinha, mesmo sem clientes novos.</p>
+<h3>Com que frequência devo recalcular essas métricas?</h3>
+<p>MRR e churn fazem sentido em cadência mensal, alinhados ao ciclo de cobrança da maioria dos planos. LTV pode ser recalculado trimestralmente, já que depende de médias que mudam mais devagar.</p>
+
+</article>
+</main>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+        <p>Software house familiar em Porto Alegre. Apps e SaaS com propósito, arte e tecnologia.</p>
+      </div>
+      <div><h2>Produtos</h2><ul><li><a href="/neuroart">NeuroArt DApp</a></li><li><a href="/posthink">Posthink</a></li><li><a href="/asphalt">Asphalt Hoops</a></li><li><a href="/galeria">ArtHack</a></li></ul></div>
+      <div><h2>Empresa</h2><ul><li><a href="/sobre">Sobre nós</a></li><li><a href="/blog">Blog</a></li><li><a href="/roadmap">Roadmap</a></li><li><a href="/parceiros">Parceiros</a></li><li><a href="/contato">Contato</a></li></ul></div>
+      <div><h2>Contato</h2><ul><li><a href="mailto:hacktechfarm@proton.me">hacktechfarm@proton.me</a></li><li><a href="/contato">Fale conosco</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Hack Tech Farm. Todos os direitos reservados.</span>
+      <span>Porto Alegre, RS &mdash; Brasil</span>
+    </div>
+  </div>
+</footer>
+<script src="/js/site.js" defer></script>
+</body>
+</html>
