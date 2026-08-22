@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Multi-tenancy no Postgres: Schema vs Row Level Security</title>
+<meta name="description" content="Compare schema-per-tenant e Row Level Security no PostgreSQL: isolamento de dados, custo de manutenção, performance e qual escolher no seu SaaS.">
+<link rel="canonical" href="https://hacktechfarm.com.br/blog/multi-tenancy-no-postgres-schema-vs-row-level-security">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Multi-tenancy no Postgres: Schema vs Row Level Security">
+<meta property="og:description" content="Um comparativo técnico entre schema-per-tenant e Row Level Security para isolar dados de clientes em um SaaS multi-tenant no PostgreSQL.">
+<meta property="og:url" content="https://hacktechfarm.com.br/blog/multi-tenancy-no-postgres-schema-vs-row-level-security">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"Multi-tenancy no Postgres: Schema vs Row Level Security","description":"Compare schema-per-tenant e Row Level Security no PostgreSQL: isolamento de dados, custo de manutenção, performance e qual escolher no seu SaaS.","datePublished":"2026-08-22T10:44:36Z","dateModified":"2026-08-22T22:43:01Z","inLanguage":"pt-BR","mainEntityOfPage":{"@type":"WebPage","@id":"https://hacktechfarm.com.br/blog/multi-tenancy-no-postgres-schema-vs-row-level-security"},"author":{"@type":"Person","name":"Tales Hack","url":"https://hacktechfarm.com.br/sobre"},"publisher":{"@type":"Organization","name":"Hack Tech Farm"},"keywords":"saas, postgresql, row-level-security-rls, schema-per-tenant"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Row Level Security no Postgres tem impacto de performance?","acceptedAnswer":{"@type":"Answer","text":"Sim, mas geralmente pequeno se os índices incluem tenant_id. Sem índice adequado, o filtro de RLS é aplicado após varredura completa da tabela, o que pode ser custoso em tabelas grandes."}},{"@type":"Question","name":"É possível migrar de schema-per-tenant para RLS depois?","acceptedAnswer":{"@type":"Answer","text":"Sim, mas é um projeto de migração de dados não trivial: exige consolidar tabelas de N schemas em uma única tabela com coluna tenant_id, e reescrever toda a camada de acesso a dados da aplicação."}},{"@type":"Question","name":"RLS sozinho é suficiente para compliance como LGPD?","acceptedAnswer":{"@type":"Answer","text":"RLS ajuda a controlar acesso a dados, mas compliance com a LGPD envolve também criptografia, auditoria de acesso, retenção e minimização de dados — pontos que RLS não resolve sozinho."}},{"@type":"Question","name":"Dá para misturar schema-per-tenant e RLS no mesmo banco?","acceptedAnswer":{"@type":"Answer","text":"Sim. É comum usar RLS para a maioria dos tenants em tabelas compartilhadas e reservar schemas dedicados apenas para contas enterprise com exigência contratual de isolamento físico."}}]}]}</script>
+</head>
+<body>
+<nav class="nav" aria-label="Navegação principal">
+  <div class="container nav-inner">
+    <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+    <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu">☰</button>
+    <div class="nav-links" id="nav-links" data-open="false">
+      <a href="/">Início</a><div class="dropdown"><button type="button" class="dropdown-toggle" aria-expanded="false" aria-controls="menu-produtos">Produtos<span class="chev" aria-hidden="true">▾</span></button><div class="dropdown-menu" id="menu-produtos"><a href="/produtos">Todos os produtos</a><a href="/neuroart">NeuroArt DApp</a><a href="/posthink">Posthink</a><a href="/asphalt">Asphalt Hoops</a><a href="/galeria">ArtHack</a></div></div><a href="/roadmap">Roadmap</a><a href="/blog" aria-current="page">Blog</a><a href="/sobre">Sobre</a><a href="/parceiros">Parceiros</a><a href="/contato">Contato</a>
+    </div>
+  </div>
+</nav>
+<main>
+<article>
+<h1>Multi-tenancy no Postgres: Schema vs Row Level Security</h1>
+<p class="meta">
+<time datetime="2026-08-22T10:44:36Z">2026-08-22</time>
+· 8 min de leitura
+· atualizado em <time datetime="2026-08-22T22:43:01Z">2026-08-22</time>
+</p>
+<h2>O que é multi-tenancy e por que o modelo de dados importa</h2>
+<p>Multi-tenancy é o padrão em que múltiplos clientes (tenants) compartilham a mesma infraestrutura de aplicação e, na maioria dos casos, o mesmo banco de dados. Cada tenant enxerga apenas os próprios dados, mas todos rodam sobre o mesmo Postgres, o mesmo código de aplicação e, frequentemente, as mesmas tabelas.</p>
+<p>O isolamento de dados é a métrica que mais importa nesse modelo. Um vazamento entre tenants — o cliente A vendo dados do cliente B — não é um bug qualquer: é o tipo de incidente que encerra contratos e, dependendo do setor, gera exposição legal. A escolha do modelo de dados (schema-per-tenant ou Row Level Security) define o quanto esse risco fica embutido na arquitetura versus dependente de disciplina de código.</p>
+<p>Essa escolha também define o custo operacional do SaaS a médio prazo. Um modelo com isolamento forte tende a custar mais em manutenção de infraestrutura; um modelo com isolamento lógico tende a custar mais em disciplina de engenharia e testes. Não existe opção sem custo — existe opção com o custo em lugar diferente.</p>
+<p>Este artigo assume que você já decidiu multi-tenant compartilhado em vez de banco dedicado por cliente. Se essa decisão ainda está em aberto, o <a href="/blog/guia-definitivo-de-arquitetura-saas-em-2026">Guia Definitivo de Arquitetura SaaS em 2026</a> cobre esse ponto anterior na árvore de decisão.</p>
+<p>As três entidades centrais deste comparativo são o <strong>PostgreSQL</strong> como banco relacional, o <strong>schema-per-tenant</strong> como estratégia de isolamento físico via namespaces do banco, e o <strong>Row Level Security (RLS)</strong> como estratégia de isolamento lógico via políticas de filtro em nível de linha. Uma quarta entidade, <strong>connection pooling</strong>, entra na equação porque a forma como você gerencia conexões ao Postgres interage diretamente com qual dos dois modelos é viável em escala.</p>
+<h2>Schema-per-tenant: como funciona</h2>
+<p>No modelo schema-per-tenant, cada cliente recebe um schema Postgres próprio — <code>tenant_acme</code>, <code>tenant_globex</code> — com o mesmo conjunto de tabelas replicado em cada um. A aplicação seleciona o schema correto via <code>SET search_path</code> no início de cada conexão, geralmente resolvido a partir de um identificador de tenant no request.</p>
+<p>O isolamento aqui é forte porque acontece a nível de banco. Uma query mal escrita no código da aplicação não tem como, por acidente, ler dados de outro schema — a conexão simplesmente não enxerga aquelas tabelas a menos que o <code>search_path</code> mude. Isso reduz drasticamente a superfície de erro humano que causaria vazamento entre tenants.</p>
+<p>O trade-off aparece na operação. Uma migration de schema não roda uma vez — roda N vezes, uma por tenant. Ferramentas como <a href="https://documentation.red-gate.com/fd" rel="noopener noreferrer" target="_blank">Flyway</a> ou <a href="https://www.prisma.io/docs/orm/prisma-migrate" rel="noopener noreferrer" target="_blank">Prisma Migrate</a> precisam iterar sobre a lista de schemas, e uma migration que falha no meio do caminho deixa o banco em estado inconsistente entre tenants — alguns já migrados, outros não.</p>
+<p>Existe também um limite prático de escala. O Postgres suporta um número grande de schemas por banco, mas cada schema replica catálogo de sistema, planos de query em cache e overhead de metadados. Em instalações com muitos milhares de schemas, é comum observar degradação em operações de catálogo (como <code>\dt</code> no psql ou introspecção via ORM) antes mesmo de qualquer gargalo de I/O.</p>
+<h2>Row Level Security: como funciona</h2>
+<p>Row Level Security é um recurso nativo do Postgres, <a href="https://www.postgresql.org/docs/current/ddl-rowsecurity.html" rel="noopener noreferrer" target="_blank">documentado oficialmente</a>, que permite definir políticas de filtro aplicadas automaticamente a toda query contra uma tabela — incluindo <code>SELECT</code>, <code>UPDATE</code> e <code>DELETE</code>. Em vez de um schema por tenant, todos os tenants compartilham as mesmas tabelas, e uma coluna <code>tenant_id</code> diferencia as linhas.</p>
+<p>O fluxo típico é habilitar RLS na tabela e criar uma policy que compara <code>tenant_id</code> com um valor de contexto de sessão:</p>
+<pre><code class="language-sql">ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY tenant_isolation ON invoices
+  USING (tenant_id = current_setting('app.current_tenant')::uuid);
+</code></pre>
+<p>A aplicação, antes de cada query, define o tenant da sessão:</p>
+<pre><code class="language-sql">SET app.current_tenant = '3fa85f64-5717-4562-b3fc-2c963f66afa6';
+</code></pre>
+<p>A partir daí, mesmo um <code>SELECT * FROM invoices</code> sem <code>WHERE</code> retorna apenas as linhas do tenant ativo. O Postgres aplica o filtro de forma transparente, no nível do planejador de query.</p>
+<p>O ponto frágil desse modelo é que ele depende inteiramente de esse contexto de sessão estar correto. Se o código da aplicação esquecer de rodar o <code>SET app.current_tenant</code> antes de uma query — ou reutilizar uma conexão de pool sem resetar essa variável —, o comportamento pode variar de "nenhuma linha retornada" a, em configurações mal feitas com <code>BYPASSRLS</code> em roles administrativas, vazamento silencioso de dados de outro tenant. Uma policy mal escrita, como usar <code>OR</code> em vez de <code>AND</code> em condições compostas, é o tipo de erro que passa despercebido em testes e aparece só em produção com volume real de tenants.</p>
+<h2>Comparação direta entre os dois modelos</h2>
+<table>
+<thead>
+<tr>
+<th scope="col">Critério</th>
+<th scope="col">Schema-per-tenant</th>
+<th scope="col">Row Level Security</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Isolamento de dados</td>
+<td>Forte, a nível de banco</td>
+<td>Lógico, depende de policy correta</td>
+</tr>
+<tr>
+<td>Complexidade de migration</td>
+<td>Alta — roda em N schemas</td>
+<td>Baixa — roda uma vez, tabela única</td>
+</tr>
+<tr>
+<td>Performance em muitos tenants</td>
+<td>Degrada com milhares de schemas</td>
+<td>Escala melhor, mas exige índice em <code>tenant_id</code></td>
+</tr>
+<tr>
+<td>Compatibilidade com connection pooling agressivo</td>
+<td>Baixa — <code>search_path</code> por conexão</td>
+<td>Alta — variável de sessão simples</td>
+</tr>
+<tr>
+<td>Custo de manutenção operacional</td>
+<td>Alto (backups, migrations, monitoramento por schema)</td>
+<td>Baixo, mas exige disciplina de código e testes de policy</td>
+</tr>
+<tr>
+<td>Facilidade de dar a um cliente enterprise um "banco isolado"</td>
+<td>Natural</td>
+<td>Requer schema dedicado à parte</td>
+</tr>
+</tbody></table>
+<p>Schema-per-tenant compensa quando o número de tenants é baixo e cada um é grande — dezenas ou poucas centenas de clientes enterprise, cada um com volume de dados relevante e exigências contratuais de isolamento físico auditável.</p>
+<p>RLS compensa no cenário oposto: muitos tenants pequenos, típico de SaaS self-service com centenas ou milhares de contas, onde rodar migration em cada schema individualmente se torna operacionalmente inviável e o pooling de conexões precisa ser agressivo para manter custo de infraestrutura baixo.</p>
+<h2>Impacto em connection pooling e performance</h2>
+<p>O connection pooling é onde a teoria dos dois modelos encontra a realidade de custo. <a href="https://www.pgbouncer.org/features.html" rel="noopener noreferrer" target="_blank">PgBouncer</a> em modo <code>transaction</code> pooling — o mais eficiente em termos de número de conexões físicas ao Postgres — não garante que a mesma conexão física sirva sempre o mesmo cliente lógico entre transações.</p>
+<p>Isso quebra a premissa do schema-per-tenant baseado em <code>SET search_path</code>: se o <code>search_path</code> foi definido para o schema do tenant A numa transação, e o PgBouncer devolve essa mesma conexão física para servir o tenant B na transação seguinte, o <code>search_path</code> antigo ainda está lá a menos que a aplicação o resete explicitamente a cada transação. Isso é factível, mas adiciona uma camada de disciplina que o schema-per-tenant, por natureza, deveria evitar ter que se preocupar.</p>
+<p>RLS lida melhor com esse cenário porque a variável de sessão <code>app.current_tenant</code> pode ser definida com <code>SET LOCAL</code>, escopado à transação, e descartada automaticamente ao fim dela — compatível nativamente com transaction pooling, conforme a <a href="https://www.postgresql.org/docs/current/sql-set.html" rel="noopener noreferrer" target="_blank">documentação de comandos SET do Postgres</a>.</p>
+<p>Independente do modelo escolhido, se você usa RLS, todo índice em tabelas multi-tenant precisa incluir <code>tenant_id</code> como primeira coluna composta. Sem isso, o Postgres aplica o filtro de RLS depois de varrer a tabela inteira, e a query que deveria tocar só as linhas de um tenant acaba fazendo sequential scan em toda a tabela.</p>
+<blockquote>
+<p>Se seu time está desenhando essa camada de dados do zero, vale ter uma revisão de arquitetura antes de escolher o modelo — é o tipo de decisão cara de reverter depois de meses em produção. A Hack Tech Farm ajuda esse desenho em projetos de <a href="/produtos">SaaS sob medida</a>.</p>
+</blockquote>
+<h2>Como decidir para o seu SaaS</h2>
+<p>Um checklist prático de perguntas antes de escolher:</p>
+<ul>
+<li>Quantos tenants você projeta ter em 12 meses — dezenas, centenas ou milhares?</li>
+<li>Existe exigência contratual ou regulatória de isolamento físico auditável para algum cliente?</li>
+<li>Sua equipe tem maturidade para escrever e testar policies de RLS com rigor?</li>
+<li>Seu orçamento de infraestrutura comporta migrations distribuídas em N schemas, ou precisa de pooling agressivo desde o início?</li>
+</ul>
+<p>Um modelo híbrido é comum na prática: RLS como padrão para a base de clientes self-service, e schema dedicado (ou até banco dedicado) reservado para contas enterprise que pagam por esse isolamento adicional como parte do contrato. Isso evita pagar o custo operacional do schema-per-tenant em toda a base quando só uma fração dos clientes realmente precisa dele.</p>
+<p>Essa decisão também é uma decisão de custo por tenant. Vale cruzar com o cálculo de <a href="/blog/como-calcular-mrr-churn-e-ltv-na-pratica">MRR, churn e LTV</a>: um modelo de isolamento mais caro por tenant só faz sentido se o LTV daquele segmento de cliente sustenta a margem.</p>
+<h2>Perguntas Frequentes</h2>
+<h3>Row Level Security no Postgres tem impacto de performance?</h3>
+<p>Sim, mas geralmente pequeno se os índices incluem <code>tenant_id</code>. Sem índice adequado, o filtro de RLS é aplicado após varredura completa da tabela, o que pode ser custoso em tabelas grandes.</p>
+<h3>É possível migrar de schema-per-tenant para RLS depois?</h3>
+<p>Sim, mas é um projeto de migração de dados não trivial: exige consolidar tabelas de N schemas em uma única tabela com coluna <code>tenant_id</code>, e reescrever toda a camada de acesso a dados da aplicação.</p>
+<h3>RLS sozinho é suficiente para compliance como LGPD?</h3>
+<p>RLS ajuda a controlar acesso a dados, mas compliance com a <a href="https://www.gov.br/anpd/pt-br" rel="noopener noreferrer" target="_blank">LGPD</a> envolve também criptografia, auditoria de acesso, retenção e minimização de dados — pontos que RLS não resolve sozinho.</p>
+<h3>Dá para misturar schema-per-tenant e RLS no mesmo banco?</h3>
+<p>Sim. É comum usar RLS para a maioria dos tenants em tabelas compartilhadas e reservar schemas dedicados apenas para contas enterprise com exigência contratual de isolamento físico.</p>
+
+</article>
+</main>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+        <p>Software house familiar em Porto Alegre. Apps e SaaS com propósito, arte e tecnologia.</p>
+      </div>
+      <div><h2>Produtos</h2><ul><li><a href="/neuroart">NeuroArt DApp</a></li><li><a href="/posthink">Posthink</a></li><li><a href="/asphalt">Asphalt Hoops</a></li><li><a href="/galeria">ArtHack</a></li></ul></div>
+      <div><h2>Empresa</h2><ul><li><a href="/sobre">Sobre nós</a></li><li><a href="/blog">Blog</a></li><li><a href="/roadmap">Roadmap</a></li><li><a href="/parceiros">Parceiros</a></li><li><a href="/contato">Contato</a></li></ul></div>
+      <div><h2>Contato</h2><ul><li><a href="mailto:hacktechfarm@proton.me">hacktechfarm@proton.me</a></li><li><a href="/contato">Fale conosco</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Hack Tech Farm. Todos os direitos reservados.</span>
+      <span>Porto Alegre, RS &mdash; Brasil</span>
+    </div>
+  </div>
+</footer>
+<script src="/js/site.js" defer></script>
+</body>
+</html>
