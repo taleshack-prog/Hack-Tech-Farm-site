@@ -25,7 +25,9 @@ for (const page of pages) {
   for (const m of html.matchAll(/(?:href|src)\s*=\s*"([^"]+)"/g)) {
     const target = m[1];
     /* /blog/ pertence ao SEOHack e pode ainda não existir localmente. */
-    if (/^(https?:|mailto:|#|data:|\/\/|\/api\/|\/blog)/.test(target)) continue;
+    /* /blog/ é do SEOHack; /_vercel/ é servido pela plataforma. Nenhum dos
+       dois existe como arquivo no repositório. */
+    if (/^(https?:|mailto:|#|data:|\/\/|\/api\/|\/blog|\/_vercel\/)/.test(target)) continue;
     const path = target.split('#')[0].split('?')[0];
     if (!path) continue;
     /* URLs limpas: /produtos precisa achar produtos.html, /blog precisa achar

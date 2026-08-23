@@ -76,6 +76,10 @@
   </footer>
 
   <script src="/js/site.js" defer></script>
+  <!-- Vercel Web Analytics. O script vem do próprio domínio, então passa na CSP
+       script-src 'self'. Sem cookie e sem dado pessoal: só página, referrer e
+       país. Ative antes em Vercel → Analytics → Enable, senão o arquivo dá 404. -->
+  <script src="/_vercel/insights/script.js" defer></script>
   
 </body>
 </html>
