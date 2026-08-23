@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gas Fees na EVM: Como Estimar e Reduzir Custos</title>
+<meta name="description" content="Entenda como gas price, gas limit e base fee definem o custo de transações na EVM e veja técnicas práticas para estimar e reduzir gas fees.">
+<link rel="canonical" href="https://hacktechfarm.com.br/blog/gas-fees-na-evm-como-estimar-e-reduzir-custos">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gas Fees na EVM: Como Estimar e Reduzir Custos">
+<meta property="og:description" content="Um guia técnico sobre como a EVM calcula gas fees e quais estratégias de código e arquitetura reduzem esse custo em smart contracts.">
+<meta property="og:url" content="https://hacktechfarm.com.br/blog/gas-fees-na-evm-como-estimar-e-reduzir-custos">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"Gas Fees na EVM: Como Estimar e Reduzir Custos","description":"Entenda como gas price, gas limit e base fee definem o custo de transações na EVM e veja técnicas práticas para estimar e reduzir gas fees.","datePublished":"2026-08-23T00:34:10Z","dateModified":"2026-08-23T00:47:43Z","inLanguage":"pt-BR","mainEntityOfPage":{"@type":"WebPage","@id":"https://hacktechfarm.com.br/blog/gas-fees-na-evm-como-estimar-e-reduzir-custos"},"author":{"@type":"Person","name":"Tales Hack","url":"https://hacktechfarm.com.br/sobre"},"publisher":{"@type":"Organization","name":"Hack Tech Farm"},"keywords":"web3, evm-ethereum-virtual-machine, gas-fee, gas-limit"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"O que acontece se o gas limit definido for menor que o necessário?","acceptedAnswer":{"@type":"Answer","text":"A transação falha com erro de \"out of gas\" antes de completar a execução. O estado é revertido, mas o gas já consumido até o ponto da falha não é devolvido ao remetente."}},{"@type":"Question","name":"Gas fee alto significa transação mais rápida?","acceptedAnswer":{"@type":"Answer","text":"Não diretamente o gas fee total, mas a priority fee (tip) oferecida ao validador. Uma priority fee mais alta aumenta a chance de inclusão em blocos mais próximos, já que validadores priorizam transações mais lucrativas."}},{"@type":"Question","name":"É possível recuperar gas fee de uma transação revertida?","acceptedAnswer":{"@type":"Answer","text":"Não. Gas consumido até o ponto da reversão é cobrado normalmente, mesmo que o estado seja revertido. Por isso validar condições baratas antes de operações caras reduz o custo de falhas previsíveis."}},{"@type":"Question","name":"Como o EIP-1559 mudou o cálculo de gas fees?","acceptedAnswer":{"@type":"Answer","text":"Antes da EIP-1559, todo o pagamento ia para o minerador via leilão de gas price simples. Depois, uma base fee é calculada algoritmicamente por bloco e queimada, e o usuário paga separadamente uma priority fee ao validador."}},{"@type":"Question","name":"Ferramentas de estimativa de gas são sempre precisas?","acceptedAnswer":{"@type":"Answer","text":"Não. eth_estimateGas e simulações de bibliotecas como ethers.js e viem refletem o estado no momento da chamada, mas a base fee e o resultado da execução podem mudar até a transação ser efetivamente incluída em um bloco."}}]}]}</script>
+</head>
+<body>
+<nav class="nav" aria-label="Navegação principal">
+  <div class="container nav-inner">
+    <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+    <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu">☰</button>
+    <div class="nav-links" id="nav-links" data-open="false">
+      <a href="/">Início</a><div class="dropdown"><button type="button" class="dropdown-toggle" aria-expanded="false" aria-controls="menu-produtos">Produtos<span class="chev" aria-hidden="true">▾</span></button><div class="dropdown-menu" id="menu-produtos"><a href="/produtos">Todos os produtos</a><a href="/neuroart">NeuroArt DApp</a><a href="/posthink">Posthink</a><a href="/asphalt">Asphalt Hoops</a><a href="/galeria">ArtHack</a></div></div><a href="/roadmap">Roadmap</a><a href="/blog" aria-current="page">Blog</a><a href="/sobre">Sobre</a><a href="/parceiros">Parceiros</a><a href="/contato">Contato</a>
+    </div>
+  </div>
+</nav>
+<main>
+<article>
+<h1>Gas Fees na EVM: Como Estimar e Reduzir Custos</h1>
+<p class="meta">
+<time datetime="2026-08-23T00:34:10Z">2026-08-23</time>
+· 10 min de leitura
+· atualizado em <time datetime="2026-08-23T00:47:43Z">2026-08-23</time>
+</p>
+<h2>O que são gas fees e por que existem</h2>
+<p>Gas é a unidade que a EVM (Ethereum Virtual Machine) usa para medir o custo computacional de cada operação executada em um smart contract. Cada opcode — soma, escrita em storage, chamada de contrato — tem um custo fixo de gas, definido na especificação da máquina virtual. Essa tabela de custos existe desde o Yellow Paper original do Ethereum e é mantida como parte do protocolo em cada <a href="https://eips.ethereum.org/" rel="noopener noreferrer" target="_blank">EIP (Ethereum Improvement Proposal)</a> que altera o comportamento da EVM.</p>
+<p>O gas fee é o valor final que o usuário paga por uma transação. Ele é o produto entre a quantidade de gas consumida e o preço pago por unidade de gas. Três variáveis entram nessa conta: o <strong>gas limit</strong> (quanto gas o remetente está disposto a gastar), o <strong>gas price</strong> (quanto ele paga por unidade) e, desde a <a href="https://eips.ethereum.org/EIPS/eip-1559" rel="noopener noreferrer" target="_blank">EIP-1559</a>, a <strong>base fee</strong> (um piso de preço definido algoritmicamente pela própria rede a cada bloco, conforme a demanda).</p>
+<p>A base fee sobe ou desce automaticamente dependendo de quão cheio estava o bloco anterior. Ela é queimada — não vai para o minerador ou validador. O que o validador recebe é a <strong>priority fee</strong> (ou tip), um valor adicional que o usuário oferece para ter prioridade de inclusão no bloco.</p>
+<p>É importante não confundir gas fee com o campo <code>value</code> de uma transação. O <code>value</code> é a quantidade de ETH (ou moeda nativa da rede) transferida entre contas. O gas fee é pago independentemente de haver transferência de valor — mesmo uma chamada que só lê ou escreve estado consome gas e gera custo.</p>
+<p>Solidity é a linguagem mais usada para escrever a lógica que roda dentro dessa máquina, e boa parte do gas consumido em produção vem diretamente de decisões tomadas no código Solidity, não da rede em si. Isso fica claro mais adiante, na seção de otimização.</p>
+<p>Para quem ainda não tem os conceitos básicos de contratos inteligentes consolidados, vale revisar o <a href="/blog/guia-definitivo-de-smart-contracts-para-devs">Guia Definitivo de Smart Contracts para Devs</a> antes de seguir com otimização de gas — o assunto pressupõe familiaridade com storage, opcodes e o modelo de execução da EVM.</p>
+<h2>Como estimar o custo de uma transação antes de enviar</h2>
+<p>Antes de assinar e enviar uma transação, é possível — e recomendado — simular a execução para descobrir quanto gas ela vai consumir. O método padrão do JSON-RPC do Ethereum para isso é o <a href="https://ethereum.org/pt/developers/docs/apis/json-rpc/#eth_estimategas" rel="noopener noreferrer" target="_blank"><code>eth_estimateGas</code></a>, que executa a chamada localmente em um nó (sem gastar gas real) e retorna uma estimativa do gas limit necessário.</p>
+<p>Bibliotecas como <a href="https://docs.ethers.org/" rel="noopener noreferrer" target="_blank">ethers.js</a> e <a href="https://viem.sh/" rel="noopener noreferrer" target="_blank">viem</a> expõem essa chamada de forma direta:</p>
+<pre><code class="language-javascript">import { createPublicClient, http, parseEther } from "viem";
+import { mainnet } from "viem/chains";
+
+const client = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+});
+
+const gasEstimate = await client.estimateGas({
+  account: "0xSeuEnderecoAqui",
+  to: "0xEnderecoDoContrato",
+  value: parseEther("0.01"),
+});
+
+console.log(gasEstimate);
+</code></pre>
+<p>Essa estimativa cobre o gas limit, mas não o preço por unidade. O preço final depende da base fee do bloco em que a transação for incluída, somada à priority fee que o remetente escolher oferecer. Em momentos de congestão de rede, a base fee sobe rapidamente entre blocos, e a priority fee necessária para entrar no próximo bloco também aumenta — é a competição por espaço limitado de bloco (cada bloco tem um <code>gas limit</code> máximo definido pela rede).</p>
+<p>Suponha, apenas como exercício de cálculo, uma transação que consome 21.000 unidades de gas (o custo mínimo de uma transferência simples de ETH), com base fee de 20 gwei e priority fee de 2 gwei. O custo total seria:</p>
+<pre><code>custo = gas usado × (base fee + priority fee)
+custo = 21.000 × 22 gwei
+custo = 462.000 gwei = 0,000462 ETH
+</code></pre>
+<p>Esse número é hipotético — a base fee real varia bloco a bloco e depende inteiramente da demanda da rede no momento. Ferramentas de estimativa de gas são úteis para prever o gasto, mas não eliminam a incerteza: entre o momento da simulação e o momento em que a transação é minerada, a base fee pode ter mudado.</p>
+<h2>Técnicas de otimização de gas em Solidity</h2>
+<p>A maior parte do custo de gas em contratos complexos vem de leitura e escrita em storage, não de lógica aritmética. Cada slot de storage escrito custa significativamente mais gas do que uma operação em memória, conforme documentado na <a href="https://www.evm.codes/" rel="noopener noreferrer" target="_blank">especificação de opcodes da EVM</a>.</p>
+<p>Algumas práticas reduzem esse custo de forma consistente:</p>
+<p><strong>Packing de storage.</strong> A EVM organiza storage em slots de 32 bytes. Se você declarar múltiplas variáveis menores (<code>uint128</code>, <code>uint64</code>, <code>bool</code>) em sequência, o compilador Solidity pode empacotá-las no mesmo slot, economizando escritas.</p>
+<pre><code class="language-solidity">// Ineficiente: cada variável ocupa um slot inteiro
+struct Ineficiente {
+    uint256 a;
+    bool b;
+    uint256 c;
+}
+
+// Eficiente: b é empacotado junto com a
+struct Eficiente {
+    uint128 a;
+    uint128 b;
+    uint256 c;
+}
+</code></pre>
+<p><strong>Evitar loops não limitados sobre arrays de tamanho variável.</strong> Um loop que itera sobre um array que cresce com o tempo pode eventualmente exceder o gas limit do bloco e travar a função permanentemente. Prefira estruturas que permitam paginação ou processamento incremental.</p>
+<p><strong>Evitar leituras repetidas de storage.</strong> Ler uma variável de storage dentro de um loop custa gas a cada iteração. Copiar o valor para uma variável local (memory) uma única vez antes do loop é mais barato.</p>
+<p><strong>Preferir <code>calldata</code> a <code>memory</code> em parâmetros de funções externas.</strong> Quando um array ou struct é passado como parâmetro em uma função <code>external</code> e não precisa ser modificado, declarar o parâmetro como <code>calldata</code> evita a cópia para memória.</p>
+<pre><code class="language-solidity">function processar(uint256[] calldata dados) external {
+    // calldata é mais barato que memory aqui,
+    // porque não há cópia do array
+}
+</code></pre>
+<p><strong>Erros customizados em vez de strings de revert.</strong> Desde o Solidity 0.8.4, é possível declarar erros customizados, que custam menos gas de deploy e de execução do que strings de mensagem em <code>require</code>.</p>
+<pre><code class="language-solidity">error SaldoInsuficiente(uint256 disponivel, uint256 solicitado);
+
+function sacar(uint256 valor) external {
+    if (valor &gt; saldo) {
+        revert SaldoInsuficiente(saldo, valor);
+    }
+}
+</code></pre>
+<p>Cada uma dessas técnicas tem um custo de legibilidade. Packing agressivo de storage torna structs mais difíceis de ler e mais propensas a erro de tipo. Erros customizados exigem decodificação no frontend. Vale medir o ganho real com uma ferramenta de profiling de gas antes de sacrificar clareza por economia marginal.</p>
+<h2>Estratégias de arquitetura para reduzir custo agregado</h2>
+<p>Otimizar opcode por opcode tem limite. Em algum ponto, a redução de custo real vem de decisões de arquitetura, não de microotimização de código.</p>
+<p><strong>Batching de transações.</strong> Agrupar múltiplas operações em uma única chamada de contrato reduz o custo fixo por transação (os 21.000 gas base de cada transação, mais o overhead de assinatura e nonce) que seria pago repetidamente se cada operação fosse enviada isoladamente.</p>
+<p><strong>Layer 2 e rollups.</strong> Redes como as construídas sobre rollups otimistas ou de validade processam transações fora da cadeia principal e publicam apenas um resumo compactado (ou prova) na L1. Isso reduz o custo por transação porque o custo de disponibilizar dados na L1 é diluído entre milhares de transações da L2.</p>
+<p>O trade-off aqui é real: L2s geralmente concentram a construção de blocos em um sequenciador único ou em um conjunto pequeno de operadores, o que reduz a descentralização em troca de custo menor e finalização mais rápida. Antes de migrar um contrato para uma L2, vale entender esse modelo de confiança — ele muda o perfil de risco da aplicação, não só o custo.</p>
+<p><strong>Mover lógica para off-chain.</strong> Nem toda computação precisa acontecer on-chain. Cálculos que não exigem consenso distribuído — validação de assinatura fora da cadeia com verificação posterior, agregação de dados antes de enviar ao contrato — podem ser feitos off-chain e apenas o resultado final é registrado na EVM. Isso reduz gas, mas introduz um ponto de confiança no processo off-chain que precisa ser auditado com o mesmo rigor que o contrato.</p>
+<blockquote>
+<p>Se sua equipe está avaliando entre otimizar o contrato atual ou migrar parte da lógica para L2, vale uma conversa técnica antes de comprometer a arquitetura — fale com o time de <a href="/contato">desenvolvimento Web3 da Hack Tech Farm pelo formulário de contato</a>.</p>
+</blockquote>
+<h2>Gas fees em diferentes redes EVM</h2>
+<p>Nem toda rede compatível com a EVM segue exatamente o mesmo mecanismo de fee. A tabela abaixo resume as diferenças relevantes para quem porta contratos entre redes.</p>
+<table>
+<thead>
+<tr>
+<th scope="col">Rede</th>
+<th scope="col">Mecanismo de fee</th>
+<th scope="col">Moeda de gas</th>
+<th scope="col">Observação</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ethereum Mainnet</td>
+<td>EIP-1559 (base fee + priority fee)</td>
+<td>ETH</td>
+<td>Base fee ajusta a cada bloco conforme ocupação</td>
+</tr>
+<tr>
+<td>Polygon PoS</td>
+<td>EIP-1559 adaptado</td>
+<td>POL (ex-MATIC)</td>
+<td>Custo por transação tende a ser menor que na L1 do Ethereum</td>
+</tr>
+<tr>
+<td>Arbitrum One</td>
+<td>Rollup otimista, fee L2 + custo de dados na L1</td>
+<td>ETH</td>
+<td>Custo composto: execução na L2 + publicação de dados</td>
+</tr>
+<tr>
+<td>Optimism</td>
+<td>Rollup otimista, fee L2 + custo de dados na L1</td>
+<td>ETH</td>
+<td>Modelo similar ao Arbitrum, sequenciador próprio</td>
+</tr>
+<tr>
+<td>BNB Smart Chain</td>
+<td>Gas price fixo por bloco, sem EIP-1559 nativo</td>
+<td>BNB</td>
+<td>Mecanismo de precificação diferente do padrão EIP-1559</td>
+</tr>
+</tbody></table>
+<p>Antes de confiar nessa tabela como fonte definitiva, consulte a documentação oficial de cada rede — o comportamento de fee é parte do protocolo e pode mudar com hard forks e upgrades. Para Ethereum, a referência é a própria <a href="https://eips.ethereum.org/EIPS/eip-1559" rel="noopener noreferrer" target="_blank">especificação da EIP-1559</a>; para as demais redes, a documentação oficial de cada uma.</p>
+<p>Um cuidado prático ao portar contratos: código otimizado para o comportamento de gas de uma rede pode não ser eficiente em outra. Um contrato que assume que <code>SLOAD</code> é caro e evita leituras repetidas continua se beneficiando em qualquer rede EVM, porque isso é parte da especificação da máquina virtual. Mas premissas sobre o custo relativo de calldata versus storage podem variar entre L2s com modelos de compressão de dados diferentes.</p>
+<h2>Erros comuns que aumentam o gas sem necessidade</h2>
+<p>Alguns problemas de gas não vêm de falta de conhecimento técnico, mas de descuido em revisão.</p>
+<p><strong>Ordem de operações mal planejada.</strong> Colocar validações baratas (comparações simples) depois de operações caras (chamadas externas, escritas em storage) desperdiça gas quando a transação acaba revertendo de qualquer forma. A prática recomendada é validar tudo o que for barato primeiro (padrão <em>checks-effects-interactions</em>), e só então executar as partes caras.</p>
+<p><strong>Emissão excessiva de eventos.</strong> Eventos são mais baratos que storage, mas não são gratuitos. Emitir eventos redundantes, ou emitir dados que já podem ser derivados de outros eventos, é gas jogado fora sem ganho de observabilidade real.</p>
+<p><strong>Falta de auditoria de gas antes do deploy.</strong> Ferramentas como o gas reporter do <a href="https://hardhat.org/hardhat-runner/docs/guides/test-contracts" rel="noopener noreferrer" target="_blank">Hardhat</a> ou o profiler do <a href="https://book.getfoundry.sh/forge/gas-tracking" rel="noopener noreferrer" target="_blank">Foundry</a> mostram o consumo de gas função por função antes de o contrato ir para produção. Rodar esse relatório é barato e evita descobrir, depois do deploy, que uma função crítica custa caro demais para ser usada em produção — e contratos deployados não podem ser corrigidos sem migração completa.</p>
+<p>Uma checklist de segurança também deve incluir uma passagem de gas. O <a href="/blog/auditoria-de-seguranca-em-dapps-checklist-pratico">checklist prático de auditoria de DApps</a> cobre pontos de segurança que frequentemente se cruzam com otimização de gas — por exemplo, loops não limitados são tanto um risco de segurança (denial of service) quanto um problema de custo.</p>
+<p>Na NeuroArt DApp estavamos em dúvida entre POL e BASE, ambas L2... optamos por BASE, pela facilidade de aarquitetura e redução do gas fee.</p>
+<h2>Perguntas Frequentes</h2>
+<h3>O que acontece se o gas limit definido for menor que o necessário?</h3>
+<p>A transação falha com erro de "out of gas" antes de completar a execução. O estado é revertido, mas o gas já consumido até o ponto da falha não é devolvido ao remetente.</p>
+<h3>Gas fee alto significa transação mais rápida?</h3>
+<p>Não diretamente o gas fee total, mas a priority fee (tip) oferecida ao validador. Uma priority fee mais alta aumenta a chance de inclusão em blocos mais próximos, já que validadores priorizam transações mais lucrativas.</p>
+<h3>É possível recuperar gas fee de uma transação revertida?</h3>
+<p>Não. Gas consumido até o ponto da reversão é cobrado normalmente, mesmo que o estado seja revertido. Por isso validar condições baratas antes de operações caras reduz o custo de falhas previsíveis.</p>
+<h3>Como o EIP-1559 mudou o cálculo de gas fees?</h3>
+<p>Antes da EIP-1559, todo o pagamento ia para o minerador via leilão de gas price simples. Depois, uma base fee é calculada algoritmicamente por bloco e queimada, e o usuário paga separadamente uma priority fee ao validador.</p>
+<h3>Ferramentas de estimativa de gas são sempre precisas?</h3>
+<p>Não. <code>eth_estimateGas</code> e simulações de bibliotecas como ethers.js e viem refletem o estado no momento da chamada, mas a base fee e o resultado da execução podem mudar até a transação ser efetivamente incluída em um bloco.</p>
+
+</article>
+</main>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+        <p>Software house familiar em Porto Alegre. Apps e SaaS com propósito, arte e tecnologia.</p>
+      </div>
+      <div><h2>Produtos</h2><ul><li><a href="/neuroart">NeuroArt DApp</a></li><li><a href="/posthink">Posthink</a></li><li><a href="/asphalt">Asphalt Hoops</a></li><li><a href="/galeria">ArtHack</a></li></ul></div>
+      <div><h2>Empresa</h2><ul><li><a href="/sobre">Sobre nós</a></li><li><a href="/blog">Blog</a></li><li><a href="/roadmap">Roadmap</a></li><li><a href="/parceiros">Parceiros</a></li><li><a href="/contato">Contato</a></li></ul></div>
+      <div><h2>Contato</h2><ul><li><a href="mailto:hacktechfarm@proton.me">hacktechfarm@proton.me</a></li><li><a href="/contato">Fale conosco</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Hack Tech Farm. Todos os direitos reservados.</span>
+      <span>Porto Alegre, RS &mdash; Brasil</span>
+    </div>
+  </div>
+</footer>
+<script src="/js/site.js" defer></script>
+</body>
+</html>
