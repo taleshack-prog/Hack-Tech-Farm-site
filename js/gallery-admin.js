@@ -259,14 +259,19 @@
         removals: removals,
       };
 
-      api('/api/gallery', { method: 'PUT', body: payload }).then(function (data) {
+      var novas = payload.uploads.length;
+      progress.show(novas ? 'Enviando ' + novas + (novas > 1 ? ' obras' : ' obra') : 'Salvando alterações');
+
+      putWithProgress('/api/gallery', payload).then(function (data) {
         obras = data.obras;
         uploads = {};
         removals = [];
         setDirty(false);
         render();
+        progress.finish('done', 'Publicado');
         toast('Galeria publicada. O site atualiza em cerca de 40 segundos.');
       }).catch(function (err) {
+        progress.finish('error', 'Não foi publicado');
         toast(err.message, true);
         setDirty(true);
       }).finally(function () {

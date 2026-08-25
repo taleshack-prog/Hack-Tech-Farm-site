@@ -531,3 +531,47 @@ body::after {
 
 .post-tags { margin-top: 44px; display: flex; gap: 8px; flex-wrap: wrap; }
 .post-foot { margin-top: 20px; padding-top: 26px; border-top: 1px solid var(--line); }
+
+/* ========================= Barra de progresso ========================== */
+.progress { margin-top: 16px; }
+.progress[hidden] { display: none; }
+
+.progress-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.progress-label { font-size: 0.85rem; font-weight: 500; }
+.progress-value {
+  font-family: var(--font-mono); font-size: 0.76rem; color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-track {
+  margin-top: 8px; height: 8px; border-radius: 4px;
+  background: var(--ink); border: 1px solid var(--line-strong);
+  overflow: hidden; position: relative;
+}
+.progress-fill {
+  position: absolute; inset: 0; transform-origin: left;
+  transform: scaleX(0); border-radius: 3px;
+  background: var(--grad-farm);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Indeterminado: quando não há o que medir, mostramos movimento em vez de
+   inventar um número. */
+.progress[data-state="indeterminate"] .progress-fill {
+  transform: none; inset: 0 auto 0 0; width: 38%;
+  animation: progress-sweep 1.25s ease-in-out infinite;
+}
+@keyframes progress-sweep {
+  from { left: -38%; }
+  to   { left: 100%; }
+}
+
+.progress[data-state="done"] .progress-fill { transform: scaleX(1); background: var(--ok); }
+.progress[data-state="error"] .progress-fill { transform: scaleX(1); background: var(--err); }
+
+/* Sem animação para quem pediu movimento reduzido: a barra ainda informa,
+   só não se mexe. */
+@media (prefers-reduced-motion: reduce) {
+  .progress-fill { transition: none; animation: none; }
+  .progress[data-state="indeterminate"] .progress-fill { width: 100%; left: 0; opacity: 0.4; }
+}

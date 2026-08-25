@@ -206,6 +206,18 @@
                   <button type="submit" class="btn btn-primary" id="gallery-submit">Adicionar obra</button>
                   <button type="button" class="btn btn-ghost" id="gallery-cancel" hidden>Cancelar edição</button>
                 </div>
+
+                <div class="progress" id="gallery-progress" hidden>
+                  <div class="progress-head">
+                    <span class="progress-label" id="progress-label">Enviando</span>
+                    <span class="progress-value" id="progress-value" aria-hidden="true"></span>
+                  </div>
+                  <div class="progress-track" role="progressbar"
+                       aria-labelledby="progress-label" aria-valuemin="0" aria-valuemax="100">
+                    <span class="progress-fill" id="progress-fill"></span>
+                  </div>
+                  <span class="visually-hidden" role="status" aria-live="polite" id="progress-status"></span>
+                </div>
               </form>
             </div>
 
