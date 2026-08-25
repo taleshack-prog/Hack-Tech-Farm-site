@@ -63,11 +63,15 @@
 
     if (square) {
       canvas.width = canvas.height = maxSide;
-      /* Recorte central: a miniatura é quadrada na grade do site. */
-      var side = Math.min(bitmap.width, bitmap.height);
-      var sx = (bitmap.width - side) / 2;
-      var sy = (bitmap.height - side) / 2;
-      ctx.drawImage(bitmap, sx, sy, side, side, 0, 0, maxSide, maxSide);
+      /* Encaixe com respiro, NAO recorte central. Escultura e fotografada em
+         pe: a peca vertical do acervo tem proporcao 1:1.34 e era decapitada
+         pelo recorte quadrado. Aqui a obra inteira cabe. */
+      ctx.fillStyle = '#121215';
+      ctx.fillRect(0, 0, maxSide, maxSide);
+      var escala = Math.min(maxSide / bitmap.width, maxSide / bitmap.height);
+      var w = Math.round(bitmap.width * escala);
+      var h = Math.round(bitmap.height * escala);
+      ctx.drawImage(bitmap, Math.round((maxSide - w) / 2), Math.round((maxSide - h) / 2), w, h);
     } else {
       var scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
       canvas.width = Math.round(bitmap.width * scale);
