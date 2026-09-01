@@ -137,6 +137,21 @@
       "is_public": true
     },
     {
+      "id": 1788298568507,
+      "slug": "creation",
+      "name": "Creation",
+      "tagline": "Crie animais, genéticamente possíveis, ou não.",
+      "description": "O Creation é uma plataforma de simulação biológica e engenharia genética estratégica,\nimpulsionada por inteligência artificial generativa e preditiva. O projeto resolve a\nassimetria histórica do mercado casual, e de simulação, ao unificar a precisão\ndeterminística da genética mendeliana e quantitativa (coeficiente de endogamia de\nWright, retrocruzamento e heterose) com o apelo visual e a fantasia do \"Arquiteto\nBiológico Supremo\".",
+      "url": null,
+      "page_url": null,
+      "icon": "📦",
+      "category": "Arte",
+      "status": "dev",
+      "stage": "beta",
+      "sort_order": 100,
+      "is_public": true
+    },
+    {
       "id": 10,
       "slug": "radarprevi",
       "name": "RadarPrevi",
@@ -150,6 +165,21 @@
       "stage": "planning",
       "sort_order": 100,
       "is_public": false
+    },
+    {
+      "id": 1788297004304,
+      "slug": "the-villain",
+      "name": "The Villain",
+      "tagline": "Game de Enigmas, charadas e lógica-desafio à lógica",
+      "description": "O ecossistema de \"O Vilão\" é sustentado por quatro perfis distintos de usuários, cada\num com motivações e necessidades específicas que norteiam o desenvolvimento das\nfuncionalidades: Criador (Vilão): Constrói e desafiaFerramenta de criação intuitiva e\namigosreconhecimento social.  Desafiado (Herói): Escapa das armadilhas (enigmas). Desafios justos, rápidos e mecânica de revanche.  Detetive (Fase 2): Resolve mistérios diários. Dedução lógica verificável e ranking global.     Intelectual (Tier Filosófico)   Resolve enigmas complexos.   Status-signal, sofisticação e repertório\n cultural.",
+      "url": null,
+      "page_url": null,
+      "icon": "📦",
+      "category": "Arte",
+      "status": "dev",
+      "stage": "beta",
+      "sort_order": 100,
+      "is_public": true
     }
   ]
 }
