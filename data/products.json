@@ -139,7 +139,7 @@
     {
       "id": 1788298568507,
       "slug": "creation",
-      "name": "Creation",
+      "name": "GenBreed",
       "tagline": "Crie animais, genéticamente possíveis, ou não.",
       "description": "O Creation é uma plataforma de simulação biológica e engenharia genética estratégica,\nimpulsionada por inteligência artificial generativa e preditiva. O projeto resolve a\nassimetria histórica do mercado casual, e de simulação, ao unificar a precisão\ndeterminística da genética mendeliana e quantitativa (coeficiente de endogamia de\nWright, retrocruzamento e heterose) com o apelo visual e a fantasia do \"Arquiteto\nBiológico Supremo\".",
       "url": null,
@@ -147,7 +147,7 @@
       "icon": "📦",
       "category": "Arte",
       "status": "dev",
-      "stage": "beta",
+      "stage": "alpha",
       "sort_order": 100,
       "is_public": true
     },
