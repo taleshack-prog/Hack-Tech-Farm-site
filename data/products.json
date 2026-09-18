@@ -17,6 +17,21 @@
       "is_public": true
     },
     {
+      "id": 1789765796918,
+      "slug": "genbreed",
+      "name": "GenBreed",
+      "tagline": "GenBreed é o game de criação e melhoramento genético de espécies de animais.",
+      "description": "GenBreed é um game de criação e melhoramento genético de criaturas onde cada decisão de cruzamento molda uma linhagem única — e cada linhagem é uma história que vale a pena compartilhar.\n\nNo centro do jogo está uma tese simples e poderosa: as pessoas querem compartilhar o que criam. Por isso, GenBreed foi desenhado para ser viral por design — o que você constrói não fica preso no jogo; vira conteúdo, vira identidade, vira conversa.\nO coração do GenBreed é um ciclo de vida completo e profundo, dividido em quatro grandes fases:\n\n1. O Laboratório — O ponto de partida de tudo. É aqui que você escolhe os progenitores, analisa seus atributos genéticos e decide o cruzamento. Cada criatura carrega características quantitativas (QTLs) que se combinam de formas surpreendentes.\n\n2. A Gestação — Entre o cruzamento e o nascimento existe um período de gestação real. Esse intervalo não é um vazio: é um momento de expectativa, planejamento e fidelização. Você acompanha o embrião se desenvolver, prepara o ambiente e decide os próximos passos da sua estratégia de melhoramento.\n\n3. O Nascimento — O resultado do cruzamento chega ao mundo com a marca da mãe. O efeito materno é real no GenBreed: a criatura nasce carregando influências da progenitora, e essa assinatura inicial persiste — mesmo que o genótipo próprio passe a dominar o crescimento com o tempo.\n\n4. A Fixação de Linhagem — O jogo mais profundo começa aqui. Para consolidar as características desejadas, você usa técnicas de fixação genética: retrobreeding (retrocruzamento) para reforçar o genótipo de um ancestral, e inbreeding controlado para homozigotizar traços raros. Cada geração aproxima a linhagem da perfeição — ou a coloca em risco. É um equilíbrio entre pureza e viabilidade.",
+      "url": "https://genbreed.com.br/",
+      "page_url": null,
+      "icon": "📦",
+      "category": "IA",
+      "status": "live",
+      "stage": null,
+      "sort_order": 20,
+      "is_public": true
+    },
+    {
       "id": 2,
       "slug": "neuroart",
       "name": "NeuroArt DApp",
@@ -77,21 +92,6 @@
       "is_public": true
     },
     {
-      "id": 1789765796918,
-      "slug": "genbreed",
-      "name": "GenBreed",
-      "tagline": "GenBreed é o game de criação e melhoramento genético de espécies de animais.",
-      "description": "GenBreed é um game de criação e melhoramento genético de criaturas onde cada decisão de cruzamento molda uma linhagem única — e cada linhagem é uma história que vale a pena compartilhar.\n\nNo centro do jogo está uma tese simples e poderosa: as pessoas querem compartilhar o que criam. Por isso, GenBreed foi desenhado para ser viral por design — o que você constrói não fica preso no jogo; vira conteúdo, vira identidade, vira conversa.\nO coração do GenBreed é um ciclo de vida completo e profundo, dividido em quatro grandes fases:\n\n1. O Laboratório — O ponto de partida de tudo. É aqui que você escolhe os progenitores, analisa seus atributos genéticos e decide o cruzamento. Cada criatura carrega características quantitativas (QTLs) que se combinam de formas surpreendentes.\n\n2. A Gestação — Entre o cruzamento e o nascimento existe um período de gestação real. Esse intervalo não é um vazio: é um momento de expectativa, planejamento e fidelização. Você acompanha o embrião se desenvolver, prepara o ambiente e decide os próximos passos da sua estratégia de melhoramento.\n\n3. O Nascimento — O resultado do cruzamento chega ao mundo com a marca da mãe. O efeito materno é real no GenBreed: a criatura nasce carregando influências da progenitora, e essa assinatura inicial persiste — mesmo que o genótipo próprio passe a dominar o crescimento com o tempo.\n\n4. A Fixação de Linhagem — O jogo mais profundo começa aqui. Para consolidar as características desejadas, você usa técnicas de fixação genética: retrobreeding (retrocruzamento) para reforçar o genótipo de um ancestral, e inbreeding controlado para homozigotizar traços raros. Cada geração aproxima a linhagem da perfeição — ou a coloca em risco. É um equilíbrio entre pureza e viabilidade.",
-      "url": "https://genbreed.com.br/",
-      "page_url": null,
-      "icon": "📦",
-      "category": "IA",
-      "status": "live",
-      "stage": null,
-      "sort_order": 60,
-      "is_public": true
-    },
-    {
       "id": 6,
       "slug": "hackfinance-pro",
       "name": "HackFinance Pro",
@@ -149,21 +149,6 @@
       "status": "dev",
       "stage": "planning",
       "sort_order": 90,
-      "is_public": true
-    },
-    {
-      "id": 1788298568507,
-      "slug": "creation",
-      "name": "GenBreed",
-      "tagline": "Crie animais, genéticamente possíveis, ou não.",
-      "description": "O Creation é uma plataforma de simulação biológica e engenharia genética estratégica,\nimpulsionada por inteligência artificial generativa e preditiva. O projeto resolve a\nassimetria histórica do mercado casual, e de simulação, ao unificar a precisão\ndeterminística da genética mendeliana e quantitativa (coeficiente de endogamia de\nWright, retrocruzamento e heterose) com o apelo visual e a fantasia do \"Arquiteto\nBiológico Supremo\".",
-      "url": null,
-      "page_url": null,
-      "icon": "📦",
-      "category": "Arte",
-      "status": "dev",
-      "stage": "alpha",
-      "sort_order": 100,
       "is_public": true
     },
     {
