@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ARR ou MRR: Qual Métrica Usar e Quando</title>
+<meta name="description" content="Entenda a diferença entre ARR e MRR, quando usar cada métrica para reportar crescimento de SaaS ao mercado e como elas se relacionam com churn e LTV.">
+<link rel="canonical" href="https://hacktechfarm.com.br/blog/arr-ou-mrr-qual-metrica-usar-e-quando">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ARR ou MRR: Qual Métrica Usar e Quando">
+<meta property="og:description" content="Um guia prático sobre quando reportar ARR versus MRR em SaaS, e como essas métricas se conectam a churn, LTV e Net Revenue Retention.">
+<meta property="og:url" content="https://hacktechfarm.com.br/blog/arr-ou-mrr-qual-metrica-usar-e-quando">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"ARR ou MRR: Qual Métrica Usar e Quando","description":"Entenda a diferença entre ARR e MRR, quando usar cada métrica para reportar crescimento de SaaS ao mercado e como elas se relacionam com churn e LTV.","datePublished":"2026-09-20T12:10:17Z","dateModified":"2026-09-20T12:10:17Z","inLanguage":"pt-BR","mainEntityOfPage":{"@type":"WebPage","@id":"https://hacktechfarm.com.br/blog/arr-ou-mrr-qual-metrica-usar-e-quando"},"author":{"@type":"Person","name":"Tales Hack","url":"https://hacktechfarm.com.br/sobre"},"publisher":{"@type":"Organization","name":"Hack Tech Farm"},"keywords":"saas, mrr-monthly-recurring-revenue, arr-annual-recurring-revenue, churn"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Posso usar ARR em um SaaS com cobrança mensal?","acceptedAnswer":{"@type":"Answer","text":"Sim, mas com ressalva explícita de que é uma projeção anualizada de um número mensal instável. Sem essa ressalva, o ARR pode enganar quem lê o relatório sobre o nível de compromisso contratual da base."}},{"@type":"Question","name":"ARR e MRR devem aparecer juntos em um relatório para investidores?","acceptedAnswer":{"@type":"Answer","text":"Idealmente sim. ARR dá a visão comparável de mercado, mas MRR mensal recente mostra tendências de queda ou crescimento que o ARR anualizado pode esconder por vários meses."}},{"@type":"Question","name":"Como o churn afeta o cálculo de ARR?","acceptedAnswer":{"@type":"Answer","text":"Churn reduz o MRR primeiro, mês a mês. Um ARR calculado sem descontar a taxa de churn projetada superestima a receita real esperada para os próximos 12 meses."}},{"@type":"Question","name":"Qual métrica usar para calcular LTV: ARR ou MRR?","acceptedAnswer":{"@type":"Answer","text":"MRR. O cálculo de LTV normalmente parte do ticket mensal médio e da taxa de churn mensal, porque ambos operam na mesma granularidade temporal."}},{"@type":"Question","name":"Net Revenue Retention substitui a necessidade de acompanhar ARR e MRR?","acceptedAnswer":{"@type":"Answer","text":"Não. NRR complementa as duas métricas ao mostrar o comportamento da base existente, mas não substitui a visão de receita total que ARR e MRR oferecem separadamente."}}]}]}</script>
+</head>
+<body>
+<nav class="nav" aria-label="Navegação principal">
+  <div class="container nav-inner">
+    <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+    <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu">☰</button>
+    <div class="nav-links" id="nav-links" data-open="false">
+      <a href="/">Início</a><div class="dropdown"><button type="button" class="dropdown-toggle" aria-expanded="false" aria-controls="menu-produtos">Produtos<span class="chev" aria-hidden="true">▾</span></button><div class="dropdown-menu" id="menu-produtos"><a href="/produtos">Todos os produtos</a><a href="/neuroart">NeuroArt DApp</a><a href="/posthink">Posthink</a><a href="/asphalt">Asphalt Hoops</a><a href="/galeria">ArtHack</a></div></div><a href="/roadmap">Roadmap</a><a href="/blog" aria-current="page">Blog</a><a href="/sobre">Sobre</a><a href="/parceiros">Parceiros</a><a href="/contato">Contato</a>
+    </div>
+  </div>
+</nav>
+<main>
+<article>
+<h1>ARR ou MRR: Qual Métrica Usar e Quando</h1>
+<p class="meta">
+<time datetime="2026-09-20T12:10:17Z">2026-09-20</time>
+· 7 min de leitura
+
+</p>
+<h2>O que é MRR e por que é a métrica operacional do dia a dia</h2>
+<p>MRR (Monthly Recurring Revenue) é a receita recorrente normalizada por mês. Toda assinatura ativa é convertida para sua equivalência mensal, independente de o cliente pagar mensal, trimestral ou anual.</p>
+<p>A fórmula básica é simples: some o valor mensal de todos os contratos ativos. Suponha um SaaS hipotético com 80 clientes pagando R$ 100/mês e 20 clientes pagando R$ 1.200/ano (equivalente a R$ 100/mês). O MRR desse SaaS é R$ 10.000 — a soma das duas bases, já normalizadas.</p>
+<p>MRR é a métrica certa para decisões de curto prazo porque reage rápido. Se você perde três clientes grandes numa semana, o MRR cai no mesmo mês. Isso importa para caixa: folha de pagamento, contas de infraestrutura e runway são compromissos mensais, e MRR fala a mesma língua.</p>
+<p>Essa relação entre MRR, churn e LTV (Lifetime Value) é central para qualquer SaaS. Churn mede a taxa de cancelamento sobre a base de MRR; LTV projeta quanto um cliente vai gerar de receita ao longo do relacionamento, e depende diretamente da taxa de churn. Quanto maior o churn, menor o LTV — são grandezas inversamente ligadas. Se você ainda não calculou essas três métricas juntas, o artigo <a href="/blog/como-calcular-mrr-churn-e-ltv-na-pratica">Como Calcular MRR, Churn e LTV na Prática</a> traz as fórmulas completas com exemplos passo a passo.</p>
+<h2>O que é ARR e quando ele faz sentido</h2>
+<p>ARR (Annual Recurring Revenue) é a projeção anualizada da receita recorrente. Na forma mais comum, ARR = MRR × 12. Para SaaS com contratos anuais predominantes, ARR também pode ser calculado como a soma direta dos valores anuais contratados, sem passar por MRR.</p>
+<p>ARR é o padrão usado em relatórios para investidores e em comparações de múltiplos de valuation — rodadas de investimento, benchmarks de mercado e negociações de M&amp;A costumam usar ARR como referência porque é a unidade que board e fundos já conhecem.</p>
+<p>O risco aparece em bases com alta rotatividade mensal. Multiplicar por 12 um MRR que ainda vai cair por churn nos próximos meses infla a métrica e cria uma expectativa que a receita real não sustenta. ARR é uma foto anualizada de um momento específico — não é uma garantia de receita futura.</p>
+<p>Há também uma diferença importante entre receita comprometida (booked) e receita efetivamente recebida. Um contrato anual assinado hoje pode entrar no ARR como booked revenue, mesmo que o cliente pague em parcelas mensais ou que ainda exista risco de cancelamento antecipado. Misturar as duas coisas sem deixar isso explícito distorce qualquer análise que dependa desse número.</p>
+<h2>ARR vs MRR: tabela comparativa e contexto de uso</h2>
+<p>A escolha entre ARR e MRR depende de granularidade necessária, público que vai consumir o número e frequência de recálculo.</p>
+<table>
+<thead>
+<tr>
+<th scope="col">Critério</th>
+<th scope="col">MRR</th>
+<th scope="col">ARR</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Granularidade</td>
+<td>Mensal, reage rápido a churn e expansão</td>
+<td>Anual, suaviza flutuações de curto prazo</td>
+</tr>
+<tr>
+<td>Público típico</td>
+<td>Time interno, produto, financeiro operacional</td>
+<td>Investidores, board, benchmarks de mercado</td>
+</tr>
+<tr>
+<td>Frequência de recálculo</td>
+<td>Todo mês, junto do fechamento financeiro</td>
+<td>Trimestral ou por rodada de captação</td>
+</tr>
+<tr>
+<td>Sensibilidade a contratos</td>
+<td>Direta — cada assinatura mensal conta</td>
+<td>Depende de booked vs recebido</td>
+</tr>
+<tr>
+<td>Uso em cash flow</td>
+<td>Alto — reflete compromissos mensais reais</td>
+<td>Baixo — é uma projeção, não caixa disponível</td>
+</tr>
+</tbody></table>
+<p>O tipo de contrato predominante na base muda qual métrica é mais confiável. Um SaaS com contratos majoritariamente anuais tem ARR mais estável e representativo, porque a receita já está comprometida contratualmente. Um SaaS com cobrança mensal e cancelamento livre tem MRR mais fiel à realidade, porque ARR ali é só uma extrapolação.</p>
+<p>Em muitos casos as duas métricas precisam aparecer lado a lado: um relatório de investidor que mostra só ARR sem o MRR mensal recente esconde tendências de queda que só aparecem na granularidade menor.</p>
+<h2>Como churn e expansão distorcem a leitura de ARR e MRR</h2>
+<p>Churn corrói o MRR mês a mês, antes de qualquer efeito aparecer no ARR anualizado. Se a base perde 5% de MRR em um mês, o impacto anualizado só fica visível quando alguém recalcula o ARR — e nesse intervalo o número relatado pode já estar desatualizado.</p>
+<p>O oposto também acontece: expansion revenue — upsell, upgrade de plano, add-ons vendidos para clientes existentes — infla o MRR sem trazer nenhum cliente novo. Isso é bom, mas confunde quem olha só para o crescimento de MRR como sinônimo de aquisição.</p>
+<p>É aqui que o Net Revenue Retention (NRR) entra como métrica complementar. NRR mede quanto da receita de uma coorte de clientes existentes se mantém (ou cresce) ao longo do tempo, já descontando churn e somando expansão. Um NRR acima de 100% significa que a base existente está crescendo mesmo sem vendas novas — algo que nem MRR nem ARR isolados deixam claro. O artigo <a href="/blog/net-revenue-retention-o-que-e-e-como-medir">Net Revenue Retention: O Que É e Como Medir</a> detalha a fórmula e como separar esse efeito de churn e de novas vendas.</p>
+<h2>Erros comuns ao misturar ARR e MRR</h2>
+<p>Alguns erros se repetem em relatórios de SaaS em estágio inicial:</p>
+<ul>
+<li><strong>Anualizar um mês de pico.</strong> Se um mês teve uma venda grande pontual, multiplicar esse MRR por 12 gera um ARR que não se sustenta nos meses seguintes.</li>
+<li><strong>Ignorar churn projetado ao converter MRR em ARR.</strong> Um ARR "bruto" que não desconta a taxa de cancelamento esperada superestima a receita real do próximo ano.</li>
+<li><strong>Reportar ARR para base majoritariamente mensal sem ressalva.</strong> Isso é comum e engana quem lê o número achando que existe compromisso contratual de 12 meses.</li>
+<li><strong>Confundir receita contratada com receita efetivamente cobrada.</strong> Contratos assinados que ainda não geraram cobrança, ou que têm cláusula de cancelamento sem multa, não deveriam entrar no ARR da mesma forma que receita já faturada.</li>
+</ul>
+<h2>Como decidir qual métrica reportar para cada público</h2>
+<p>Investidores e board tendem a pedir ARR porque é a unidade usada para comparação de mercado e cálculo de múltiplos — é a métrica que aparece em benchmarks de captação e em negociações de valuation.</p>
+<p>O time interno — produto, growth, financeiro operacional — acompanha MRR porque precisa reagir dentro do mês, não do ano. Decisões sobre pricing, retenção e alocação de caixa dependem de um número que se move na mesma velocidade que a operação.</p>
+<p>A arquitetura do produto também influencia a granularidade desses dados. Em um SaaS multi-tenant, a forma como a receita é segmentada por tenant, plano e ciclo de cobrança determina se é possível calcular MRR e ARR com precisão em tempo real ou só em fechamentos periódicos. Esse tipo de decisão arquitetural está detalhado no <a href="/blog/guia-definitivo-de-arquitetura-saas-em-2026">Guia Definitivo de Arquitetura SaaS em 2026</a>, que cobre desde modelagem de dados até estratégias de billing recorrente.</p>
+<p>Se a sua operação ainda calcula essas métricas em planilha e sente dor toda vez que precisa reconciliar MRR, ARR e churn, vale considerar instrumentar isso diretamente no produto — nossa página de <a href="/produtos">produtos</a> detalha como estruturamos esse tipo de camada de dados para SaaS em crescimento.</p>
+<h2>Perguntas Frequentes</h2>
+<h3>Posso usar ARR em um SaaS com cobrança mensal?</h3>
+<p>Sim, mas com ressalva explícita de que é uma projeção anualizada de um número mensal instável. Sem essa ressalva, o ARR pode enganar quem lê o relatório sobre o nível de compromisso contratual da base.</p>
+<h3>ARR e MRR devem aparecer juntos em um relatório para investidores?</h3>
+<p>Idealmente sim. ARR dá a visão comparável de mercado, mas MRR mensal recente mostra tendências de queda ou crescimento que o ARR anualizado pode esconder por vários meses.</p>
+<h3>Como o churn afeta o cálculo de ARR?</h3>
+<p>Churn reduz o MRR primeiro, mês a mês. Um ARR calculado sem descontar a taxa de churn projetada superestima a receita real esperada para os próximos 12 meses.</p>
+<h3>Qual métrica usar para calcular LTV: ARR ou MRR?</h3>
+<p>MRR. O cálculo de LTV normalmente parte do ticket mensal médio e da taxa de churn mensal, porque ambos operam na mesma granularidade temporal.</p>
+<h3>Net Revenue Retention substitui a necessidade de acompanhar ARR e MRR?</h3>
+<p>Não. NRR complementa as duas métricas ao mostrar o comportamento da base existente, mas não substitui a visão de receita total que ARR e MRR oferecem separadamente.</p>
+
+</article>
+</main>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+        <p>Software house familiar em Porto Alegre. Apps e SaaS com propósito, arte e tecnologia.</p>
+      </div>
+      <div><h2>Produtos</h2><ul><li><a href="/neuroart">NeuroArt DApp</a></li><li><a href="/posthink">Posthink</a></li><li><a href="/asphalt">Asphalt Hoops</a></li><li><a href="/galeria">ArtHack</a></li></ul></div>
+      <div><h2>Empresa</h2><ul><li><a href="/sobre">Sobre nós</a></li><li><a href="/blog">Blog</a></li><li><a href="/roadmap">Roadmap</a></li><li><a href="/parceiros">Parceiros</a></li><li><a href="/contato">Contato</a></li></ul></div>
+      <div><h2>Contato</h2><ul><li><a href="mailto:hacktechfarm@proton.me">hacktechfarm@proton.me</a></li><li><a href="/contato">Fale conosco</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Hack Tech Farm. Todos os direitos reservados.</span>
+      <span>Porto Alegre, RS &mdash; Brasil</span>
+    </div>
+  </div>
+</footer>
+<script src="/js/site.js" defer></script>
+</body>
+</html>
