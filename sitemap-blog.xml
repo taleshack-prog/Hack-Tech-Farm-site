@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://hacktechfarm.com.br/blog/base-l2-vs-mainnet-ethereum-para-tokenizar-ativos</loc>
-    <lastmod>2026-09-19</lastmod>
+    <loc>https://hacktechfarm.com.br/blog/como-tokenizar-uma-obra-de-arte-em-erc-20</loc>
+    <lastmod>2026-09-20</lastmod>
   </url>
   <url>
     <loc>https://hacktechfarm.com.br/blog/smart-contract-de-royalties-para-artistas-na-pratica</loc>
+    <lastmod>2026-09-19</lastmod>
+  </url>
+  <url>
+    <loc>https://hacktechfarm.com.br/blog/base-l2-vs-mainnet-ethereum-para-tokenizar-ativos</loc>
     <lastmod>2026-09-19</lastmod>
   </url>
   <url>
