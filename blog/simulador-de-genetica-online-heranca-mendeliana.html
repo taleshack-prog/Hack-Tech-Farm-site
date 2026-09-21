@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador de Genética Online: Herança Mendeliana</title>
+<meta name="description" content="Veja como um simulador de genética online ajuda a praticar cruzamentos mendelianos, quadro de Punnett e herança de cor em gatos e cães, na prática.">
+<link rel="canonical" href="https://hacktechfarm.com.br/blog/simulador-de-genetica-online-heranca-mendeliana">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Simulador de Genética Online: Herança Mendeliana">
+<meta property="og:description" content="Um guia sobre como usar simuladores de genética online para praticar herança mendeliana, dominância, epistasia e cruzamentos em felinos e canídeos.">
+<meta property="og:url" content="https://hacktechfarm.com.br/blog/simulador-de-genetica-online-heranca-mendeliana">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"Simulador de Genética Online: Herança Mendeliana","description":"Veja como um simulador de genética online ajuda a praticar cruzamentos mendelianos, quadro de Punnett e herança de cor em gatos e cães, na prática.","datePublished":"2026-09-21T09:04:13Z","dateModified":"2026-09-21T09:04:13Z","inLanguage":"pt-BR","mainEntityOfPage":{"@type":"WebPage","@id":"https://hacktechfarm.com.br/blog/simulador-de-genetica-online-heranca-mendeliana"},"author":{"@type":"Person","name":"Tales Hack","url":"https://hacktechfarm.com.br/sobre"},"publisher":{"@type":"Organization","name":"Hack Tech Farm"},"keywords":"genetica, heranca-mendeliana, quadro-de-punnett, genotipo-e-fenotipo"}]}</script>
+</head>
+<body>
+<nav class="nav" aria-label="Navegação principal">
+  <div class="container nav-inner">
+    <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+    <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu">☰</button>
+    <div class="nav-links" id="nav-links" data-open="false">
+      <a href="/">Início</a><div class="dropdown"><button type="button" class="dropdown-toggle" aria-expanded="false" aria-controls="menu-produtos">Produtos<span class="chev" aria-hidden="true">▾</span></button><div class="dropdown-menu" id="menu-produtos"><a href="/produtos">Todos os produtos</a><a href="/neuroart">NeuroArt DApp</a><a href="/posthink">Posthink</a><a href="/asphalt">Asphalt Hoops</a><a href="/galeria">ArtHack</a></div></div><a href="/roadmap">Roadmap</a><a href="/blog" aria-current="page">Blog</a><a href="/sobre">Sobre</a><a href="/parceiros">Parceiros</a><a href="/contato">Contato</a>
+    </div>
+  </div>
+</nav>
+<main>
+<article>
+<h1>Simulador de Genética Online: Herança Mendeliana</h1>
+<p class="meta">
+<time datetime="2026-09-21T09:04:13Z">2026-09-21</time>
+· 9 min de leitura
+
+</p>
+<h2>O que é um simulador de genética online</h2>
+<p>Um simulador de genética online é uma ferramenta que reproduz cruzamentos genéticos completos — cálculo de genótipos, proporções fenotípicas e, em versões mais completas, gerações sucessivas de descendentes. Ele difere de uma calculadora de Punnett estática, que resolve apenas um cruzamento isolado e mostra a tabela pronta, sem permitir reprodução, seleção de reprodutores ou acompanhamento de linhagens ao longo do tempo.</p>
+<p>A diferença é pedagógica antes de ser técnica. Uma calculadora responde "qual é a proporção esperada deste cruzamento?". Um simulador permite testar hipóteses: "se eu cruzar esta fêmea tricolor com este macho preto, e depois cruzar a filhagem entre si, o que acontece na segunda geração?". Repetir esse tipo de pergunta com resultados visuais imediatos ajuda a internalizar como os alelos se recombinam a cada geração — algo que a leitura isolada de um capítulo de livro-texto raramente consegue sozinha.</p>
+<p>Os principais usuários desse tipo de ferramenta são três grupos com necessidades distintas. Estudantes de biologia usam para fixar as leis de Mendel e a nomenclatura de genótipo e fenótipo. Estudantes e profissionais de veterinária usam para entender como padrões de herança explicam fenótipos observados na clínica, como o mosaicismo de cor em gatas tricolores. Criadores de felinos e canídeos usam para prever a probabilidade de determinada cor ou padrão aparecer numa ninhada antes de decidir um cruzamento.</p>
+<p>Um simulador não substitui análise laboratorial real. Ele modela regras conhecidas de herança a partir de literatura publicada, mas não sequencia DNA, não detecta mutações novas e não substitui um teste genético comercial quando a decisão envolve saúde reprodutiva ou registro de linhagem. Ele é uma ferramenta de raciocínio e previsão, não de diagnóstico.</p>
+<h2>Genótipo, fenótipo e alelos: as peças da herança mendeliana</h2>
+<p>Antes de montar qualquer cruzamento é preciso fixar três termos. Um <strong>gene</strong> é um trecho de DNA que carrega instrução para uma característica. Um <strong>locus</strong> é a posição física desse gene num cromossomo. Um <strong>alelo</strong> é uma das variantes possíveis daquele gene naquele locus — por exemplo, o alelo que produz pelagem preta e o alelo que produz pelagem marrom no mesmo locus de cor.</p>
+<p>Um indivíduo é <strong>homozigoto</strong> quando carrega dois alelos idênticos naquele locus (AA ou aa) e <strong>heterozigoto</strong> quando carrega dois alelos diferentes (Aa). O <strong>genótipo</strong> é a combinação de alelos que o indivíduo possui; o <strong>fenótipo</strong> é a característica observável resultante — a cor da pelagem, o padrão, o comprimento do pelo. Dois indivíduos com genótipos diferentes podem ter o mesmo fenótipo quando um alelo é dominante sobre o outro.</p>
+<p>A primeira lei de Mendel, ou lei da segregação, estabelece que os dois alelos de um gene se separam durante a formação dos gametas, de modo que cada gameta carrega apenas um deles. A segunda lei, da segregação independente, estabelece que genes localizados em cromossomos diferentes (ou distantes o suficiente no mesmo cromossomo) se transmitem de forma independente uns dos outros.</p>
+<p>Aplicando isso a um cruzamento monoíbrido: suponha um gene hipotético com alelo B (preto, dominante) e alelo b (marrom, recessivo). Um cruzamento entre dois heterozigotos Bb x Bb produz, na geração seguinte, a proporção genotípica clássica de 1 BB : 2 Bb : 1 bb, e a proporção fenotípica de 3 pretos para 1 marrom — porque tanto BB quanto Bb expressam o fenótipo preto.</p>
+<p>A convenção de notação usada em genética veterinária segue o mesmo padrão de Mendel: letra maiúscula para o alelo dominante, minúscula para o recessivo, e a mesma letra (em maiúscula ou minúscula) para indicar que os dois alelos ocupam o mesmo locus. Consultar bases de referência como a <a href="https://omia.org" rel="noopener" target="_blank">OMIA (Online Mendelian Inheritance in Animals)</a> ajuda a confirmar a nomenclatura oficial de cada gene antes de montar um cruzamento.</p>
+<h2>Como montar um quadro de Punnett passo a passo</h2>
+<p>O quadro de Punnett é uma matriz que organiza todas as combinações possíveis de gametas de dois indivíduos para prever a proporção de genótipos na descendência.</p>
+<p>Para um cruzamento monoíbrido com um par de alelos, o procedimento é:</p>
+<ol>
+<li>Escreva os gametas possíveis de um dos pais nas colunas do topo.</li>
+<li>Escreva os gametas possíveis do outro pai nas linhas da lateral.</li>
+<li>Preencha cada célula da matriz combinando o alelo da coluna com o alelo da linha correspondente.</li>
+<li>Conte quantas células resultam em cada genótipo e converta em proporção.</li>
+</ol>
+<p>No exemplo Bb x Bb, cada pai produz gametas B e b em igual proporção. A matriz 2x2 resultante tem uma célula BB, duas células Bb e uma célula bb — daí a proporção 1:2:1 mencionada acima.</p>
+<p>Para um cruzamento dihíbrido, com dois loci simultâneos (por exemplo, cor e padrão), o princípio é o mesmo, mas cada pai produz quatro combinações possíveis de gametas em vez de duas, resultando numa matriz 4x4 com dezesseis células. Quando os dois genes segregam de forma independente, a proporção fenotípica esperada num cruzamento duplo-heterozigoto é a clássica 9:3:3:1.</p>
+<p>Os erros mais comuns ao montar um quadro de Punnett são: esquecer que cada gameta carrega apenas um alelo por locus (erro que viola a lei da segregação); confundir a contagem de genótipos com a contagem de fenótipos quando há dominância envolvida; e assumir segregação independente entre genes que, na realidade, estão ligados no mesmo cromossomo — caso em que a proporção 9:3:3:1 não se aplica.</p>
+<h2>Dominância, recessividade e epistasia na cor da pelagem</h2>
+<p>Dominância completa ocorre quando o heterozigoto tem o mesmo fenótipo que o homozigoto dominante — é o padrão mais comum nos genes de cor de pelagem em gatos e cães. Dominância incompleta ocorre quando o heterozigoto exibe um fenótipo intermediário entre os dois homozigotos, um fenômeno clássico de livro-texto ilustrado pela flor <em>Mirabilis jalapa</em>, cujo heterozigoto produz flores rosa entre os parentais vermelho e branco.</p>
+<p>Em felinos, o gene <strong>TYR</strong> (tirosinase), responsável pela via de produção de melanina e associado ao albinismo e ao padrão colorpoint, apresenta uma série alélica com hierarquia de dominância — o que aproxima seu comportamento de um caso de dominância incompleta em heterozigotos com certas combinações de alelos. A OMIA documenta essa série alélica com detalhe.</p>
+<p>Epistasia é diferente de dominância: em vez de um alelo mascarar o outro alelo no mesmo locus, um gene mascara o efeito de um gene em <strong>outro</strong> locus. O par clássico usado para ilustrar esse mecanismo em mamíferos é o gene <strong>ASIP</strong> (agouti), que controla a distribuição de pigmento na haste do pelo, e o gene <strong>MC1R</strong> (extension), que controla a produção de eumelanina (pigmento escuro) versus feomelanina (pigmento avermelhado/amarelado).</p>
+<p>Quando um indivíduo é homozigoto recessivo em MC1R (genótipo ee), a pelagem resultante é avermelhada ou amarelada independentemente do genótipo em ASIP — o gene extension, nesse estado, é epistático sobre o gene agouti e o mascara completamente. É por isso que dois indivíduos podem ter genótipos diferentes em ASIP e, ainda assim, exibir o mesmo fenótipo avermelhado: o locus que determina a cor de fundo simplesmente não se expressa quando MC1R está bloqueado nesse estado recessivo.</p>
+<h2>O locus Orange e a herança ligada ao X em gatos</h2>
+<p>O locus Orange, em gatos domésticos, está localizado no cromossomo X — e essa localização muda completamente a lógica da herança em relação a um gene autossômico comum. Fêmeas têm dois cromossomos X (XX) e podem ser homozigotas ou heterozigotas para o alelo Orange; machos têm um X e um Y (XY) e, portanto, carregam apenas uma cópia do gene, sem possibilidade de heterozigose nesse locus.</p>
+<p>Isso explica por que fêmeas podem ser tricolores (tortoiseshell ou calico) e machos raramente são. Numa fêmea heterozigota para o locus Orange, cada célula do corpo inativa aleatoriamente um dos dois cromossomos X durante o desenvolvimento embrionário — fenômeno conhecido como lionização. O resultado é um mosaico de manchas: regiões da pele em que o X com o alelo laranja está ativo produzem pelo laranja, e regiões em que o X sem o alelo está ativo produzem a cor de base. Um macho, com apenas um X, expressa um único alelo Orange em todas as suas células e nunca produz esse mosaico por herança normal — machos tricolores só ocorrem em casos raros de constituição cromossômica atípica, como XXY.</p>
+<table>
+<thead>
+<tr>
+<th scope="col">Característica</th>
+<th scope="col">Herança autossômica (ex.: locus de agouti)</th>
+<th scope="col">Herança ligada ao X (locus Orange)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Localização</td>
+<td>Autossomo (não sexual)</td>
+<td>Cromossomo X</td>
+</tr>
+<tr>
+<td>Cópias no macho</td>
+<td>Duas</td>
+<td>Uma</td>
+</tr>
+<tr>
+<td>Cópias na fêmea</td>
+<td>Duas</td>
+<td>Duas</td>
+</tr>
+<tr>
+<td>Mosaicismo possível</td>
+<td>Não</td>
+<td>Sim, em fêmeas heterozigotas</td>
+</tr>
+<tr>
+<td>Exemplo de fenótipo</td>
+<td>Padrão tabby vs. sólido</td>
+<td>Tricolor (fêmea) vs. laranja ou não-laranja (macho)</td>
+</tr>
+</tbody></table>
+<p>Um cruzamento prático ilustra o mecanismo: um pai laranja (genótipo X^O Y) cruzado com uma mãe não-laranja homozigota (X^o X^o) produz filhas todas heterozigotas (X^O X^o), potencialmente tricolores, e filhos todos não-laranja (X^o Y) — porque os filhos herdam o Y do pai e o X^o único da mãe.</p>
+<p>A diferença prática entre herança autossômica e ligada ao X está justamente nessa dependência do sexo do descendente. Num gene autossômico, machos e fêmeas têm as mesmas chances de exibir qualquer genótipo. Num gene ligado ao X, a proporção esperada em machos e em fêmeas é sistematicamente diferente, e isso precisa entrar no cálculo antes de montar o quadro de Punnett. Praticar esse tipo de cruzamento com dados visuais ajuda a fixar a diferença — é justamente esse tipo de exercício que dá para reproduzir num <a href="https://genbreed.com.br" rel="noopener" target="_blank">simulador de cruzamentos genéticos como o GenBreed</a>, testando pais com genótipos diferentes no locus Orange e observando a distribuição de fenótipos na filhagem simulada.</p>
+<h2>Herança poligênica e por que nem toda cor é simples</h2>
+<p>Até aqui, todos os exemplos tratam de herança qualitativa: um ou poucos loci discretos, cada um com alelos que produzem categorias fenotípicas nítidas (preto ou marrom, laranja ou não-laranja). Herança quantitativa, ou poligênica, é diferente: várias regiões do genoma contribuem, cada uma com efeito pequeno, para uma característica que varia em gradiente contínuo em vez de categorias distintas.</p>
+<p>A intensidade da cor de fundo, ou a extensão de um padrão de manchas branco (piebald), são exemplos de características em que a variação contínua observada na população sugere contribuição poligênica somada a fatores ambientais durante o desenvolvimento, além dos genes de efeito maior já conhecidos.</p>
+<p>Esse tipo de herança não aparece de forma direta num quadro de Punnett simples, porque o quadro pressupõe um número pequeno e conhecido de loci com efeitos discretos. Quando múltiplos genes de efeito pequeno se somam, a distribuição de fenótipos na descendência se aproxima de uma curva contínua, e ferramentas estatísticas de genética quantitativa — não o quadro de Punnett — são o instrumento adequado para modelá-la.</p>
+<p>O coeficiente de</p>
+
+</article>
+</main>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+        <p>Software house familiar em Porto Alegre. Apps e SaaS com propósito, arte e tecnologia.</p>
+      </div>
+      <div><h2>Produtos</h2><ul><li><a href="/neuroart">NeuroArt DApp</a></li><li><a href="/posthink">Posthink</a></li><li><a href="/asphalt">Asphalt Hoops</a></li><li><a href="/galeria">ArtHack</a></li></ul></div>
+      <div><h2>Empresa</h2><ul><li><a href="/sobre">Sobre nós</a></li><li><a href="/blog">Blog</a></li><li><a href="/roadmap">Roadmap</a></li><li><a href="/parceiros">Parceiros</a></li><li><a href="/contato">Contato</a></li></ul></div>
+      <div><h2>Contato</h2><ul><li><a href="mailto:hacktechfarm@proton.me">hacktechfarm@proton.me</a></li><li><a href="/contato">Fale conosco</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Hack Tech Farm. Todos os direitos reservados.</span>
+      <span>Porto Alegre, RS &mdash; Brasil</span>
+    </div>
+  </div>
+</footer>
+<script src="/js/site.js" defer></script>
+</body>
+</html>
