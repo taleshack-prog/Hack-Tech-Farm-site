@@ -8,7 +8,8 @@
  * Uso: npm run build
  */
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -810,6 +811,37 @@ Sitemap: ${SITE_URL}/sitemap-blog.xml
 `);
 }
 
+/* Cache-busting. O navegador guarda CSS e JS; sem isso, quem ja visitou o site
+   continua vendo o arquivo antigo depois de um deploy (foi o que escondeu a
+   escultura 3D da /galeria). Cada referencia a /css/*.css e /js/*.js nas
+   paginas da raiz ganha ?v=<hash do conteudo>: o arquivo mudou, a URL muda, o
+   navegador baixa de novo. Nao mudou, a URL e a mesma e o cache vale.
+   Roda por ultimo, sobre o HTML ja gerado, e tambem cobre dashboard.html e
+   login.html (escritos a mao). /blog/ fica de fora: e do SEOHack. */
+function versionAssets() {
+  const hashes = new Map();
+  const hashOf = (rel) => {
+    if (!hashes.has(rel)) {
+      try {
+        hashes.set(rel, createHash('sha256').update(readFileSync(join(ROOT, rel))).digest('hex').slice(0, 10));
+      } catch {
+        hashes.set(rel, null); // arquivo nao existe: deixa a referencia como esta
+      }
+    }
+    return hashes.get(rel);
+  };
+  const ref = /((?:href|src)=")(\/?)((?:css|js)\/[\w.-]+\.(?:css|js))(?:\?v=\w+)?"/g;
+  for (const file of readdirSync(ROOT).filter((f) => f.endsWith('.html'))) {
+    const path = join(ROOT, file);
+    const html = readFileSync(path, 'utf8');
+    const out = html.replace(ref, (m, attr, slash, rel) => {
+      const h = hashOf(rel);
+      return h ? `${attr}${slash}${rel}?v=${h}"` : m;
+    });
+    if (out !== html) writeFileSync(path, out);
+  }
+}
+
 buildHome();
 buildProdutos();
 buildProductPages();
@@ -826,6 +858,7 @@ build404();
    O sitemap dos artigos tambem e dele: sitemap-blog.xml. */
 
 buildSitemap();
+versionAssets();
 
 console.log(`Build concluido - ${live().length} produtos no ar, ${dev().length} em desenvolvimento.`);
 console.log('Paginas: index, produtos, posthink, neuroart, asphalt, galeria, roadmap, sobre, parceiros, contato, 404');
