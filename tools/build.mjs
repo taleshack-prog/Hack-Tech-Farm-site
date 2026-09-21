@@ -202,6 +202,18 @@ const visible = () => PRODUCTS.filter((p) => p.is_public !== false);
 const live = () => visible().filter((p) => p.status === 'live').sort(bySort);
 const dev = () => visible().filter((p) => p.status === 'dev').sort(bySort);
 
+/* Quantidade por extenso, lida do catálogo. Antes os textos diziam "quatro
+   produtos" escritos à mão e ficavam errados a cada produto novo. Acima de
+   vinte volta para algarismo, que é como se escreve em português. */
+const EXTENSO = ['nenhum', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito',
+  'nove', 'dez', 'onze', 'doze', 'treze', 'catorze', 'quinze', 'dezesseis', 'dezessete',
+  'dezoito', 'dezenove', 'vinte'];
+const porExtenso = (n) => EXTENSO[n] ?? String(n);
+const Cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+const produtos = (n) => `${porExtenso(n)} ${n === 1 ? 'produto' : 'produtos'}`;
+const NO_AR = () => produtos(live().length);
+const EM_DEV = () => produtos(dev().length);
+
 function productCard(p) {
   let link = '';
   if (p.page_url) {
@@ -281,7 +293,7 @@ function buildHome() {
         <div>
           <p class="eyebrow">Software house familiar · Porto Alegre</p>
           <h1>Cultivando tecnologia,<br><span class="grad">colhendo arte.</span></h1>
-          <p class="lede">A Hack Tech Farm junta o rigor da engenharia de software à sensibilidade das artes plásticas. Quatro produtos no ar, do Web3 à Inteligência Artificial.</p>
+          <p class="lede">A Hack Tech Farm junta o rigor da engenharia de software à sensibilidade das artes plásticas. ${Cap(NO_AR())} no ar, do Web3 à Inteligência Artificial.</p>
           <div class="hero-actions">
             <a href="https://posthink.com.br" class="btn btn-primary" target="_blank" rel="noopener">Conhecer o Posthink <span aria-hidden="true">↗</span><span class="visually-hidden"> (abre em nova aba)</span></a>
             <a href="produtos.html" class="btn btn-ghost">Ver todos os produtos</a>
@@ -302,7 +314,7 @@ function buildHome() {
           <p>Cada projeto nasce de uma inquietação real e cresce até virar ferramenta de trabalho de alguém.</p>
         </div>
         <div class="grid grid-3">${renderProducts(3)}</div>
-        <p class="center" style="margin-top:36px"><a href="produtos.html" class="btn btn-ghost">Ver os quatro produtos</a></p>
+        <p class="center" style="margin-top:36px"><a href="produtos.html" class="btn btn-ghost">Ver ${live().length === 1 ? 'o produto' : 'os ' + NO_AR()}</a></p>
       </div>
     </section>
 
@@ -337,7 +349,7 @@ function buildProdutos() {
         ${breadcrumbHtml([['index.html', 'Início'], [null, 'Produtos']])}
         <p class="eyebrow">Portfólio</p>
         <h1>Nosso portfólio</h1>
-        <p>Quatro produtos no ar, cada um com uma história e um propósito próprios.</p>
+        <p>${Cap(NO_AR())} no ar, cada um com uma história e um propósito próprios.</p>
       </div>
     </header>
 
@@ -351,7 +363,7 @@ function buildProdutos() {
       <div class="container">
         <div class="section-head">
           <p class="eyebrow">Ainda no solo</p>
-          <h2>Seis produtos em desenvolvimento</h2>
+          <h2>${Cap(EM_DEV())} em desenvolvimento</h2>
           <p>Do alpha ao planejamento — o que está crescendo na fazenda.</p>
         </div>
         <p class="center"><a href="roadmap.html" class="btn btn-ghost">Ver o roadmap</a></p>
@@ -369,7 +381,7 @@ function buildRoadmap() {
         ${breadcrumbHtml([['index.html', 'Início'], [null, 'Roadmap']])}
         <p class="eyebrow">Em desenvolvimento</p>
         <h1>O que estamos plantando</h1>
-        <p>Seis produtos entre alpha, beta e planejamento. As datas nós não prometemos; o progresso a gente conta na newsletter.</p>
+        <p>${Cap(EM_DEV())} entre alpha, beta e planejamento. As datas nós não prometemos; o progresso a gente conta na newsletter.</p>
       </div>
     </header>
 
@@ -549,7 +561,7 @@ function buildSobre() {
         <div class="stack dim">
           <p>Começou quando Tales Hack, artista plástico e ortodontista aposentado, decidiu levar a própria prática criativa para o software — ao lado dos filhos Heitor e Francisco.</p>
           <p>O nome <strong>Hack Tech Farm</strong> carrega as iniciais dos três: <strong>H</strong>eitor, <strong>T</strong>ales e <strong>F</strong>rancisco. "Farm" porque é aqui que a ideia é plantada, cultivada e colhida.</p>
-          <p>Hoje são quatro produtos no ar e seis em desenvolvimento, do Web3 à Inteligência Artificial — sempre com um toque humano e artístico.</p>
+          <p>Hoje são ${NO_AR()} no ar e ${porExtenso(dev().length)} em desenvolvimento, do Web3 à Inteligência Artificial — sempre com um toque humano e artístico.</p>
         </div>
       </div>
     </section>
@@ -749,7 +761,7 @@ function build404() {
       <div class="container center">
         <p class="eyebrow" style="justify-content:center">Erro 404</p>
         <h1>Este canteiro está vazio</h1>
-        <p class="measure">A página que você procurou não existe ou mudou de endereço. Os quatro produtos no ar continuam a um clique.</p>
+        <p class="measure">A página que você procurou não existe ou mudou de endereço. Os ${NO_AR()} no ar continuam a um clique.</p>
         <div class="hero-actions" style="justify-content:center;margin-top:30px">
           <a href="index.html" class="btn btn-primary">Voltar para o início</a>
           <a href="produtos.html" class="btn btn-ghost">Ver os produtos</a>
