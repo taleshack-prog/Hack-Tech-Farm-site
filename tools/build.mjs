@@ -679,6 +679,14 @@ function buildContato() {
     body, { active: 'contato.html', trail: [['index.html', 'Início'], ['contato.html', 'Contato']] });
 }
 
+/* Peça que gira na abertura da página ArtHack. Para trocar: coloque um PNG ou
+   WebP com FUNDO TRANSPARENTE em img/obras/ e aponte o src para ele. Foto com
+   fundo não funciona — o efeito vira um cartão inclinado em vez de um objeto. */
+const FEATURED_3D = {
+  src: '/img/obras/destaque-3d.webp',
+  alt: 'Escultura em madeira de Tales Hack, girando lentamente',
+};
+
 function buildGaleria() {
   const obras = [...OBRAS]
     .sort((a, b) => (a.order || 0) - (b.order || 0))
@@ -691,7 +699,20 @@ function buildGaleria() {
         + `<span class="meta">${t}<span>${m}</span></span></button></li>`;
     }).join('');
 
-  const body = `    <header class="page-hero">
+  /* Peça em destaque na abertura da galeria. A imagem é um recorte com fundo
+     transparente; as camadas escurecidas atrás dela dão espessura quando gira.
+     O fundo passa do azul quase branco ao quase preto em degradê contínuo. */
+  const body = `    <section class="art3d" style="--art:url(${FEATURED_3D.src})" aria-label="${esc(FEATURED_3D.alt)}">
+      <div class="art3d-stage">
+        <div class="art3d-shadow" aria-hidden="true"></div>
+        <div class="art3d-obj">
+          ${[10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map((i) => `<div class="art3d-l" aria-hidden="true" style="transform:translateZ(-${(i * 1.6).toFixed(1)}px);filter:brightness(${(0.55 - i * 0.03).toFixed(2)})"></div>`).join('')}
+          <div class="art3d-l art3d-front" role="img" aria-label="${esc(FEATURED_3D.alt)}"></div>
+        </div>
+      </div>
+    </section>
+
+    <header class="page-hero" style="padding-top:48px">
       <div class="container">
         ${breadcrumbHtml([['index.html', 'Início'], ['produtos.html', 'Produtos'], [null, 'ArtHack']])}
         <p class="eyebrow">ArtHack</p>

@@ -577,3 +577,57 @@ body::after {
   .progress-fill { transition: none; animation: none; }
   .progress[data-state="indeterminate"] .progress-fill { width: 100%; left: 0; opacity: 0.4; }
 }
+
+
+/* ====================== Peça 3D — abertura da galeria ====================
+   Gradiente comum não se anima: o navegador troca um pelo outro de uma vez.
+   Registrando as cores com @property elas viram valores animáveis, e o
+   degradê desliza continuamente do azul quase branco ao quase preto.
+   Navegador sem suporte fica com um tom médio parado, sem quebrar nada. */
+@property --a3d-c1 { syntax: '<color>'; inherits: false; initial-value: #4A6282; }
+@property --a3d-c2 { syntax: '<color>'; inherits: false; initial-value: #26364D; }
+@property --a3d-c3 { syntax: '<color>'; inherits: false; initial-value: #131C29; }
+
+.art3d {
+  position: relative; overflow: hidden;
+  display: grid; place-items: center;
+  min-height: min(78vh, 720px); padding: 56px 0 72px;
+  border-bottom: 1px solid var(--line);
+  background: radial-gradient(ellipse at 50% 38%, var(--a3d-c1) 0%, var(--a3d-c2) 55%, var(--a3d-c3) 100%);
+  animation: a3d-ceu 9s ease-in-out infinite alternate;
+}
+@keyframes a3d-ceu {
+  0%   { --a3d-c1: #F4F8FC; --a3d-c2: #D6E6F5; --a3d-c3: #B9CFE6; }
+  35%  { --a3d-c1: #A9C4E0; --a3d-c2: #6F8FB3; --a3d-c3: #40597A; }
+  65%  { --a3d-c1: #4A6282; --a3d-c2: #26364D; --a3d-c3: #131C29; }
+  100% { --a3d-c1: #1B2230; --a3d-c2: #0B0F16; --a3d-c3: #05070A; }
+}
+
+.art3d-stage { perspective: 1100px; width: min(58vw, 340px); aspect-ratio: 427 / 722; position: relative; }
+.art3d-obj {
+  position: absolute; inset: 0; transform-style: preserve-3d;
+  animation: a3d-balanco 9s ease-in-out infinite alternate;
+}
+@keyframes a3d-balanco {
+  0%   { transform: rotateY(-32deg) rotateX(4deg) translateY(0); }
+  50%  { transform: rotateY(0deg)   rotateX(2deg) translateY(-10px); }
+  100% { transform: rotateY(32deg)  rotateX(4deg) translateY(0); }
+}
+.art3d-l { position: absolute; inset: 0; background: var(--art) center / contain no-repeat; }
+.art3d-front { filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.35)); }
+.art3d-shadow {
+  position: absolute; left: 18%; right: 18%; bottom: -4%; height: 7%; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.45), transparent);
+  animation: a3d-sombra 9s ease-in-out infinite alternate;
+}
+@keyframes a3d-sombra {
+  0%   { transform: translateX(-14%) scaleX(1.1); }
+  50%  { transform: translateX(0) scaleX(0.92); }
+  100% { transform: translateX(14%) scaleX(1.1); }
+}
+
+/* Quem pediu movimento reduzido vê a peça parada, levemente girada. */
+@media (prefers-reduced-motion: reduce) {
+  .art3d, .art3d-obj, .art3d-shadow { animation: none; }
+  .art3d-obj { transform: rotateY(-18deg); }
+}
