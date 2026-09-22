@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coeficiente de Endogamia de Wright: Como Calcular</title>
+<meta name="description" content="Entenda o coeficiente de endogamia de Wright: definição, fórmula do pedigree e como calcular a fixação genética em ninhadas de gatos e cães.">
+<link rel="canonical" href="https://hacktechfarm.com.br/blog/coeficiente-de-endogamia-de-wright-como-calcular">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Coeficiente de Endogamia de Wright: Como Calcular">
+<meta property="og:description" content="Um guia prático sobre o coeficiente de endogamia de Wright, com fórmula, exemplo de cálculo pelo pedigree e implicações para a saúde de ninhadas.">
+<meta property="og:url" content="https://hacktechfarm.com.br/blog/coeficiente-de-endogamia-de-wright-como-calcular">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"Coeficiente de Endogamia de Wright: Como Calcular","description":"Entenda o coeficiente de endogamia de Wright: definição, fórmula do pedigree e como calcular a fixação genética em ninhadas de gatos e cães.","datePublished":"2026-09-22T13:13:36Z","dateModified":"2026-09-22T13:13:36Z","inLanguage":"pt-BR","mainEntityOfPage":{"@type":"WebPage","@id":"https://hacktechfarm.com.br/blog/coeficiente-de-endogamia-de-wright-como-calcular"},"author":{"@type":"Person","name":"Tales Hack","url":"https://hacktechfarm.com.br/sobre"},"publisher":{"@type":"Organization","name":"Hack Tech Farm"},"keywords":"genetica, coeficiente-de-endogamia-de-wright-f, pedigree, alelos-identicos-por-descendencia-ibd"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"O que significa F = 0,25 no coeficiente de endogamia?","acceptedAnswer":{"@type":"Answer","text":"Significa que há 25% de probabilidade de que, em um locus qualquer, os dois alelos herdados pelo indivíduo sejam idênticos por descendência — cópias do mesmo alelo de um ancestral comum. É o valor esperado, por exemplo, no cruzamento entre irmãos completos."}},{"@type":"Question","name":"Qual a diferença entre coeficiente de endogamia e coeficiente de parentesco?","acceptedAnswer":{"@type":"Answer","text":"O coeficiente de parentesco mede a probabilidade de dois indivíduos diferentes compartilharem um alelo IBD em um locus. O coeficiente de endogamia (F) de um indivíduo é igual ao coeficiente de parentesco entre seus dois pais."}},{"@type":"Question","name":"Cruzamento entre primos aumenta muito o risco genético?","acceptedAnswer":{"@type":"Answer","text":"Aumenta menos que cruzamentos entre irmãos ou meio-irmãos: o F esperado para primos-irmãos é de aproximadamente 0,0625, contra 0,25 para irmãos completos. O risco real ainda depende de quais alelos recessivos deletérios circulam nessa linhagem específica."}},{"@type":"Question","name":"O coeficiente de endogamia pelo pedigree é sempre confiável?","acceptedAnswer":{"@type":"Answer","text":"Não. Ele depende da completude e precisão do registro genealógico. Pedigrees rasos ou com erros de paternidade subestimam o F real. O F genômico, calculado por marcadores SNP, é uma medida mais direta quando disponível."}},{"@type":"Question","name":"Existe um valor de F considerado seguro na criação de gatos e cães?","acceptedAnswer":{"@type":"Answer","text":"Não existe um limiar único válido para todas as raças e espécies, porque depende da carga de alelos deletérios já presente na linhagem. Por isso, o acompanhamento contínuo do F e da diversidade genética da população é mais informativo do que fixar um número de corte isolado."}}]}]}</script>
+</head>
+<body>
+<nav class="nav" aria-label="Navegação principal">
+  <div class="container nav-inner">
+    <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+    <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu">☰</button>
+    <div class="nav-links" id="nav-links" data-open="false">
+      <a href="/">Início</a><div class="dropdown"><button type="button" class="dropdown-toggle" aria-expanded="false" aria-controls="menu-produtos">Produtos<span class="chev" aria-hidden="true">▾</span></button><div class="dropdown-menu" id="menu-produtos"><a href="/produtos">Todos os produtos</a><a href="/neuroart">NeuroArt DApp</a><a href="/posthink">Posthink</a><a href="/asphalt">Asphalt Hoops</a><a href="/galeria">ArtHack</a></div></div><a href="/roadmap">Roadmap</a><a href="/blog" aria-current="page">Blog</a><a href="/sobre">Sobre</a><a href="/parceiros">Parceiros</a><a href="/contato">Contato</a>
+    </div>
+  </div>
+</nav>
+<main>
+<article>
+<h1>Coeficiente de Endogamia de Wright: Como Calcular</h1>
+<p class="meta">
+<time datetime="2026-09-22T13:13:36Z">2026-09-22</time>
+· 8 min de leitura
+
+</p>
+<h2>O que é o coeficiente de endogamia de Wright</h2>
+<p>O coeficiente de endogamia de Wright, representado pela letra <strong>F</strong>, é a probabilidade de que os dois alelos de um mesmo locus, em um indivíduo, sejam <strong>idênticos por descendência (IBD)</strong> — ou seja, cópias exatas do mesmo alelo ancestral, herdadas por duas linhas de descendência diferentes que se encontram em um <strong>ancestral comum</strong>.</p>
+<p>Isso é diferente de dois alelos serem apenas idênticos em sequência. Dois alelos podem ser idênticos por estado (mesma variante) sem ter vindo do mesmo ancestral. F mede especificamente a origem comum, rastreada pelo <strong>pedigree</strong> — o registro de ascendência do animal, geração após geração.</p>
+<p>O conceito foi formalizado pelo geneticista populacional Sewall Wright, que ligou F à redução esperada de heterozigosidade em uma população: quanto maior a endogamia, menor a proporção de indivíduos heterozigotos em relação ao que se esperaria sob acasalamento aleatório.</p>
+<p>F varia numa escala contínua de 0 a 1. Um F igual a 0 indica que, dado o pedigree disponível, não há evidência de ancestralidade comum entre os pais do indivíduo. Um F igual a 1 é o limite teórico de endogamia máxima, praticamente inatingível em populações reais, e indicaria que todos os loci do indivíduo são homozigotos por descendência.</p>
+<h2>Por que o coeficiente de endogamia importa na criação animal</h2>
+<p>Um F elevado aumenta a probabilidade de que alelos recessivos deletérios, normalmente mascarados em heterozigose por um alelo dominante saudável, se encontrem em homozigose e se expressem fenotipicamente. Esse efeito cumulativo — perda de vigor, fertilidade reduzida, maior incidência de condições recessivas — é conhecido como <strong>depressão por endogamia</strong>.</p>
+<p>Por outro lado, endogamia controlada é uma ferramenta legítima de seleção. Cruzamentos entre parentes próximos aumentam a chance de fixar um fenótipo desejado — um padrão de pelagem, um tipo de conformação — porque reduzem a variabilidade alélica no locus de interesse. É assim que muitas linhagens e padrões de raça foram consolidados historicamente. O artigo <a href="/blog/genetica-da-cor-da-pelagem-em-gatos-guia-completo">Genética da Cor da Pelagem em Gatos: Guia Completo</a> detalha como loci como os de cor e padrão se comportam sob seleção dirigida.</p>
+<p>O trade-off é direto: fixar um fenótipo rápido geralmente custa diversidade genética. Uma linhagem ou população com F médio crescente ao longo de gerações perde variabilidade em todos os loci, não só no que está sendo selecionado — inclusive em genes ligados à imunidade e à fertilidade, que não têm relação fenotípica óbvia com o traço desejado.</p>
+<h2>A fórmula de Wright pelo pedigree</h2>
+<p>O cálculo de F para um indivíduo X soma a contribuição de <strong>cada ancestral comum</strong> entre o pai e a mãe de X. Para cada ancestral comum A, a contribuição de um caminho é:</p>
+<pre><code>Contribuição do caminho = (1/2)^(n1 + n2 + 1) × (1 + F_A)
+</code></pre>
+<p>Onde:</p>
+<ul>
+<li><code>n1</code> é o número de gerações entre o pai de X e o ancestral comum A;</li>
+<li><code>n2</code> é o número de gerações entre a mãe de X e o ancestral comum A;</li>
+<li><code>F_A</code> é o próprio coeficiente de endogamia do ancestral comum, caso ele também seja endogâmico.</li>
+</ul>
+<p>Se houver mais de um ancestral comum, ou mais de um caminho até o mesmo ancestral, soma-se a contribuição de cada caminho separadamente:</p>
+<pre><code>F_X = Σ (1/2)^(n1 + n2 + 1) × (1 + F_A)
+</code></pre>
+<p>O termo <code>(1 + F_A)</code> é a correção que a maioria dos cálculos simplificados ignora. Quando o próprio ancestral comum já carrega endogamia prévia, a chance de ele transmitir alelos IBD por duas linhas diferentes aumenta, e isso precisa entrar na conta.</p>
+<h2>Passo a passo: calculando F com um exemplo de pedigree</h2>
+<p>Suponha um pedigree hipotético (números apenas ilustrativos, não uma medição real): um gato X nasce do cruzamento entre dois meio-irmãos, A e B, que compartilham o mesmo pai, um gato C. C não tem endogamia conhecida, então F_C = 0.</p>
+<ol>
+<li><strong>Identifique o ancestral comum.</strong> Aqui é C, pai de A e pai de B.</li>
+<li><strong>Conte as gerações em cada caminho.</strong> De A até C há uma geração (n1 = 1). De B até C há uma geração (n2 = 1).</li>
+<li><strong>Aplique a fórmula.</strong></li>
+</ol>
+<pre><code>F_X = (1/2)^(1 + 1 + 1) × (1 + 0)
+F_X = (1/2)^3 × 1
+F_X = 0,125
+</code></pre>
+<p>Se houvesse mais de um ancestral comum entre A e B — por exemplo, se além do pai C eles também compartilhassem a mesma avó materna —, seria preciso repetir o cálculo para esse segundo caminho e somar as duas contribuições ao F final.</p>
+<p>Montar esse tipo de cálculo à mão em pedigrees com muitas gerações fica trabalhoso rápido, porque o número de caminhos cresce conforme o pedigree se aprofunda. Um simulador que já mantém o histórico de cruzamentos e calcula F automaticamente a partir do pedigree ajuda a visualizar esse efeito sem erro de contagem manual — é esse tipo de prática que o <a href="https://genbreed.com.br" rel="noopener" target="_blank">GenBreed</a> permite fazer com espécies reais, cruzando linhagens e acompanhando a fixação de fenótipo geração após geração.</p>
+<h2>Tabela comparativa: tipos de cruzamento e F esperado</h2>
+<table>
+<thead>
+<tr>
+<th scope="col">Tipo de cruzamento</th>
+<th scope="col">Ancestral comum</th>
+<th scope="col">F esperado (sem endogamia prévia)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Irmão × irmã (pais em comum)</td>
+<td>Pai e mãe compartilhados</td>
+<td>0,25</td>
+</tr>
+<tr>
+<td>Meio-irmãos (um pai em comum)</td>
+<td>Um genitor compartilhado</td>
+<td>0,125</td>
+</tr>
+<tr>
+<td>Primos-irmãos (avós em comum)</td>
+<td>Avós compartilhados</td>
+<td>0,0625</td>
+</tr>
+<tr>
+<td>Sem parentesco conhecido no pedigree disponível</td>
+<td>Nenhum registrado</td>
+<td>≈ 0</td>
+</tr>
+</tbody></table>
+<p>Esses valores assumem que nenhum dos ancestrais envolvidos já carrega endogamia prévia (F_A = 0). Na prática, populações fechadas — como muitas raças de cães e gatos com livro genealógico restrito — acumulam ancestrais comuns adicionais ao longo de gerações, e o F real tende a ser maior que esses valores de referência isolados.</p>
+<h2>Limitações do coeficiente de pedigree</h2>
+<p>O F calculado pelo pedigree só é tão bom quanto o pedigree em si. Se o registro é incompleto, tem erros de paternidade não detectados, ou simplesmente não vai fundo o suficiente em gerações, o cálculo <strong>subestima</strong> o F real — ancestrais comuns fora do alcance do registro simplesmente não entram na soma.</p>
+<p>Existe também uma diferença importante entre o F de pedigree, que é uma expectativa probabilística baseada na genealogia, e o F genômico, calculado diretamente a partir de marcadores SNP no DNA do indivíduo. O F genômico captura a variação real de recombinação — dois irmãos completos, por exemplo, não herdam exatamente os mesmos segmentos cromossômicos dos pais, então seus F genômicos individuais divergem mesmo tendo o mesmo F esperado por pedigree.</p>
+<p>Quanto mais profundo e completo o pedigree disponível, mais a estimativa por linhagem se aproxima do valor genômico. Pedigrees rasos, com poucas gerações registradas, tendem a subestimar sistematicamente a endogamia acumulada de uma população fechada.</p>
+<h2>Como reduzir o coeficiente de endogamia em um programa de criação</h2>
+<p>A ferramenta mais direta é o <strong>outcrossing</strong> deliberado: introduzir reprodutores de linhagens geneticamente distintas, sem ancestrais comuns recentes com a população em questão, para diluir F nas gerações seguintes.</p>
+<p>Isso só funciona com <strong>registro sistemático de pedigree</strong>. Sem histórico confiável de ascendência, não há como calcular F com confiança nem planejar cruzamentos que evitem repetir os mesmos ancestrais.</p>
+<p>Por fim, o monitoramento não deve olhar só para o F de um indivíduo isolado, mas para a diversidade genética da população como um todo ao longo de gerações — quantos fundadores distintos ainda contribuem geneticamente, e se esse número está caindo com o tempo. Um F individual baixo não impede que a população inteira esteja perdendo diversidade de forma agregada.</p>
+<blockquote>
+<p>Testar diferentes combinações de cruzamento antes de decidir uma ninhada real é mais fácil num ambiente simulado. O <a href="https://genbreed.com.br" rel="noopener" target="_blank">GenBreed</a> calcula o coeficiente de endogamia a partir do pedigree simulado e mostra o efeito de cada cruzamento na fixação de fenótipo, com plano gratuito disponível para começar.</p>
+</blockquote>
+<h2>Perguntas Frequentes</h2>
+<h3>O que significa F = 0,25 no coeficiente de endogamia?</h3>
+<p>Significa que há 25% de probabilidade de que, em um locus qualquer, os dois alelos herdados pelo indivíduo sejam idênticos por descendência — cópias do mesmo alelo de um ancestral comum. É o valor esperado, por exemplo, no cruzamento entre irmãos completos.</p>
+<h3>Qual a diferença entre coeficiente de endogamia e coeficiente de parentesco?</h3>
+<p>O coeficiente de parentesco mede a probabilidade de dois indivíduos diferentes compartilharem um alelo IBD em um locus. O coeficiente de endogamia (F) de um indivíduo é igual ao coeficiente de parentesco entre seus dois pais.</p>
+<h3>Cruzamento entre primos aumenta muito o risco genético?</h3>
+<p>Aumenta menos que cruzamentos entre irmãos ou meio-irmãos: o F esperado para primos-irmãos é de aproximadamente 0,0625, contra 0,25 para irmãos completos. O risco real ainda depende de quais alelos recessivos deletérios circulam nessa linhagem específica.</p>
+<h3>O coeficiente de endogamia pelo pedigree é sempre confiável?</h3>
+<p>Não. Ele depende da completude e precisão do registro genealógico. Pedigrees rasos ou com erros de paternidade subestimam o F real. O F genômico, calculado por marcadores SNP, é uma medida mais direta quando disponível.</p>
+<h3>Existe um valor de F considerado seguro na criação de gatos e cães?</h3>
+<p>Não existe um limiar único válido para todas as raças e espécies, porque depende da carga de alelos deletérios já presente na linhagem. Por isso, o acompanhamento contínuo do F e da diversidade genética da população é mais informativo do que fixar um número de corte isolado.</p>
+
+</article>
+</main>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+        <p>Software house familiar em Porto Alegre. Apps e SaaS com propósito, arte e tecnologia.</p>
+      </div>
+      <div><h2>Produtos</h2><ul><li><a href="/neuroart">NeuroArt DApp</a></li><li><a href="/posthink">Posthink</a></li><li><a href="/asphalt">Asphalt Hoops</a></li><li><a href="/galeria">ArtHack</a></li></ul></div>
+      <div><h2>Empresa</h2><ul><li><a href="/sobre">Sobre nós</a></li><li><a href="/blog">Blog</a></li><li><a href="/roadmap">Roadmap</a></li><li><a href="/parceiros">Parceiros</a></li><li><a href="/contato">Contato</a></li></ul></div>
+      <div><h2>Contato</h2><ul><li><a href="mailto:hacktechfarm@proton.me">hacktechfarm@proton.me</a></li><li><a href="/contato">Fale conosco</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Hack Tech Farm. Todos os direitos reservados.</span>
+      <span>Porto Alegre, RS &mdash; Brasil</span>
+    </div>
+  </div>
+</footer>
+<script src="/js/site.js" defer></script>
+</body>
+</html>
