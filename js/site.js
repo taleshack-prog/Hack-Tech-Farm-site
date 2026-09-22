@@ -245,6 +245,37 @@
     });
   }
 
+  /* ===================== Entrada dos cards de produto ================== */
+  /* Os cards entram girando, um depois do outro, quando a grade aparece na
+     tela. O índice de cada card (--i) é calculado aqui, na hora — por isso
+     um produto novo no catálogo entra no movimento sem mexer em nada.
+     O estado escondido só existe no CSS com JS ativo e sem "reduzir
+     movimento"; se o IntersectionObserver faltar, os cards aparecem direto. */
+
+  function initCardEntrance() {
+    var grids = $$('.grid-prod');
+    if (!grids.length) return;
+
+    function reveal(grid) {
+      $$('.card-prod', grid).forEach(function (card, i) {
+        card.style.setProperty('--i', i);
+        card.classList.add('is-in');
+      });
+    }
+
+    if (!('IntersectionObserver' in window)) { grids.forEach(reveal); return; }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        reveal(entry.target);
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    grids.forEach(function (grid) { io.observe(grid); });
+  }
+
   /* ===================== Ano no rodapé ================================= */
 
   function initYear() {
@@ -257,5 +288,6 @@
     initContact();
     initGallery();
     initYear();
+    initCardEntrance();
   });
 })();

@@ -226,7 +226,7 @@ function productCard(p) {
   }
   const tag = p.category
     ? `<span class="card-tag ${CATEGORY_CLASS[p.category] || 'tag-pwa'}">${esc(p.category)}</span>` : '';
-  return `<article class="card"><div class="card-icon" aria-hidden="true">${esc(p.icon || '📦')}</div>${tag}`
+  return `<article class="card card-prod"><div class="card-icon" aria-hidden="true">${esc(p.icon || '📦')}</div>${tag}`
     + `<h3>${esc(p.name)}</h3><p>${esc(p.tagline || p.description)}</p>${link}</article>`;
 }
 
@@ -314,7 +314,7 @@ function buildHome() {
           <h2>Nossos produtos</h2>
           <p>Cada projeto nasce de uma inquietação real e cresce até virar ferramenta de trabalho de alguém.</p>
         </div>
-        <div class="grid grid-3">${renderProducts(3)}</div>
+        <div class="grid-prod">${renderProducts(3)}</div>
         <p class="center" style="margin-top:36px"><a href="produtos.html" class="btn btn-ghost">Ver ${live().length === 1 ? 'o produto' : 'os ' + NO_AR()}</a></p>
       </div>
     </section>
@@ -356,7 +356,7 @@ function buildProdutos() {
 
     <section class="section" style="padding-top:24px">
       <div class="container">
-        <div class="grid grid-2">${renderProducts()}</div>
+        <div class="grid-prod">${renderProducts()}</div>
       </div>
     </section>
 
