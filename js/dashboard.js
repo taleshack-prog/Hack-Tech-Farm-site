@@ -55,6 +55,7 @@
       b.setAttribute('aria-selected', String(b.dataset.panel === name));
     });
     $$('.dash-panel').forEach(function (p) { p.hidden = p.id !== 'panel-' + name; });
+    healthWatch(name === 'health');
   }
 
   /* ------------------------------ API --------------------------------- */
@@ -293,12 +294,105 @@
     e.returnValue = '';
   });
 
+  /* -------------------- Saúde dos apps (painel central) ----------------- */
+  /* Cada app expõe um /health/summary; quem lê é a função /api/health, no
+     servidor, para o token não passar pelo navegador. Aqui só desenhamos.
+     Um app novo aparece sozinho: a tela desenha o que a API devolver. */
+
+  var healthTimer = null;
+  var healthBusy = false;
+
+  var STATE_LABEL = { ok: 'No ar', degraded: 'Atenção', down: 'Fora do ar', unknown: 'Sem token' };
+
+  function healthNode(app) {
+    var status = STATE_LABEL[app.status] ? app.status : 'unknown';
+    var node = el('article', 'health-node is-' + status);
+
+    var head = el('div', 'node-head');
+    head.appendChild(el('span', 'node-icon', app.icon || '📦'));
+    head.appendChild(el('span', 'node-name', app.name || app.id));
+    node.appendChild(head);
+
+    if (app.domain) node.appendChild(el('div', 'node-domain', app.domain));
+
+    var state = el('div', 'node-state');
+    state.appendChild(el('i', 'dot dot-' + status));
+    state.appendChild(el('span', null, STATE_LABEL[status]));
+    if (typeof app.latency_ms === 'number' && status !== 'unknown') {
+      state.appendChild(el('span', 'node-latency', app.latency_ms + ' ms'));
+    }
+    node.appendChild(state);
+
+    if (app.detail) node.appendChild(el('p', 'node-detail', app.detail));
+    return node;
+  }
+
+  function renderHealth(data) {
+    var grid = $('#health-grid');
+    grid.textContent = '';
+
+    if (!data.apps.length) {
+      grid.appendChild(el('p', 'health-empty', 'Nenhum app cadastrado ainda em api/_monitor.js.'));
+      return;
+    }
+
+    /* Agrupa pelo campo "group" de cada app, preservando a ordem da lista. */
+    var order = [];
+    var groups = {};
+    data.apps.forEach(function (app) {
+      var name = app.group || 'Apps';
+      if (!groups[name]) { groups[name] = []; order.push(name); }
+      groups[name].push(app);
+    });
+
+    order.forEach(function (name) {
+      var box = el('section', 'health-group');
+      box.appendChild(el('h3', null, name));
+      var row = el('div', 'health-row');
+      groups[name].forEach(function (app) { row.appendChild(healthNode(app)); });
+      box.appendChild(row);
+      grid.appendChild(box);
+    });
+  }
+
+  function loadHealth() {
+    if (healthBusy) return;
+    healthBusy = true;
+    $('#health-updated').textContent = 'Consultando…';
+
+    api('/api/health')
+      .then(function (data) {
+        renderHealth(data);
+        var hora = new Date(data.checked_at).toLocaleTimeString('pt-BR');
+        var fora = data.summary.down;
+        $('#health-updated').textContent =
+          'Leitura das ' + hora + (fora ? ' · ' + fora + (fora === 1 ? ' app fora do ar' : ' apps fora do ar') : '');
+      })
+      .catch(function (err) {
+        $('#health-updated').textContent = 'Falhou: ' + err.message;
+      })
+      .then(function () { healthBusy = false; });
+  }
+
+  /* Só consulta enquanto a tela está aberta e visível: nada de bater nos
+     apps de minuto em minuto com a aba esquecida no fundo. */
+  function healthWatch(active) {
+    clearInterval(healthTimer);
+    healthTimer = null;
+    if (!active) return;
+    loadHealth();
+    healthTimer = setInterval(function () {
+      if (!document.hidden) loadHealth();
+    }, 60000);
+  }
+
   /* ------------------------- Inicialização ---------------------------- */
 
   $$('.dash-nav button').forEach(function (b) {
     b.addEventListener('click', function () { showPanel(b.dataset.panel); });
   });
   $('#filter-status').addEventListener('change', renderList);
+  $('#health-refresh').addEventListener('click', loadHealth);
 
   $('#sign-out').addEventListener('click', function () {
     if (anyDirty() && !window.confirm('Há alterações não publicadas. Sair mesmo assim?')) return;

@@ -79,3 +79,69 @@
 
 .form-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }
 @media (max-width: 700px) { .form-cols { grid-template-columns: 1fr; } }
+
+/* ===================== Saúde dos apps ==================================
+   Formato inspirado no canvas do Railway: fundo escuro pontilhado e cada
+   serviço como um nó. Aqui os nós não têm setas entre si porque os apps são
+   independentes — o que importa é o estado de cada um. */
+
+.health-legend { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 16px; color: var(--muted); font-size: 0.82rem; }
+.health-legend span { display: inline-flex; align-items: center; gap: 7px; }
+
+.dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex: none; }
+.dot-ok       { background: var(--ok);    box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.16); }
+.dot-degraded { background: var(--warn);  box-shadow: 0 0 0 3px rgba(232, 160, 92, 0.16); }
+.dot-down     { background: var(--err);   box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.16); }
+.dot-unknown  { background: var(--muted); box-shadow: 0 0 0 3px rgba(163, 174, 194, 0.12); }
+
+.health-canvas {
+  border: 1px solid var(--line); border-radius: var(--radius-lg);
+  background-color: #080B13;
+  background-image: radial-gradient(rgba(163, 174, 194, 0.16) 1px, transparent 1px);
+  background-size: 22px 22px;
+  padding: 28px; min-height: 320px;
+}
+
+.health-group { margin-bottom: 26px; }
+.health-group:last-child { margin-bottom: 0; }
+.health-group > h3 {
+  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
+}
+
+.health-grid { display: flex; flex-direction: column; }
+.health-row { display: flex; flex-wrap: wrap; gap: 20px; }
+
+.health-node {
+  flex: 1 1 250px; max-width: 300px;
+  background: var(--slate); border: 1px solid var(--line-strong);
+  border-radius: var(--radius); padding: 16px 18px 18px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+}
+.health-node.is-down     { border-color: rgba(248, 113, 113, 0.55); }
+.health-node.is-degraded { border-color: rgba(232, 160, 92, 0.55); }
+
+.health-node .node-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.health-node .node-icon {
+  width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center;
+  background: var(--slate-soft); border: 1px solid var(--line); font-size: 0.9rem; flex: none;
+}
+.health-node .node-name { font-family: var(--font-display); font-weight: 700; font-size: 0.98rem; }
+.health-node .node-domain {
+  font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted);
+  margin-left: 36px; overflow-wrap: anywhere;
+}
+.health-node .node-state { display: flex; align-items: center; gap: 8px; margin-top: 18px; font-size: 0.86rem; }
+.health-node .node-detail { color: var(--muted); font-size: 0.8rem; margin-top: 8px; overflow-wrap: anywhere; }
+.health-node .node-latency { font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); margin-left: auto; }
+
+/* O ponto de um app fora do ar pisca, para o olho achar na hora. */
+@media (prefers-reduced-motion: no-preference) {
+  .health-node.is-down .dot-down { animation: dot-pulsa 1.4s ease-in-out infinite; }
+}
+@keyframes dot-pulsa {
+  50% { box-shadow: 0 0 0 7px rgba(248, 113, 113, 0.05); opacity: 0.65; }
+}
+
+.health-empty { color: var(--muted); font-size: 0.9rem; }
+@media (max-width: 560px) { .health-canvas { padding: 14px; background-size: 18px 18px; } }

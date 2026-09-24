@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
   <link rel="stylesheet" href="css/styles.css?v=4e378a83cc">
-  <link rel="stylesheet" href="css/dashboard.css?v=562a2affa3">
+  <link rel="stylesheet" href="css/dashboard.css?v=30479983fc">
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -38,6 +38,7 @@
           <button type="button" data-panel="create" aria-selected="false">Novo produto</button>
           <button type="button" data-panel="list" aria-selected="false">Catálogo</button>
           <button type="button" data-panel="gallery" aria-selected="false">Galeria</button>
+          <button type="button" data-panel="health" aria-selected="false">Saúde dos apps</button>
         </nav>
 
         <div>
@@ -224,6 +225,34 @@
             <div id="gallery-list"></div>
           </section>
 
+          <section class="dash-panel" id="panel-health" aria-label="Saúde dos apps" hidden>
+            <div class="dash-head" style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap">
+              <div>
+                <h2>Saúde dos apps</h2>
+                <p>Cada app se reporta aqui. Card verde está de pé, amarelo pede atenção, vermelho está fora.</p>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                <span class="dim" style="font-size:0.82rem" id="health-updated"></span>
+                <button type="button" class="btn btn-ghost btn-sm" id="health-refresh">Atualizar</button>
+              </div>
+            </div>
+
+            <div class="health-legend" aria-hidden="true">
+              <span><i class="dot dot-ok"></i> No ar</span>
+              <span><i class="dot dot-degraded"></i> Atenção</span>
+              <span><i class="dot dot-down"></i> Fora do ar</span>
+              <span><i class="dot dot-unknown"></i> Sem token</span>
+            </div>
+
+            <div class="health-canvas">
+              <div class="health-grid" id="health-grid"></div>
+            </div>
+            <p class="dim" style="font-size:0.84rem;margin-top:14px">
+              A leitura é feita pelo servidor do site, a cada minuto enquanto esta tela estiver aberta.
+              O token de cada app fica na Vercel e nunca chega ao navegador.
+            </p>
+          </section>
+
         </div>
       </div>
     </div>
@@ -232,6 +261,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="js/gallery-admin.js?v=d5dfbdfa89" defer></script>
-  <script src="js/dashboard.js?v=e3eb5f48df" defer></script>
+  <script src="js/dashboard.js?v=dd53cf5e3e" defer></script>
 </body>
 </html>
