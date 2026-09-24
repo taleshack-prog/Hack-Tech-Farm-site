@@ -47,6 +47,16 @@ export const APPS = [
     group: 'Produtos no ar',
   },
   {
+    id: 'genbreed',
+    name: 'GenBreed',
+    domain: 'genbreed.com.br',
+    icon: '🧬',
+    health_url: 'https://genbreed.com.br/health/summary',
+    mode: 'json',
+    token_env: 'MONITOR_TOKEN_GENBREED',
+    group: 'Produtos no ar',
+  },
+  {
     id: 'site-htf',
     name: 'Site Hack Tech Farm',
     domain: 'hacktechfarm.com.br',
