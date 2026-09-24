@@ -51,7 +51,7 @@ export const APPS = [
     name: 'GenBreed',
     domain: 'genbreedaiapi-production.up.railway.app',
     icon: '🧬',
-    health_url: 'https://genbreedaiapi-production.up.railway.app/health/summary',
+    health_url: 'https://genbreedaiapi-production.up.railway.app/api/v1/health/summary',
     mode: 'json',
     token_env: 'MONITOR_TOKEN_GENBREED',
     group: 'Produtos no ar',
