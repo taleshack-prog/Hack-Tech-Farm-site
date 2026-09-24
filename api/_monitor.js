@@ -57,6 +57,15 @@ export const APPS = [
     group: 'Produtos no ar',
   },
   {
+    id: 'neuroart',
+    name: 'NeuroArt DApp',
+    domain: 'neuro-art-d-app.vercel.app',
+    icon: '🎨',
+    health_url: 'https://neuro-art-d-app.vercel.app/api/health',
+    mode: 'json',
+    group: 'Produtos no ar',
+  },
+  {
     id: 'site-htf',
     name: 'Site Hack Tech Farm',
     domain: 'hacktechfarm.com.br',

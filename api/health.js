@@ -55,7 +55,32 @@ function lerDetalhe(body) {
     const valor = body[campo];
     if (typeof valor === 'string' && valor.trim()) return valor.trim().slice(0, 200);
   }
-  return '';
+  return resumirItens(body);
+}
+
+/* Alguns apps não mandam um texto pronto, e sim a lista do que verificaram
+   (checks, services, components). Aqui essa lista vira uma frase: os itens com
+   problema aparecem pelo nome, e se estiver tudo bem, só a contagem. */
+function resumirItens(body) {
+  const lista = [body.checks, body.services, body.components].find(Array.isArray);
+  if (!lista || !lista.length) return '';
+
+  const ruins = lista.filter((item) => {
+    const estado = lerStatus(item);
+    return estado && estado !== 'ok';
+  });
+
+  if (!ruins.length) {
+    return `${lista.length} ${lista.length === 1 ? 'verificação' : 'verificações'}, tudo no ar.`;
+  }
+  return ruins
+    .map((item) => {
+      const nome = typeof item.name === 'string' ? item.name : 'item';
+      const texto = lerDetalhe(item);
+      return texto ? `${nome}: ${texto}` : nome;
+    })
+    .join('; ')
+    .slice(0, 200);
 }
 
 function loadApps() {
