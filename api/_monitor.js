@@ -33,8 +33,9 @@ export const APPS = [
     name: 'Posthink',
     domain: 'api.posthink.com.br',
     icon: '✍️',
-    health_url: 'https://api.posthink.com.br/health',
+    health_url: 'https://api.posthink.com.br/health/summary',
     mode: 'json',
+    token_env: 'MONITOR_TOKEN_POSTHINK',
     group: 'Produtos no ar',
   },
   {
