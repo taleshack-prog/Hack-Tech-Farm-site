@@ -98,7 +98,101 @@ function loadApps() {
   return APPS;
 }
 
-async function probe(app) {
+/* ================= Saúde do próprio site ===============================
+ * O card do site não consulta um endereço: ele olha para dentro, aqui
+ * mesmo. Hoje o que pode falhar em silêncio é o Brevo — foi o que derrubou
+ * o formulário de contato sem ninguém perceber: bloqueio por IP, chave
+ * trocada ou cota do dia estourada. Nenhuma dessas situações aparece no
+ * site, só quando alguém tenta falar com a gente e não consegue.
+ */
+
+async function checarBrevo(cfg) {
+  if (!cfg.brevoKey) {
+    return { name: 'brevo', status: 'down', detail: 'BREVO_API_KEY não está configurada.' };
+  }
+
+  const control = new AbortController();
+  const timer = setTimeout(() => control.abort(), 4000);
+  try {
+    const res = await fetch('https://api.brevo.com/v3/account', {
+      signal: control.signal,
+      headers: { 'api-key': cfg.brevoKey, Accept: 'application/json' },
+    });
+    const texto = await res.text();
+
+    if (res.status === 401) {
+      /* A mensagem do Brevo distingue chave inválida de IP bloqueado, e a
+         diferença muda o que você precisa fazer. */
+      const ipBloqueado = /IP address/i.test(texto);
+      return {
+        name: 'brevo',
+        status: 'down',
+        detail: ipBloqueado
+          ? 'Brevo recusou por IP não autorizado — desligue a restrição de IP para chaves API.'
+          : 'Brevo recusou a chave (401). Gere outra e atualize BREVO_API_KEY.',
+      };
+    }
+    if (!res.ok) {
+      return { name: 'brevo', status: 'degraded', detail: `Brevo respondeu HTTP ${res.status}.` };
+    }
+
+    /* Cota do dia: o plano gratuito corta o envio ao zerar. */
+    let restantes = null;
+    try {
+      const conta = JSON.parse(texto);
+      const email = (conta.plan || []).find((p) => p.type === 'free' || p.credits != null);
+      if (email && typeof email.credits === 'number') restantes = email.credits;
+    } catch { /* formato mudou: o que importa é que a chave funciona */ }
+
+    if (restantes === 0) {
+      return { name: 'brevo', status: 'degraded', detail: 'Cota de e-mails do dia esgotada.' };
+    }
+    return {
+      name: 'brevo',
+      status: 'ok',
+      detail: restantes == null ? 'Chave aceita.' : `Chave aceita, ${restantes} e-mails na cota.`,
+    };
+  } catch (err) {
+    const timeout = err && err.name === 'AbortError';
+    return {
+      name: 'brevo',
+      status: 'degraded',
+      detail: timeout ? 'Brevo não respondeu em 4s.' : 'Não foi possível falar com o Brevo.',
+    };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function checarConfig(cfg) {
+  if (!cfg.ok) {
+    return { name: 'config', status: 'down', detail: `Faltam variáveis: ${cfg.missing.join(', ')}.` };
+  }
+  if (!cfg.contactFrom) {
+    return { name: 'config', status: 'degraded', detail: 'CONTACT_FROM vazio — o formulário de contato não envia.' };
+  }
+  return { name: 'config', status: 'ok', detail: '' };
+}
+
+async function saudeDoSite(base, cfg) {
+  const started = Date.now();
+  const checks = [checarConfig(cfg), await checarBrevo(cfg)];
+  const pior = checks.some((c) => c.status === 'down') ? 'down'
+    : checks.some((c) => c.status === 'degraded') ? 'degraded' : 'ok';
+
+  return {
+    ...base,
+    status: pior,
+    latency_ms: Date.now() - started,
+    checked_at: new Date().toISOString(),
+    detail: pior === 'ok'
+      ? `${checks.length} verificações, tudo no ar.`
+      : checks.filter((c) => c.status !== 'ok').map((c) => `${c.name}: ${c.detail}`).join('; ').slice(0, 200),
+    checks,
+  };
+}
+
+async function probe(app, cfg) {
   const base = {
     id: app.id,
     name: app.name || app.id,
@@ -106,6 +200,9 @@ async function probe(app) {
     icon: app.icon || '📦',
     group: app.group || 'Apps',
   };
+
+  /* modo "self": o site olha para os próprios serviços, sem sair na rede. */
+  if (app.mode === 'self') return saudeDoSite(base, cfg);
 
   const token = app.token_env ? process.env[app.token_env] : '';
   /* modo "ping": não interpreta a resposta, só confere se o app atendeu.
@@ -199,7 +296,7 @@ export default async function handler(req, res) {
   }
 
   /* Em paralelo: um app lento não atrasa os outros. */
-  const results = await Promise.all(apps.map(probe));
+  const results = await Promise.all(apps.map((app) => probe(app, cfg)));
   const count = (s) => results.filter((r) => r.status === s).length;
 
   res.setHeader('Cache-Control', 'no-store');

@@ -16,6 +16,8 @@
  *   health_url  o link que o painel consulta
  *   mode        'json' (padrão) lê o estado da resposta
  *               'ping'          só confere se o app atendeu
+ *               'self'          o próprio site: checa Brevo e configuração
+ *                               aqui dentro, sem sair na rede
  *   token_env   OPCIONAL. Nome da variável de ambiente na Vercel com o token.
  *               Só use se o link for protegido. Sem isso, o painel consulta
  *               o link sem nenhuma credencial.
@@ -73,7 +75,7 @@ export const APPS = [
     domain: 'hacktechfarm.com.br',
     icon: '🌐',
     health_url: 'https://hacktechfarm.com.br/',
-    mode: 'ping',
+    mode: 'self',
     group: 'Infraestrutura',
   },
 ];
