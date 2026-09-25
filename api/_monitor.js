@@ -43,8 +43,9 @@ export const APPS = [
     name: 'Asphalt Hoops',
     domain: 'asphalt-hoops-production.up.railway.app',
     icon: '🏀',
-    health_url: 'https://asphalt-hoops-production.up.railway.app/health',
+    health_url: 'https://asphalt-hoops-production.up.railway.app/api/health/summary',
     mode: 'json',
+    token_env: 'MONITOR_TOKEN_ASPHALT',
     group: 'Produtos no ar',
   },
   {
