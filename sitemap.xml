@@ -3,6 +3,7 @@
   <url><loc>https://hacktechfarm.com.br/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
   <url><loc>https://hacktechfarm.com.br/produtos</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://hacktechfarm.com.br/posthink</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://hacktechfarm.com.br/genbreed</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://hacktechfarm.com.br/neuroart</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://hacktechfarm.com.br/asphalt</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://hacktechfarm.com.br/galeria</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>

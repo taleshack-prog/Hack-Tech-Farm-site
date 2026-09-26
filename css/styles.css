@@ -675,3 +675,13 @@ body::after {
   .art3d, .art3d-obj, .art3d-shadow { animation: none; }
   .art3d-obj { transform: rotateY(-18deg); }
 }
+
+/* Imagem de tela na página de produto. Altura limitada para uma captura de
+   celular não dominar a página inteira no computador. */
+.prod-shot { margin: 0 0 22px; }
+.prod-shot img {
+  width: 100%; max-width: 320px; height: auto; display: block;
+  border-radius: var(--radius); border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.prod-shot figcaption { color: var(--muted); font-size: 0.84rem; margin-top: 10px; max-width: 320px; }

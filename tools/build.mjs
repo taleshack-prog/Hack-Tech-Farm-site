@@ -57,7 +57,8 @@ const NAV = [
 
 const FOOTER = [
   ['Produtos', [['neuroart.html', 'NeuroArt DApp'], ['posthink.html', 'Posthink'],
-                ['asphalt.html', 'Asphalt Hoops'], ['galeria.html', 'ArtHack']]],
+                ['genbreed.html', 'GenBreed'], ['asphalt.html', 'Asphalt Hoops'],
+                ['galeria.html', 'ArtHack']]],
   ['Empresa', [['sobre.html', 'Sobre nós'], ['blog/', 'Blog'], ['roadmap.html', 'Roadmap'],
                ['parceiros.html', 'Parceiros'], ['contato.html', 'Contato']]],
   ['Contato', [[`mailto:${CONTACT_EMAIL}`, CONTACT_EMAIL],
@@ -424,7 +425,13 @@ function productPage(cfg) {
             ${cfg.paragraphs.map((p) => `<p>${p}</p>`).join('')}
             <div class="hero-actions" style="margin-top:26px">${cta}</div>
           </div>
-          <dl class="spec">${cfg.specs.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>
+          <div>
+            ${cfg.image ? `<figure class="prod-shot">
+              <img src="${cfg.image.src}" alt="${esc(cfg.image.alt)}" width="${cfg.image.width || 720}" height="${cfg.image.height || 1280}" style="max-width:${cfg.image.width || 720}px" loading="lazy" decoding="async">
+              ${cfg.image.caption ? `<figcaption>${cfg.image.caption}</figcaption>` : ''}
+            </figure>` : ''}
+            <dl class="spec">${cfg.specs.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>
+          </div>
         </div>
       </div>
     </section>
@@ -476,6 +483,41 @@ function buildProductPages() {
     description: 'Posthink: a IA pesquisa, escreve no seu tom e publica no LinkedIn pela API oficial — com sua aprovação antes de cada post.',
     keywords: 'IA para LinkedIn, agendamento de posts, ghostwriter com IA, criação de conteúdo LinkedIn',
     appCategory: 'BusinessApplication',
+  });
+
+  productPage({
+    file: 'genbreed.html', name: 'GenBreed',
+    tagline: 'Cada cruzamento escreve uma linhagem que ninguém mais tem.',
+    paragraphs: [
+      'No GenBreed você não coleciona criaturas prontas: você as cria. Escolhe os progenitores, lê os atributos genéticos de cada um e decide o cruzamento — e é dessa decisão que sai um bicho que não existia antes.',
+      'A genética é levada a sério. Cada criatura carrega características quantitativas que se combinam de formas nem sempre previsíveis, e o efeito materno é real: o filhote nasce com a assinatura da mãe, mesmo que o genótipo próprio assuma o comando conforme ele cresce.',
+      'Entre o cruzamento e o nascimento existe uma gestação de verdade, com tempo passando. Esse intervalo não é espera vazia: é quando você acompanha o desenvolvimento, prepara o ambiente e planeja a próxima geração.',
+      'O jogo fundo mesmo começa depois, na fixação de linhagem. Retrocruzamento para reforçar o genótipo de um ancestral, consanguinidade controlada para homozigotizar um traço raro — cada geração aproxima a linhagem da perfeição ou a coloca em risco. É o equilíbrio entre pureza e viabilidade.',
+      'E o que você cria não fica preso no jogo. Um híbrido raro vira clipe de quinze segundos pronto para postar, com a linhagem na tela. O GenBreed nasceu com essa ideia no centro: as pessoas querem mostrar o que criaram.',
+    ],
+    specs: [['Categoria', 'Game de criação e genética'], ['Ciclo', 'Laboratório, gestação, nascimento e fixação'],
+            ['Genética', 'Características quantitativas (QTLs) e efeito materno'],
+            ['Técnicas', 'Retrocruzamento e consanguinidade controlada'],
+            ['Compartilhar', 'Clipe de 15s com a linhagem, pronto para postar'],
+            ['Acesso', 'Pelo navegador, em genbreed.com.br']],
+    image: {
+      src: '/img/produtos/genbreed-hibrido.webp',
+      alt: 'Carta do GenBreed com um híbrido de tigre-branco, leopardo-das-neves e tigre-albino, raridade de 12,5%, ainda na incubadora.',
+      caption: 'Um híbrido de três linhagens felinas, ainda na incubadora.',
+      width: 241, height: 254,
+    },
+    ctaLabel: 'Abrir o GenBreed', ctaUrl: 'https://genbreed.com.br',
+    features: [
+      ['Laboratório', 'Escolha os progenitores, leia os atributos e decida o cruzamento.'],
+      ['Gestação real', 'O tempo passa entre o cruzamento e o nascimento — e é nele que você planeja.'],
+      ['Efeito materno', 'O filhote nasce com a marca da mãe, e essa assinatura persiste.'],
+      ['Fixação de linhagem', 'Retrocruzamento e consanguinidade controlada para firmar os traços raros.'],
+      ['Raridade que importa', 'Combinações improváveis produzem criaturas que quase ninguém tem.'],
+      ['Feito para mostrar', 'Cada revelação vira um clipe curto com a linhagem, pronto para as redes.'],
+    ],
+    description: 'GenBreed: game de criação e melhoramento genético onde cada cruzamento gera uma linhagem única, com gestação real, efeito materno e fixação de traços.',
+    keywords: 'game de genética, criação de criaturas, melhoramento genético, breeding game, GenBreed',
+    appCategory: 'GameApplication',
   });
 
   productPage({
@@ -774,7 +816,7 @@ function build404() {
 }
 
 function buildSitemap() {
-  const pages = ['', 'produtos.html', 'posthink.html', 'neuroart.html', 'asphalt.html',
+  const pages = ['', 'produtos.html', 'posthink.html', 'genbreed.html', 'neuroart.html', 'asphalt.html',
                  'galeria.html', 'roadmap.html', 'sobre.html', 'parceiros.html', 'contato.html'];
   /* Sem URLs de /blog/ aqui: elas vivem em sitemap-blog.xml, do SEOHack.
      Um dono por arquivo. */
@@ -861,5 +903,5 @@ buildSitemap();
 versionAssets();
 
 console.log(`Build concluido - ${live().length} produtos no ar, ${dev().length} em desenvolvimento.`);
-console.log('Paginas: index, produtos, posthink, neuroart, asphalt, galeria, roadmap, sobre, parceiros, contato, 404');
+console.log('Paginas: index, produtos, posthink, genbreed, neuroart, asphalt, galeria, roadmap, sobre, parceiros, contato, 404');
 console.log('/blog/ nao e tocado por este build.');
