@@ -58,11 +58,24 @@ function lerDetalhe(body) {
   return resumirItens(body);
 }
 
+/* Há apps que mandam os checks como objeto — { db: true, prompt: {...} } — em
+   vez de lista. Aqui isso vira a mesma lista que o resto do código entende. */
+function paraLista(valor) {
+  if (!valor || typeof valor !== 'object' || Array.isArray(valor)) return null;
+  const itens = [];
+  for (const [nome, v] of Object.entries(valor)) {
+    if (typeof v === 'boolean') itens.push({ name: nome, status: v ? 'ok' : 'down' });
+    else if (v && typeof v === 'object' && 'ok' in v) itens.push({ name: nome, status: v.ok ? 'ok' : 'down', detail: lerDetalhe(v) });
+  }
+  return itens.length ? itens : null;
+}
+
 /* Alguns apps não mandam um texto pronto, e sim a lista do que verificaram
    (checks, services, components). Aqui essa lista vira uma frase: os itens com
    problema aparecem pelo nome, e se estiver tudo bem, só a contagem. */
 function resumirItens(body) {
-  const lista = [body.checks, body.services, body.components].find(Array.isArray);
+  const lista = [body.checks, body.services, body.components].find(Array.isArray)
+    || paraLista(body.checks) || paraLista(body.services) || paraLista(body.components);
   if (!lista || !lista.length) return '';
 
   const ruins = lista.filter((item) => {
@@ -199,6 +212,10 @@ async function probe(app, cfg) {
     domain: app.domain || '',
     icon: app.icon || '📦',
     group: app.group || 'Apps',
+    /* Atalhos do card. Só http(s) sai daqui: a lista é nossa, mas o painel
+       não deve ser capaz de montar um javascript: por descuido de digitação. */
+    links: (app.links || []).filter((l) => l && typeof l.url === 'string' && /^https?:\/\//.test(l.url))
+      .map((l) => ({ label: String(l.label || 'Abrir').slice(0, 24), url: l.url })),
   };
 
   /* modo "self": o site olha para os próprios serviços, sem sair na rede. */

@@ -145,3 +145,14 @@
 
 .health-empty { color: var(--muted); font-size: 0.9rem; }
 @media (max-width: 560px) { .health-canvas { padding: 14px; background-size: 18px 18px; } }
+
+.node-links {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line);
+}
+.node-links a {
+  font-size: 0.76rem; padding: 4px 10px; border-radius: 999px;
+  background: var(--slate-soft); border: 1px solid var(--line);
+  color: var(--muted); text-decoration: none; transition: all 0.18s;
+}
+.node-links a:hover { color: var(--bone); border-color: var(--line-strong); }

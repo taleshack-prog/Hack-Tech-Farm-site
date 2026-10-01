@@ -324,6 +324,23 @@
     node.appendChild(state);
 
     if (app.detail) node.appendChild(el('p', 'node-detail', app.detail));
+
+    /* Atalhos: é o que torna o painel a porta de entrada do ecossistema.
+       safeUrl barra qualquer coisa que não seja http(s). */
+    if (app.links && app.links.length) {
+      var linha = el('div', 'node-links');
+      app.links.forEach(function (link) {
+        var href = safeUrl(link.url);
+        if (!href) return;
+        var a = el('a', null, link.label);
+        a.href = href;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        linha.appendChild(a);
+      });
+      if (linha.childNodes.length) node.appendChild(linha);
+    }
+
     return node;
   }
 
