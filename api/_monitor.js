@@ -35,6 +35,7 @@
  */
 
 const GH = 'https://github.com/taleshack-prog';
+const RW = 'https://railway.com/project';
 
 export const APPS = [
   {
@@ -49,7 +50,7 @@ export const APPS = [
     links: [
       { label: 'Abrir', url: 'https://posthink.com.br/' },
       { label: 'Código', url: `${GH}/Linkedin-App` },
-      { label: 'Hospedagem', url: 'https://railway.com/' },
+      { label: 'Railway', url: `${RW}/6492418d-ddee-4e6b-abbd-9ddb912e39d5` },
     ],
   },
   {
@@ -66,7 +67,7 @@ export const APPS = [
       { label: 'Admin', url: 'https://asphalt-hoops-production.up.railway.app/asphalt-dashboard' },
       { label: 'Código (app)', url: `${GH}/AsphaltHoops-PWA` },
       { label: 'Código (API)', url: `${GH}/Asphalt-Hoops` },
-      { label: 'Hospedagem', url: 'https://railway.com/' },
+      { label: 'Railway', url: `${RW}/be9c9fd4-9a65-43dc-8136-491d2f33ad5c` },
     ],
   },
   {
@@ -81,7 +82,7 @@ export const APPS = [
     links: [
       { label: 'Abrir', url: 'https://genbreed.com.br/' },
       { label: 'Código', url: `${GH}/GenBreedAI` },
-      { label: 'Hospedagem', url: 'https://railway.com/' },
+      { label: 'Railway', url: `${RW}/5abc1e69-a5f5-424f-9209-54fd47d99f04` },
     ],
   },
   {
@@ -95,7 +96,7 @@ export const APPS = [
     links: [
       { label: 'Abrir', url: 'https://neuro-art-d-app.vercel.app/' },
       { label: 'Código', url: `${GH}/NeuroArt-DApp` },
-      { label: 'Hospedagem', url: 'https://vercel.com/hack-tech-farm' },
+      { label: 'Vercel', url: 'https://vercel.com/tales-hacks-projects/neuro-art-d-app' },
     ],
   },
 
@@ -111,6 +112,7 @@ export const APPS = [
       { label: 'Abrir', url: 'https://www.taleshack.com.br/' },
       { label: 'Código (site)', url: `${GH}/ArtHack` },
       { label: 'Código (CMS)', url: `${GH}/arthack-cms` },
+      { label: 'Railway', url: `${RW}/a6a83d83-0e86-4bdc-8722-012feba66005` },
     ],
   },
   {
@@ -125,7 +127,7 @@ export const APPS = [
       { label: 'Abrir', url: 'https://seo-hack-silk.vercel.app/' },
       { label: 'Blog publicado', url: 'https://hacktechfarm.com.br/blog/' },
       { label: 'Código', url: `${GH}/SEOHack` },
-      { label: 'Hospedagem', url: 'https://vercel.com/hack-tech-farm' },
+      { label: 'Vercel', url: 'https://vercel.com/hack-tech-farm/seo-hack' },
     ],
   },
 
@@ -140,7 +142,7 @@ export const APPS = [
     links: [
       { label: 'Abrir', url: 'https://hacktechfarm.com.br/' },
       { label: 'Código', url: `${GH}/Hack-Tech-Farm-site` },
-      { label: 'Hospedagem', url: 'https://vercel.com/hack-tech-farm/hack-tech-farm-site' },
+      { label: 'Vercel', url: 'https://vercel.com/hack-tech-farm/hack-tech-farm-site' },
       { label: 'E-mail (Brevo)', url: 'https://app.brevo.com/' },
     ],
   },
