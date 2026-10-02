@@ -48,6 +48,7 @@ export const APPS = [
     group: 'Produtos no ar',
     links: [
       { label: 'Abrir', url: 'https://posthink.com.br/' },
+      { label: 'Código', url: `${GH}/Linkedin-App` },
       { label: 'Hospedagem', url: 'https://railway.com/' },
     ],
   },
@@ -63,6 +64,8 @@ export const APPS = [
     links: [
       { label: 'Abrir', url: 'https://asphalt-hoops-pwa.vercel.app/' },
       { label: 'Admin', url: 'https://asphalt-hoops-production.up.railway.app/asphalt-dashboard' },
+      { label: 'Código (app)', url: `${GH}/AsphaltHoops-PWA` },
+      { label: 'Código (API)', url: `${GH}/Asphalt-Hoops` },
       { label: 'Hospedagem', url: 'https://railway.com/' },
     ],
   },
@@ -77,6 +80,7 @@ export const APPS = [
     group: 'Produtos no ar',
     links: [
       { label: 'Abrir', url: 'https://genbreed.com.br/' },
+      { label: 'Código', url: `${GH}/GenBreedAI` },
       { label: 'Hospedagem', url: 'https://railway.com/' },
     ],
   },
@@ -90,6 +94,7 @@ export const APPS = [
     group: 'Produtos no ar',
     links: [
       { label: 'Abrir', url: 'https://neuro-art-d-app.vercel.app/' },
+      { label: 'Código', url: `${GH}/NeuroArt-DApp` },
       { label: 'Hospedagem', url: 'https://vercel.com/hack-tech-farm' },
     ],
   },
@@ -104,6 +109,8 @@ export const APPS = [
     group: 'Sites e conteúdo',
     links: [
       { label: 'Abrir', url: 'https://www.taleshack.com.br/' },
+      { label: 'Código (site)', url: `${GH}/ArtHack` },
+      { label: 'Código (CMS)', url: `${GH}/arthack-cms` },
     ],
   },
   {
@@ -117,6 +124,7 @@ export const APPS = [
     links: [
       { label: 'Abrir', url: 'https://seo-hack-silk.vercel.app/' },
       { label: 'Blog publicado', url: 'https://hacktechfarm.com.br/blog/' },
+      { label: 'Código', url: `${GH}/SEOHack` },
       { label: 'Hospedagem', url: 'https://vercel.com/hack-tech-farm' },
     ],
   },
