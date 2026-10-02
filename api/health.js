@@ -18,6 +18,7 @@
 
 import { config, requireSession, sendJson, fail } from './_lib.js';
 import { APPS } from './_monitor.js';
+import { ultimoDeploy } from './_deploy.js';
 
 const TIMEOUT_MS = 6000;
 const STATUSES = ['ok', 'degraded', 'down'];
@@ -312,8 +313,12 @@ export default async function handler(req, res) {
     return fail(res, 500, 'Não foi possível ler a lista de apps monitorados.', err);
   }
 
-  /* Em paralelo: um app lento não atrasa os outros. */
-  const results = await Promise.all(apps.map((app) => probe(app, cfg)));
+  /* Em paralelo: um app lento não atrasa os outros. A consulta de deploy
+     corre junto com a de saúde, para não somar os tempos. */
+  const results = await Promise.all(apps.map(async (app) => {
+    const [estado, deploy] = await Promise.all([probe(app, cfg), ultimoDeploy(app)]);
+    return deploy ? { ...estado, deploy } : estado;
+  }));
   const count = (s) => results.filter((r) => r.status === s).length;
 
   res.setHeader('Cache-Control', 'no-store');

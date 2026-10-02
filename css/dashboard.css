@@ -156,3 +156,7 @@
   color: var(--muted); text-decoration: none; transition: all 0.18s;
 }
 .node-links a:hover { color: var(--bone); border-color: var(--line-strong); }
+
+.node-deploy { margin-top: 10px; font-size: 0.76rem; display: flex; flex-direction: column; gap: 2px; }
+.node-deploy-when { color: var(--muted); font-family: var(--font-mono); }
+.node-deploy-msg { color: var(--muted); opacity: 0.8; overflow-wrap: anywhere; }

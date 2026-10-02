@@ -304,6 +304,19 @@
 
   var STATE_LABEL = { ok: 'No ar', degraded: 'Atenção', down: 'Fora do ar', unknown: 'Sem token' };
 
+  /* "há 3 h", "há 2 dias" — mais fácil de ler do que data e hora. */
+  function haQuanto(iso) {
+    var minutos = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+    if (!isFinite(minutos) || minutos < 0) return 'agora';
+    if (minutos < 60) return 'há ' + minutos + ' min';
+    var horas = Math.round(minutos / 60);
+    if (horas < 24) return 'há ' + horas + (horas === 1 ? ' hora' : ' horas');
+    var dias = Math.round(horas / 24);
+    if (dias < 30) return 'há ' + dias + (dias === 1 ? ' dia' : ' dias');
+    var meses = Math.round(dias / 30);
+    return 'há ' + meses + (meses === 1 ? ' mês' : ' meses');
+  }
+
   function healthNode(app) {
     var status = STATE_LABEL[app.status] ? app.status : 'unknown';
     var node = el('article', 'health-node is-' + status);
@@ -324,6 +337,14 @@
     node.appendChild(state);
 
     if (app.detail) node.appendChild(el('p', 'node-detail', app.detail));
+
+    /* Última publicação. Responde "quebrou depois do quê?" sem sair da tela. */
+    if (app.deploy && app.deploy.when) {
+      var dep = el('p', 'node-deploy');
+      dep.appendChild(el('span', 'node-deploy-when', 'Deploy ' + haQuanto(app.deploy.when)));
+      if (app.deploy.message) dep.appendChild(el('span', 'node-deploy-msg', app.deploy.message));
+      node.appendChild(dep);
+    }
 
     /* Atalhos: é o que torna o painel a porta de entrada do ecossistema.
        safeUrl barra qualquer coisa que não seja http(s). */

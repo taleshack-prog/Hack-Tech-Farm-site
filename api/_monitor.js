@@ -21,6 +21,13 @@
  *                               aqui dentro, sem sair na rede
  *   token_env   OPCIONAL. Nome da variável de ambiente na Vercel com o token.
  *               Só use se o link for protegido.
+ *   deploy      OPCIONAL. De onde ler o último deploy:
+ *               { provider: 'vercel', project: '<nome>', team: '<slug>' }
+ *               { provider: 'railway', projectId: '<id do projeto>' }
+ *               Precisa de VERCEL_API_TOKEN / RAILWAY_API_TOKEN na Vercel.
+ *               Um app em conta separada pode indicar o seu próprio token
+ *               com token_env dentro do bloco deploy.
+ *               Sem token, o card só não mostra a linha de deploy.
  *   links       OPCIONAL. Atalhos que aparecem no rodapé do card. Cada um é
  *               { label, url }. Convenção: Abrir, Admin, Código, Hospedagem.
  *               É o que faz do painel a porta de entrada do ecossistema, no
@@ -47,6 +54,7 @@ export const APPS = [
     mode: 'json',
     token_env: 'MONITOR_TOKEN_POSTHINK',
     group: 'Produtos no ar',
+    deploy: { provider: 'railway', projectId: '6492418d-ddee-4e6b-abbd-9ddb912e39d5' },
     links: [
       { label: 'Abrir', url: 'https://posthink.com.br/' },
       { label: 'Código', url: `${GH}/Linkedin-App` },
@@ -62,6 +70,7 @@ export const APPS = [
     mode: 'json',
     token_env: 'MONITOR_TOKEN_ASPHALT',
     group: 'Produtos no ar',
+    deploy: { provider: 'railway', projectId: 'be9c9fd4-9a65-43dc-8136-491d2f33ad5c' },
     links: [
       { label: 'Abrir', url: 'https://asphalt-hoops-pwa.vercel.app/' },
       { label: 'Admin', url: 'https://asphalt-hoops-production.up.railway.app/asphalt-dashboard' },
@@ -79,6 +88,7 @@ export const APPS = [
     mode: 'json',
     token_env: 'MONITOR_TOKEN_GENBREED',
     group: 'Produtos no ar',
+    deploy: { provider: 'railway', projectId: '5abc1e69-a5f5-424f-9209-54fd47d99f04' },
     links: [
       { label: 'Abrir', url: 'https://genbreed.com.br/' },
       { label: 'Código', url: `${GH}/GenBreedAI` },
@@ -93,6 +103,7 @@ export const APPS = [
     health_url: 'https://neuro-art-d-app.vercel.app/api/health',
     mode: 'json',
     group: 'Produtos no ar',
+    deploy: { provider: 'vercel', project: 'neuro-art-d-app', team: 'tales-hacks-projects' },
     links: [
       { label: 'Abrir', url: 'https://neuro-art-d-app.vercel.app/' },
       { label: 'Código', url: `${GH}/NeuroArt-DApp` },
@@ -108,6 +119,7 @@ export const APPS = [
     health_url: 'https://www.taleshack.com.br/',
     mode: 'ping',
     group: 'Sites e conteúdo',
+    deploy: { provider: 'railway', projectId: 'a6a83d83-0e86-4bdc-8722-012feba66005' },
     links: [
       { label: 'Abrir', url: 'https://www.taleshack.com.br/' },
       { label: 'Código (site)', url: `${GH}/ArtHack` },
@@ -123,6 +135,7 @@ export const APPS = [
     health_url: 'https://seo-hack-silk.vercel.app/api/health',
     mode: 'json',
     group: 'Sites e conteúdo',
+    deploy: { provider: 'vercel', project: 'seo-hack', team: 'hack-tech-farm' },
     links: [
       { label: 'Abrir', url: 'https://seo-hack-silk.vercel.app/' },
       { label: 'Blog publicado', url: 'https://hacktechfarm.com.br/blog/' },
@@ -139,6 +152,7 @@ export const APPS = [
     health_url: 'https://hacktechfarm.com.br/',
     mode: 'self',
     group: 'Infraestrutura',
+    deploy: { provider: 'vercel', project: 'hack-tech-farm-site', team: 'hack-tech-farm' },
     links: [
       { label: 'Abrir', url: 'https://hacktechfarm.com.br/' },
       { label: 'Código', url: `${GH}/Hack-Tech-Farm-site` },
