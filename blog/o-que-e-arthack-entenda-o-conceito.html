@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O Que É ArtHack? Entenda o Conceito</title>
+<meta name="description" content="ArtHack explicado: como a Hack Tech Farm une arte, código e blockchain em projetos como o NeuroArt DApp, com tokenização e resgate por threshold.">
+<link rel="canonical" href="https://hacktechfarm.com.br/blog/o-que-e-arthack-entenda-o-conceito">
+<meta property="og:type" content="article">
+<meta property="og:title" content="O Que É ArtHack? Entenda o Conceito">
+<meta property="og:description" content="ArtHack é a abordagem da Hack Tech Farm para tratar obras de arte como sistemas programáveis, combinando tokenização on-chain, frações negociáveis e lógica de resgate em smart contracts.">
+<meta property="og:url" content="https://hacktechfarm.com.br/blog/o-que-e-arthack-entenda-o-conceito">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"O Que É ArtHack? Entenda o Conceito","description":"ArtHack explicado: como a Hack Tech Farm une arte, código e blockchain em projetos como o NeuroArt DApp, com tokenização e resgate por threshold.","datePublished":"2026-10-02T09:01:16Z","dateModified":"2026-10-08T11:41:42Z","inLanguage":"pt-BR","mainEntityOfPage":{"@type":"WebPage","@id":"https://hacktechfarm.com.br/blog/o-que-e-arthack-entenda-o-conceito"},"author":{"@type":"Person","name":"Tales Hack","url":"https://hacktechfarm.com.br/sobre"},"publisher":{"@type":"Organization","name":"Hack Tech Farm"},"keywords":"arthack, arthack, neuroart-dapp, tokenizacao-fracionaria-de-obras-de-arte"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"ArtHack é uma empresa, um produto ou um conceito?","acceptedAnswer":{"@type":"Answer","text":"É um conceito — a metodologia da Hack Tech Farm para tratar obras de arte como ativos programáveis. O NeuroArt DApp é a implementação concreta dessa metodologia, não o termo em si."}},{"@type":"Question","name":"ArtHack exige conhecimento técnico do artista?","acceptedAnswer":{"@type":"Answer","text":"Não. O artista interage com o NeuroArt DApp como usuário final; a engenharia de contratos, fracionamento e resgate fica a cargo da equipe técnica da HTF."}},{"@type":"Question","name":"Qual a diferença entre ArtHack e um NFT comum?","acceptedAnswer":{"@type":"Answer","text":"Um NFT comum geralmente representa posse de um arquivo único, sem lógica embutida de fracionamento ou resgate. No ArtHack, a obra carrega contratos próprios para frações negociáveis e para a condição de resgate via threshold redemption."}},{"@type":"Question","name":"O NeuroArt DApp é a única aplicação de ArtHack?","acceptedAnswer":{"@type":"Answer","text":"É a aplicação pública e documentada hoje. A lógica por trás dela — tokenização, fração e resgate por limiar — é reaproveitável em outros projetos que envolvam ativos únicos com necessidade de liquidez fracionária."}}]}]}</script>
+</head>
+<body>
+<nav class="nav" aria-label="Navegação principal">
+  <div class="container nav-inner">
+    <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+    <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu">☰</button>
+    <div class="nav-links" id="nav-links" data-open="false">
+      <a href="/">Início</a><div class="dropdown"><button type="button" class="dropdown-toggle" aria-expanded="false" aria-controls="menu-produtos">Produtos<span class="chev" aria-hidden="true">▾</span></button><div class="dropdown-menu" id="menu-produtos"><a href="/produtos">Todos os produtos</a><a href="/neuroart">NeuroArt DApp</a><a href="/posthink">Posthink</a><a href="/asphalt">Asphalt Hoops</a><a href="/galeria">ArtHack</a></div></div><a href="/roadmap">Roadmap</a><a href="/blog" aria-current="page">Blog</a><a href="/sobre">Sobre</a><a href="/parceiros">Parceiros</a><a href="/contato">Contato</a>
+    </div>
+  </div>
+</nav>
+<main>
+<article>
+<h1>O Que É ArtHack? Entenda o Conceito</h1>
+<p class="meta">
+<time datetime="2026-10-02T09:01:16Z">2026-10-02</time>
+· 6 min de leitura
+· atualizado em <time datetime="2026-10-08T11:41:42Z">2026-10-08</time>
+</p>
+<h2>O que é ArtHack</h2>
+<p>ArtHack é a forma como a Hack Tech Farm descreve a aplicação de engenharia de software e blockchain à criação, circulação e monetização de obras de arte. Não é um evento de 48 horas com pizza e deploy às pressas. É uma metodologia de produto: tratar uma obra — física ou digital — como um sistema que tem estado, regras de transição e interface programática, em vez de um arquivo estático guardado num HD ou pendurado numa parede.</p>
+<p>Isso muda a pergunta central. Hackathon de arte tradicional pergunta "o que dá pra construir em um fim de semana usando arte como tema". ArtHack pergunta "que lógica de propriedade, liquidez e resgate faz sentido para esta obra específica, e como um smart contract aplica essa lógica sem depender de um intermediário de confiança".</p>
+<p>O <a href="/neuroart">NeuroArt DApp</a> é a implementação concreta dessa ideia na prática. Ele roda na Base, uma L2 da rede Ethereum, e trata cada obra como um conjunto de contratos: um para tokenizar a peça, outro para gerenciar frações negociáveis, e um terceiro para controlar o resgate — o chamado threshold redemption, que explicamos na seção seguinte.</p>
+<p>A diferença prática entre obra como arquivo e obra como ativo programável aparece no momento da transação. Um JPEG num marketplace de NFT genérico transfere posse de um token que aponta para um arquivo — a lógica de negócio, quando existe, fica em um contrato de terceiros que você não controla. No ArtHack, a obra carrega sua própria lógica: regras de fração, de royalties e de resgate residem no contrato que a HTF escreve e audita para aquele projeto específico.</p>
+<h2>Como a tokenização entra no ArtHack</h2>
+<p>Tokenização fracionária de obra de arte significa dividir a propriedade de uma peça única em unidades compráveis separadamente — cada fração é um token que representa uma fatia do valor e, dependendo do desenho do contrato, do direito sobre a obra.</p>
+<p>No NeuroArt DApp, essa lógica se conecta ao token NEURO: ele é a unidade de conta que circula dentro do ecossistema do DApp, usada para comprar frações de obras tokenizadas e para liquidar operações entre colecionadores.</p>
+<p>O papel do threshold redemption é resolver o problema que toda fracionalização cria: o que acontece quando alguém quer "sair" e resgatar o ativo subjacente, físico ou os direitos associados a ele? A resposta do ArtHack é um limiar: só quando um percentual definido das frações se concentra em uma única carteira (ou é reunido por consenso entre detentores) o contrato libera o resgate. Detalhamos o mecanismo passo a passo no artigo sobre <a href="/blog/threshold-redemption-como-resgatar-ativo-tokenizado">threshold redemption</a>.</p>
+<p>Isso tem um trade-off que vale deixar explícito. Fracionar uma obra aumenta a liquidez — mais gente pode comprar uma fatia pequena em vez de precisar do valor integral da peça. Mas aumenta também a complexidade de custódia: alguém precisa guardar o ativo físico (ou os direitos legais sobre ele) enquanto a obra estiver fracionada, e o contrato de threshold redemption precisa estar bem auditado para não travar o resgate numa condição de borda. Projetos que ignoram esse segundo lado do trade-off tendem a acumular obras "presas" em contratos sem saída clara.</p>
+<p>Quem quiser entender o processo de tokenização em si, do zero, encontra o passo a passo em <a href="/blog/como-tokenizar-uma-obra-de-arte-em-erc-20">como tokenizar uma obra de arte em ERC-20</a>.</p>
+<h2>Por que usar Base L2 e não a mainnet</h2>
+<p>Projetos de arte tokenizada geram muitas transações pequenas: compra de fração, transferência entre colecionadores, distribuição de royalties. Rodar isso direto na mainnet da Ethereum tornaria cada uma dessas operações cara o suficiente para inviabilizar frações de baixo valor. Esse é o motivo prático por trás da escolha da Base como camada de execução do NeuroArt DApp — o custo de gas por transação cai de forma relevante numa L2 em comparação com a camada base. O artigo sobre <a href="/blog/gas-fees-na-evm-como-estimar-e-reduzir-custos">gas fees na EVM</a> detalha como estimar e reduzir esse custo em qualquer projeto EVM, não só em arte.</p>
+<p>Mas reduzir custo não é a única razão. A escolha entre L2 e mainnet é uma decisão de arquitetura: afeta finalidade de transação, pontes de liquidez e até quais wallets e marketplaces secundários vão reconhecer o ativo sem fricção. Comparamos esses fatores em detalhe no artigo <a href="/blog/base-l2-vs-mainnet-ethereum-para-tokenizar-ativos">Base L2 vs mainnet Ethereum para tokenizar ativos</a>.</p>
+<h2>ArtHack comparado a outras abordagens</h2>
+<p>A tabela abaixo resume onde o ArtHack se diferencia de um hackathon de arte tradicional e de uma plataforma de NFT genérica.</p>
+<table>
+<thead>
+<tr>
+<th scope="col">Critério</th>
+<th scope="col">ArtHack (ex.: NeuroArt DApp)</th>
+<th scope="col">Hackathon de arte tradicional</th>
+<th scope="col">Plataforma NFT genérica</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Modelo de propriedade</td>
+<td>Fração on-chain com lógica de resgate própria</td>
+<td>Nenhum — produto descartado após o evento</td>
+<td>Token único, sem fracionamento nativo</td>
+</tr>
+<tr>
+<td>Liquidez</td>
+<td>Frações negociáveis entre colecionadores</td>
+<td>Inexistente</td>
+<td>Depende do marketplace de terceiros</td>
+</tr>
+<tr>
+<td>Lock-in de plataforma</td>
+<td>Baixo — contrato auditável e portável</td>
+<td>Alto — protótipo nunca sai do repositório do evento</td>
+<td>Alto — metadados e royalties presos ao marketplace</td>
+</tr>
+<tr>
+<td>Custo de entrada para o artista</td>
+<td>Taxas de rede em L2, geralmente baixas</td>
+<td>Tempo do evento, sem custo direto de infraestrutura</td>
+<td>Taxa de listagem e gas na rede escolhida pela plataforma</td>
+</tr>
+</tbody></table>
+<p>Para quem quer entender os fundamentos de smart contracts antes de avaliar qualquer um desses modelos, o <a href="/blog/guia-definitivo-de-smart-contracts-para-devs">guia definitivo de smart contracts para devs</a> é o ponto de partida técnico.</p>
+<h2>Quem usa ArtHack na prática</h2>
+<p>O público primário do NeuroArt DApp são artistas que querem tokenizar obras sem abrir mão de controle sobre as regras de propriedade e resgate, e curadores que precisam de um mecanismo de liquidez fracionária para coleções que, de outra forma, ficariam ilíquidas.</p>
+<p>A <a href="/galeria">galeria</a> funciona como vitrine das obras já tratadas sob essa abordagem — é o lugar para ver o conceito aplicado a peças reais, não só descrito em teoria.</p>
+<p>Há também um público secundário: desenvolvedores que não trabalham com arte diretamente, mas querem integrar lógica de tokenização, fração e resgate a outros tipos de produto Web3. A arquitetura de contratos do ArtHack — token de obra, token de fração, contrato de threshold — é reaproveitável fora do contexto artístico, desde que o ativo subjacente tenha a mesma característica central: um bem único que se beneficia de fracionamento, mas que em algum momento precisa de um mecanismo claro de resgate.</p>
+<h2>Perguntas Frequentes</h2>
+<h3>ArtHack é uma empresa, um produto ou um conceito?</h3>
+<p>É um conceito — a metodologia da Hack Tech Farm para tratar obras de arte como ativos programáveis. O NeuroArt DApp é a implementação concreta dessa metodologia, não o termo em si.</p>
+<h3>ArtHack exige conhecimento técnico do artista?</h3>
+<p>Não. O artista interage com o NeuroArt DApp como usuário final; a engenharia de contratos, fracionamento e resgate fica a cargo da equipe técnica da HTF.</p>
+<h3>Qual a diferença entre ArtHack e um NFT comum?</h3>
+<p>Um NFT comum geralmente representa posse de um arquivo único, sem lógica embutida de fracionamento ou resgate. No ArtHack, a obra carrega contratos próprios para frações negociáveis e para a condição de resgate via threshold redemption.</p>
+<h3>O NeuroArt DApp é a única aplicação de ArtHack?</h3>
+<p>É a aplicação pública e documentada hoje. A lógica por trás dela — tokenização, fração e resgate por limiar — é reaproveitável em outros projetos que envolvam ativos únicos com necessidade de liquidez fracionária.</p>
+
+</article>
+</main>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+        <p>Software house familiar em Porto Alegre. Apps e SaaS com propósito, arte e tecnologia.</p>
+      </div>
+      <div><h2>Produtos</h2><ul><li><a href="/neuroart">NeuroArt DApp</a></li><li><a href="/posthink">Posthink</a></li><li><a href="/asphalt">Asphalt Hoops</a></li><li><a href="/galeria">ArtHack</a></li></ul></div>
+      <div><h2>Empresa</h2><ul><li><a href="/sobre">Sobre nós</a></li><li><a href="/blog">Blog</a></li><li><a href="/roadmap">Roadmap</a></li><li><a href="/parceiros">Parceiros</a></li><li><a href="/contato">Contato</a></li></ul></div>
+      <div><h2>Contato</h2><ul><li><a href="mailto:hacktechfarm@proton.me">hacktechfarm@proton.me</a></li><li><a href="/contato">Fale conosco</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Hack Tech Farm. Todos os direitos reservados.</span>
+      <span>Porto Alegre, RS &mdash; Brasil</span>
+    </div>
+  </div>
+</footer>
+<script src="/js/site.js" defer></script>
+</body>
+</html>
