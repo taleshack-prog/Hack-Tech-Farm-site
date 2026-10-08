@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Como Fazer um Site para Escultor: Guia Técnico</title>
+<meta name="description" content="Guia técnico para criar o site de um escultor: stack, performance de imagem, SEO para arte e como conectar a obra a uma galeria digital ou tokenização.">
+<link rel="canonical" href="https://hacktechfarm.com.br/blog/como-fazer-um-site-para-escultor-guia-tecnico">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Como Fazer um Site para Escultor: Guia Técnico">
+<meta property="og:description" content="Um passo a passo técnico para construir o site de um escultor, da escolha de stack até a conexão com galerias digitais e tokenização de obras.">
+<meta property="og:url" content="https://hacktechfarm.com.br/blog/como-fazer-um-site-para-escultor-guia-tecnico">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"Como Fazer um Site para Escultor: Guia Técnico","description":"Guia técnico para criar o site de um escultor: stack, performance de imagem, SEO para arte e como conectar a obra a uma galeria digital ou tokenização.","datePublished":"2026-09-30T21:58:33Z","dateModified":"2026-10-08T11:37:25Z","inLanguage":"pt-BR","mainEntityOfPage":{"@type":"WebPage","@id":"https://hacktechfarm.com.br/blog/como-fazer-um-site-para-escultor-guia-tecnico"},"author":{"@type":"Person","name":"Tales Hack","url":"https://hacktechfarm.com.br/sobre"},"publisher":{"@type":"Organization","name":"Hack Tech Farm"},"keywords":"arthack, cms-headless, core-web-vitals, schema-org-creativework"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Preciso de blockchain para vender esculturas digitais?","acceptedAnswer":{"@type":"Answer","text":"Não. Blockchain só faz sentido quando existe demanda real por fracionamento de propriedade ou certificado de autenticidade à prova de falsificação. Para vender uma peça física a um comprador único, um site institucional bem construído resolve."}},{"@type":"Question","name":"Qual stack é melhor para o portfólio de um escultor: estático ou CMS?","acceptedAnswer":{"@type":"Answer","text":"Depende de quem atualiza o conteúdo. Site estático (Next.js/Astro) é mais performático e barato de manter, mas exige um desenvolvedor para cada atualização. CMS headless dá autonomia ao artista, ao custo de gerenciar um serviço externo."}},{"@type":"Question","name":"Como otimizar fotos de esculturas sem perder qualidade visual?","acceptedAnswer":{"@type":"Answer","text":"Usando formatos modernos como AVIF e WebP com fallback, dimensionando a imagem para o tamanho real de exibição e aplicando lazy loading. A imagem em resolução máxima deve ficar disponível sob demanda, não carregada por padrão."}},{"@type":"Question","name":"Vale a pena investir em visualização 3D no site de um artista?","acceptedAnswer":{"@type":"Answer","text":"Só quando a obra depende de ângulo e volume para ser compreendida, e quando o público valoriza essa experiência o suficiente para justificar o custo de produção do modelo 3D. Na maioria dos casos, fotografia de alta qualidade é suficiente."}},{"@type":"Question","name":"O que é schema.org CreativeWork e por que usar no site de um artista?","acceptedAnswer":{"@type":"Answer","text":"É um vocabulário estruturado que descreve uma obra — autor, material, data — em formato que motores de busca e sistemas de IA conseguem interpretar. Isso ajuda a página da obra específica a aparecer em buscas relevantes, em vez de só a home do site."}}]}]}</script>
+</head>
+<body>
+<nav class="nav" aria-label="Navegação principal">
+  <div class="container nav-inner">
+    <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+    <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu">☰</button>
+    <div class="nav-links" id="nav-links" data-open="false">
+      <a href="/">Início</a><div class="dropdown"><button type="button" class="dropdown-toggle" aria-expanded="false" aria-controls="menu-produtos">Produtos<span class="chev" aria-hidden="true">▾</span></button><div class="dropdown-menu" id="menu-produtos"><a href="/produtos">Todos os produtos</a><a href="/neuroart">NeuroArt DApp</a><a href="/posthink">Posthink</a><a href="/asphalt">Asphalt Hoops</a><a href="/galeria">ArtHack</a></div></div><a href="/roadmap">Roadmap</a><a href="/blog" aria-current="page">Blog</a><a href="/sobre">Sobre</a><a href="/parceiros">Parceiros</a><a href="/contato">Contato</a>
+    </div>
+  </div>
+</nav>
+<main>
+<article>
+<h1>Como Fazer um Site para Escultor: Guia Técnico</h1>
+<p class="meta">
+<time datetime="2026-09-30T21:58:33Z">2026-09-30</time>
+· 9 min de leitura
+· atualizado em <time datetime="2026-10-08T11:37:25Z">2026-10-08</time>
+</p>
+<h2>O que um site de escultor precisa resolver antes do design</h2>
+<p>Um site de escultor precisa resolver um problema de exibição, não de conteúdo textual. A obra é o produto, a imagem da obra é a interface, e qualquer decisão técnica que degrade essa imagem — compressão agressiva, carregamento lento, layout genérico — compromete a venda antes que o visitante role a página.</p>
+<p>Isso muda a prioridade do projeto. Um blog pessoal otimiza para publicação frequente de texto. Um portfólio de escultor otimiza para apresentação de poucas peças em altíssima fidelidade visual, com metadados que permitam a um comprador, curador ou motor de busca entender o que está vendo.</p>
+<p>Três entidades técnicas definem esse projeto desde o início. O <strong>CMS headless</strong> é o sistema que separa o conteúdo (fotos, descrições, dimensões da peça) da camada visual, permitindo que o artista atualize o portfólio sem mexer em código. Os <strong>Core Web Vitals</strong> são as métricas do Google que medem a experiência real de carregamento — e como o portfólio depende de imagens pesadas, eles viram o principal risco técnico do projeto. O <strong>schema.org CreativeWork</strong> é o vocabulário estruturado que descreve uma obra de arte para motores de busca e assistentes de IA, conectando título, autor, material e data em um formato que máquinas conseguem indexar corretamente.</p>
+<p>A relação entre os três é direta: o CMS headless armazena os dados que alimentam o schema.org CreativeWork, e a forma como essas imagens são servidas determina se os Core Web Vitals passam ou falham.</p>
+<p>Antes de qualquer decisão de design, vale decidir também se o site é puramente institucional — portfólio, biografia, contato — ou se inclui venda direta de peças, o que muda a stack (carrinho, checkout, gestão de estoque de peça única) e o volume de trabalho de manutenção.</p>
+<p>Por fim, o domínio próprio é o único ativo de marca que o artista controla de verdade. Perfil de rede social pode sumir, mudar de algoritmo ou ser banido; domínio registrado no nome do artista não.</p>
+<h2>Escolhendo a stack: estático, headless CMS ou no-code</h2>
+<p>A escolha de stack depende de uma pergunta simples: quem vai atualizar o portfólio depois do lançamento?</p>
+<p>Se a resposta é "só o desenvolvedor, poucas vezes por ano", um site estático gerado com <a href="https://nextjs.org/docs" rel="noopener" target="_blank">Next.js</a> ou <a href="https://docs.astro.build/" rel="noopener" target="_blank">Astro</a> é a opção com melhor performance e menor custo de manutenção. Não há banco de dados para administrar, não há painel de admin para manter seguro, e o deploy é um arquivo de build.</p>
+<p>Se o escultor precisa subir fotos de peças novas sozinho, sem depender de um desenvolvedor a cada atualização, um CMS headless entra em cena. Ele resolve o problema de autonomia, mas adiciona uma peça a mais na arquitetura: um serviço externo com sua própria disponibilidade e seu próprio painel para o artista aprender a usar.</p>
+<p>No-code (construtores visuais de site) resolve rápido para quem quer validar uma presença online sem orçamento técnico. O limite aparece quando a obra exige apresentação fora do padrão — visualização 3D, zoom de alta resolução customizado, integração com uma galeria digital externa. Nesse ponto, a plataforma no-code vira restrição, não ferramenta.</p>
+<table>
+<thead>
+<tr>
+<th scope="col">Stack</th>
+<th scope="col">Quem atualiza o conteúdo</th>
+<th scope="col">Performance típica</th>
+<th scope="col">Custo de manutenção</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Estático (Next.js/Astro)</td>
+<td>Desenvolvedor, via código</td>
+<td>Alta, pouco a otimizar</td>
+<td>Baixo, sem servidor de admin</td>
+</tr>
+<tr>
+<td>CMS headless</td>
+<td>O próprio artista, via painel</td>
+<td>Alta, depende da entrega de imagem</td>
+<td>Médio, há um serviço externo a gerenciar</td>
+</tr>
+<tr>
+<td>No-code</td>
+<td>O próprio artista, via editor visual</td>
+<td>Variável, depende da plataforma</td>
+<td>Baixo no início, sobe se o projeto cresce</td>
+</tr>
+</tbody></table>
+<p>Não existe stack certa em abstrato — existe stack certa para o volume de atualização e o nível de customização visual que a obra exige.</p>
+<h2>Performance de imagem sem perder fidelidade da obra</h2>
+<p>A escultura depende de textura, sombra e profundidade para comunicar sua qualidade. Comprimir a imagem além do ponto certo apaga exatamente o que vende a peça.</p>
+<p>A solução não é escolher entre qualidade e performance, é servir o formato certo para cada navegador. Formatos modernos como <a href="https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types#avif_image" rel="noopener" target="_blank">AVIF</a> e <a href="https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types#webp_image" rel="noopener" target="_blank">WebP</a> comprimem com muito menos perda visual do que JPEG no mesmo tamanho de arquivo, com fallback para JPEG em navegadores mais antigos via o elemento <code>&lt;picture&gt;</code>.</p>
+<pre><code class="language-html">&lt;picture&gt;
+  &lt;source srcset="obra-01.avif" type="image/avif"&gt;
+  &lt;source srcset="obra-01.webp" type="image/webp"&gt;
+  &lt;img src="obra-01.jpg" alt="Escultura em bronze, torso feminino, acabamento patinado, 40cm de altura"&gt;
+&lt;/picture&gt;
+</code></pre>
+<p>Lazy loading nativo (atributo <code>loading="lazy"</code> do próprio <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#loading" rel="noopener" target="_blank">HTML</a>) evita carregar todas as fotos de uma galeria de uma vez, o que impacta diretamente o LCP (Largest Contentful Paint), uma das três métricas que compõem os Core Web Vitals. Dimensionar a imagem para o tamanho real de exibição — em vez de servir o arquivo original de 6000px em um card de 400px — é o ajuste que mais reduz peso sem tocar na qualidade percebida.</p>
+<p>O trade-off real aqui é entre fidelidade e velocidade de carregamento em conexão ruim. Um visitante em 4G lento abandona uma página que demora para mostrar a primeira imagem, mesmo que a obra mereça ser vista em altíssima resolução — por isso a imagem principal deve ser otimizada, e a versão em resolução máxima deve ficar disponível sob demanda (clique para ampliar, download de catálogo), não carregada por padrão.</p>
+<h2>SEO técnico para artistas plásticos</h2>
+<p>Cada obra no site deveria ser uma página indexável, com URL própria e metadados estruturados — não apenas um item dentro de um carrossel.</p>
+<p>A marcação <a href="https://schema.org/CreativeWork" rel="noopener" target="_blank">schema.org CreativeWork</a> descreve a obra em um formato que motores de busca e sistemas de IA generativa conseguem interpretar: autor, material, dimensões, data de criação. Isso é o que permite que uma busca por "escultura em bronze [nome do artista]" retorne a página certa, e não apenas a home genérica do site.</p>
+<pre><code class="language-json">{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": "Torso em Bronze Patinado",
+  "creator": {
+    "@type": "Person",
+    "name": "Nome do Artista"
+  },
+  "material": "Bronze",
+  "dateCreated": "2024"
+}
+</code></pre>
+<p>O texto alternativo (<code>alt</code>) de cada imagem precisa ser descritivo, não genérico. "Imagem 1" não ajuda ninguém; "escultura em mármore, figura sentada, 60cm, acabamento polido" ajuda tanto o SEO quanto o leitor de tela.</p>
+<p>Organizar a URL por coleção ou série (<code>/obras/serie-torsos/peca-01</code>) em vez de um número sequencial sem contexto também facilita indexação e navegação. Por fim, um sitemap XML gerado automaticamente — recurso padrão em Next.js e Astro — garante que cada página de obra seja descoberta pelo Google sem depender de link interno manual.</p>
+<h2>Galeria interativa: quando vale a pena ir além de fotos estáticas</h2>
+<p>Fotografia de qualidade resolve a maioria dos casos. Visualização 360° ou modelo 3D interativo — via o web component <a href="https://modelviewer.dev/" rel="noopener" target="_blank"><code>&lt;model-viewer&gt;</code></a> — agrega quando a obra depende de ângulo e volume para ser entendida, como uma peça pensada para ser vista em movimento ao redor.</p>
+<pre><code class="language-html">&lt;model-viewer
+  src="torso-bronze.glb"
+  alt="Modelo 3D de escultura em bronze"
+  camera-controls
+  auto-rotate&gt;
+&lt;/model-viewer&gt;
+</code></pre>
+<p>O custo aqui não é só de desenvolvimento: é o custo de produção do modelo 3D em si, seja por escaneamento 3D da peça física seja por modelagem manual. Esse investimento só se paga se o público-alvo (colecionador, curador, galeria) valoriza a experiência o suficiente para justificar o tempo e o orçamento extras.</p>
+<p>Para referência de como uma galeria digital pode se estruturar como experiência — navegação por obra, contexto de coleção, apresentação visual coesa — vale observar a <a href="/galeria">galeria da Hack Tech Farm</a> como exemplo de organização de conteúdo visual.</p>
+<p>Na maioria dos casos, a decisão certa é manter simples: fotografia de alta qualidade, zoom funcional, boa descrição. 3D é reforço, não substituto.</p>
+<h2>Do site à obra tokenizada: conectando arte física e digital</h2>
+<p>Existe um ponto em que faz sentido um escultor considerar uma versão digital da obra, tokenizada em blockchain, como certificado de autenticidade, como forma de fracionamento entre múltiplos colecionadores, ou como extensão de coleção que existe apenas no digital.</p>
+<p>A <strong>tokenização de obra de arte</strong> aplica a peças físicas dois conceitos que vêm do universo de smart contracts: fracionamento, que divide a propriedade de uma peça entre vários investidores, e resgate por limiar (<em>threshold redemption</em>), mecanismo pelo qual a posse de fração suficiente do token permite reivindicar a obra física ou seus direitos associados. Para quem quer entender esse mecanismo em detalhe, o artigo sobre <a href="/blog/como-tokenizar-uma-obra-de-arte-em-erc-20">tokenizar uma obra de arte em ERC-20</a> descreve o processo técnico.</p>
+<p>Isso não é caminho obrigatório para todo escultor. Faz sentido quando existe demanda real de colecionadores por propriedade fracionada ou por um registro de autenticidade à prova de falsificação, e vira over-engineering quando o objetivo é só vender a peça física para um comprador único — nesse caso, um site bem construído com portfólio e contato direto resolve o problema todo.</p>
+<p>Para quem quer ver esse modelo em produção, o <a href="/neuroart">NeuroArt</a> é um DApp de arte rodando na rede Base, com tokenização de obras, fracionamento e resgate por limiar já implementados — uma referência concreta de como esses conceitos saem do papel.</p>
+<blockquote>
+<p>Se o projeto do seu portfólio incluir essa camada de tokenização, a <a href="/contato">Hack Tech Farm</a> já tem essa arquitetura rodando em produção e pode conversar sobre o escopo.</p>
+</blockquote>
+<h2>Checklist técnico de lançamento</h2>
+<p>Antes de considerar o site pronto, alguns pontos técnicos não podem ficar de fora:</p>
+<ul>
+<li>Teste de performance em conexão móvel real, não só em banda larga de escritório — ferramentas como Lighthouse simulam throttling de rede, mas o teste em aparelho físico com 4G revela problemas que simulação não pega.</li>
+<li>Validação dos metadados Open Graph (<code>og:image</code>, <code>og:title</code>, <code>og:description</code>), que controlam como o link do site aparece quando compartilhado em redes sociais ou WhatsApp.</li>
+<li>Backup das imagens em resolução original, fora do CMS ou do repositório do site — perder o arquivo-fonte de uma foto de obra física é uma perda irreversível.</li>
+<li>Um plano simples de quem atualiza o portfólio depois do lançamento e com que frequência, para que o site não fique parado no dia em que a primeira peça nova for criada.</li>
+</ul>
+<p>A Hack Tech Farm simplificou a vida do artista plástico, Tales Hack, ao criar um dashboard CMS para que ele mesmo pudesse públicar suas obras sem necessidade de dev e uso de terminal, bem como escrever e publicar seus artigos no blog. O site ArtHack (taleshack.com.br) é um exemplo de entender a necessidade do artista faz toda a diferença.</p>
+<h2>Perguntas Frequentes</h2>
+<h3>Preciso de blockchain para vender esculturas digitais?</h3>
+<p>Não. Blockchain só faz sentido quando existe demanda real por fracionamento de propriedade ou certificado de autenticidade à prova de falsificação. Para vender uma peça física a um comprador único, um site institucional bem construído resolve.</p>
+<h3>Qual stack é melhor para o portfólio de um escultor: estático ou CMS?</h3>
+<p>Depende de quem atualiza o conteúdo. Site estático (Next.js/Astro) é mais performático e barato de manter, mas exige um desenvolvedor para cada atualização. CMS headless dá autonomia ao artista, ao custo de gerenciar um serviço externo.</p>
+<h3>Como otimizar fotos de esculturas sem perder qualidade visual?</h3>
+<p>Usando formatos modernos como AVIF e WebP com fallback, dimensionando a imagem para o tamanho real de exibição e aplicando lazy loading. A imagem em resolução máxima deve ficar disponível sob demanda, não carregada por padrão.</p>
+<h3>Vale a pena investir em visualização 3D no site de um artista?</h3>
+<p>Só quando a obra depende de ângulo e volume para ser compreendida, e quando o público valoriza essa experiência o suficiente para justificar o custo de produção do modelo 3D. Na maioria dos casos, fotografia de alta qualidade é suficiente.</p>
+<h3>O que é schema.org CreativeWork e por que usar no site de um artista?</h3>
+<p>É um vocabulário estruturado que descreve uma obra — autor, material, data — em formato que motores de busca e sistemas de IA conseguem interpretar. Isso ajuda a página da obra específica a aparecer em buscas relevantes, em vez de só a home do site.</p>
+
+</article>
+</main>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+        <p>Software house familiar em Porto Alegre. Apps e SaaS com propósito, arte e tecnologia.</p>
+      </div>
+      <div><h2>Produtos</h2><ul><li><a href="/neuroart">NeuroArt DApp</a></li><li><a href="/posthink">Posthink</a></li><li><a href="/asphalt">Asphalt Hoops</a></li><li><a href="/galeria">ArtHack</a></li></ul></div>
+      <div><h2>Empresa</h2><ul><li><a href="/sobre">Sobre nós</a></li><li><a href="/blog">Blog</a></li><li><a href="/roadmap">Roadmap</a></li><li><a href="/parceiros">Parceiros</a></li><li><a href="/contato">Contato</a></li></ul></div>
+      <div><h2>Contato</h2><ul><li><a href="mailto:hacktechfarm@proton.me">hacktechfarm@proton.me</a></li><li><a href="/contato">Fale conosco</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Hack Tech Farm. Todos os direitos reservados.</span>
+      <span>Porto Alegre, RS &mdash; Brasil</span>
+    </div>
+  </div>
+</footer>
+<script src="/js/site.js" defer></script>
+</body>
+</html>
