@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Como Funciona o Gene MC1R na Genética Animal</title>
+<meta name="description" content="Entenda como o gene MC1R controla a produção de eumelanina e feomelanina, define cores de pelagem e se conecta a outros loci genéticos.">
+<link rel="canonical" href="https://hacktechfarm.com.br/blog/como-funciona-o-gene-mc1r-na-genetica-animal">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Como Funciona o Gene MC1R na Genética Animal">
+<meta property="og:description" content="Um guia técnico sobre o gene MC1R, o receptor que decide entre produzir pigmento escuro ou claro na pelagem de mamíferos.">
+<meta property="og:url" content="https://hacktechfarm.com.br/blog/como-funciona-o-gene-mc1r-na-genetica-animal">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="/css/styles.css">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"Como Funciona o Gene MC1R na Genética Animal","description":"Entenda como o gene MC1R controla a produção de eumelanina e feomelanina, define cores de pelagem e se conecta a outros loci genéticos.","datePublished":"2026-10-21T09:01:27Z","dateModified":"2026-10-21T09:01:27Z","inLanguage":"pt-BR","mainEntityOfPage":{"@type":"WebPage","@id":"https://hacktechfarm.com.br/blog/como-funciona-o-gene-mc1r-na-genetica-animal"},"author":{"@type":"Person","name":"Tales Hack","url":"https://hacktechfarm.com.br/sobre"},"publisher":{"@type":"Organization","name":"Hack Tech Farm"},"keywords":"gene-mc1r, eumelanina, feomelanina"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"O que o gene MC1R faz exatamente?","acceptedAnswer":{"@type":"Answer","text":"Ele codifica um receptor acoplado à proteína G nos melanócitos que decide se a célula vai produzir eumelanina (pigmento escuro) ou feomelanina (pigmento avermelhado/amarelo), funcionando como um switch bioquímico de pigmentação."}},{"@type":"Question","name":"MC1R é o mesmo gene em todas as espécies de mamíferos?","acceptedAnswer":{"@type":"Answer","text":"É o mesmo gene, evolutivamente conservado, mas as mutações que alteram sua função variam entre espécies. A mutação que causa pelagem amarela em cães não é necessariamente idêntica à encontrada em gatos ou cavalos com fenótipo semelhante."}},{"@type":"Question","name":"Qual a diferença entre MC1R e o gene Agouti?","acceptedAnswer":{"@type":"Answer","text":"MC1R é o receptor que decide o tipo de pigmento. Agouti (ASIP) produz uma proteína que compete pelo mesmo receptor e pode bloquear sua ativação, funcionando como modulador em vez de switch independente."}},{"@type":"Question","name":"Uma mutação no MC1R sempre deixa o animal mais claro?","acceptedAnswer":{"@type":"Answer","text":"Mutações de perda de função tendem a produzir pelagem avermelhada ou amarela (genótipo ee), mas o resultado final depende de outros loci, como Agouti e genes de diluição, que também afetam a tonalidade observada."}},{"@type":"Question","name":"É possível simular o efeito do MC1R sem ter acesso a animais reais?","acceptedAnswer":{"@type":"Answer","text":"Sim. Simuladores que modelam o locus Extension junto com outros genes de pigmentação permitem testar cruzamentos virtuais e observar proporções genotípicas e fenotípicas ao longo de gerações, sem depender de um pedigree físico."}}]}]}</script>
+</head>
+<body>
+<nav class="nav" aria-label="Navegação principal">
+  <div class="container nav-inner">
+    <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+    <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Abrir menu">☰</button>
+    <div class="nav-links" id="nav-links" data-open="false">
+      <a href="/">Início</a><div class="dropdown"><button type="button" class="dropdown-toggle" aria-expanded="false" aria-controls="menu-produtos">Produtos<span class="chev" aria-hidden="true">▾</span></button><div class="dropdown-menu" id="menu-produtos"><a href="/produtos">Todos os produtos</a><a href="/neuroart">NeuroArt DApp</a><a href="/posthink">Posthink</a><a href="/asphalt">Asphalt Hoops</a><a href="/galeria">ArtHack</a></div></div><a href="/roadmap">Roadmap</a><a href="/blog" aria-current="page">Blog</a><a href="/sobre">Sobre</a><a href="/parceiros">Parceiros</a><a href="/contato">Contato</a>
+    </div>
+  </div>
+</nav>
+<main>
+<article>
+<h1>Como Funciona o Gene MC1R na Genética Animal</h1>
+<p class="meta">
+<time datetime="2026-10-21T09:01:27Z">2026-10-21</time>
+· 7 min de leitura
+
+</p>
+<h2>O que é o gene MC1R e onde ele atua</h2>
+<p>O <strong>MC1R</strong> (<em>Melanocortin 1 Receptor</em>) é um gene que codifica um receptor acoplado à proteína G, expresso na membrana dos melanócitos — as células responsáveis por produzir pigmento na pele, pelo e pena de vertebrados. Esse tipo de receptor já é bem descrito na literatura de biologia molecular, e você pode conferir a anotação funcional do gene no <a href="https://www.ncbi.nlm.nih.gov/gene/?term=MC1R" rel="noopener" target="_blank">NCBI Gene</a> e no <a href="https://www.uniprot.org/uniprotkb?query=MC1R" rel="noopener" target="_blank">UniProt</a>.</p>
+<p>A função do MC1R é decidir, dentro do melanócito, qual tipo de pigmento será sintetizado: <strong>eumelanina</strong>, de tonalidade preta ou marrom, ou <strong>feomelanina</strong>, de tonalidade vermelha ou amarela. Quando o receptor está ativo, a célula produz eumelanina. Quando o receptor está inativo ou bloqueado, a célula desvia a rota metabólica para feomelanina.</p>
+<p>Esse comportamento binário é chamado, na literatura de genética da pigmentação, de <strong>switch de pigmentação</strong>. Na nomenclatura clássica de genética da cor em mamíferos domésticos, esse ponto de controle corresponde ao <strong>locus Extension (E)</strong> — o mesmo locus que determina se um animal vai expressar sua cor "base" escura ou uma variante avermelhada/amarelada.</p>
+<p>Resumindo a cadeia causal: o gene MC1R codifica o receptor de melanocortina, o receptor de melanocortina controla o switch eumelanina/feomelanina, e esse switch é observado geneticamente como o locus Extension.</p>
+<h2>Como as mutações no MC1R mudam o fenótipo</h2>
+<p>Mutações de perda de função no MC1R impedem o receptor de ser ativado normalmente. Sem ativação, o melanócito produz feomelanina por padrão — resultando em pelagem avermelhada ou amarela. Esse fenótipo costuma se comportar como recessivo, representado pelo genótipo <strong>ee</strong>.</p>
+<p>Alelos funcionais do MC1R, por outro lado, mantêm o receptor ativo e a produção de eumelanina em curso. Animais com pelo menos uma cópia funcional (E) tendem a expressar a cor escura padrão da espécie, salvo interferência de outros genes.</p>
+<p>Um ponto importante: cada espécie tende a ter sua própria variante mutada do MC1R. A mutação que causa pelagem amarela em um cão não é necessariamente a mesma mutação encontrada em um gato ou em um cavalo com fenótipo equivalente. O gene é conservado evolutivamente, mas o "erro" específico que quebra sua função varia.</p>
+<p>Além disso, a penetrância do fenótipo ee pode ser modulada por outros loci — principalmente pelo gene <strong>Agouti</strong>, que atua rio acima do MC1R na mesma via de sinalização. Isso explica por que dois animais com genótipo Extension idêntico podem exibir padrões de cor diferentes.</p>
+<h2>MC1R e sua relação com outros genes de pigmentação</h2>
+<p>O MC1R não trabalha sozinho. Ele faz parte de uma cadeia de sinalização com pelo menos dois outros genes centrais na genética da cor:</p>
+<ul>
+<li><strong>ASIP (Agouti Signaling Protein)</strong>: a proteína codificada pelo gene Agouti compete com o hormônio estimulador de melanócitos (α-MSH) pelo mesmo receptor MC1R. Quando ASIP se liga ao receptor, ela bloqueia a ativação e força a produção de feomelanina, mesmo que o MC1R em si esteja funcional. Por isso o Agouti é descrito como um <em>modulador</em> do MC1R, não como um switch independente.</li>
+<li><strong>TYR (Tirosinase)</strong>: diferente do MC1R, a tirosinase não decide qual pigmento será produzido. Ela é a enzima que catalisa a primeira etapa da síntese de melanina, atuando depois que a decisão eumelanina/feomelanina já foi tomada. Mutações no TYR afetam a quantidade e a qualidade do pigmento, não o tipo.</li>
+</ul>
+<p>Entender essa ordem — MC1R decide o tipo, Agouti modula a decisão, TYR executa a síntese — é o que permite prever fenótipos em cruzamentos com razoável precisão. É também o tipo de cadeia causal que aparece, de forma simulável, em ferramentas de genética aplicada, como as que modelam múltiplos loci interagindo em sequência.</p>
+<p>Se você já estudou o tema de forma isolada, vale revisar como esses mecanismos se conectam no artigo sobre <a href="/blog/heranca-quantitativa-e-poligenica-guia-com-exemplos">herança quantitativa e poligênica</a>, já que a expressão final da cor raramente depende de um único gene.</p>
+<h2>MC1R em diferentes espécies: gatos, cães e outros mamíferos</h2>
+<p>Em <strong>gatos domésticos</strong>, o locus Extension tem baixa variabilidade documentada em comparação com cães — a maior parte da diversidade de cor em felinos vem de outros loci, como Agouti, Dilution e o locus do branco dominante, não de múltiplos alelos do MC1R. Para o repertório completo de genes que definem pelagem em gatos, veja o guia <a href="/blog/genetica-da-cor-da-pelagem-em-gatos-guia-completo">genética da cor da pelagem em gatos</a>.</p>
+<p>Em <strong>cães</strong>, a situação é diferente: múltiplos alelos do MC1R já foram descritos e ajudam a explicar variações de cor entre raças, desde tons avermelhados até amarelos claros.</p>
+<p>A conservação evolutiva do gene MC1R em mamíferos tão distintos — de roedores a felinos e canídeos — sugere que essa via de sinalização é antiga e desempenha papel essencial no sistema de pigmentação, provavelmente ligado também a funções não-visuais do receptor de melanocortina em outros tecidos.</p>
+<h2>Tabela comparativa: MC1R vs outros genes de cor</h2>
+<table>
+<thead>
+<tr>
+<th scope="col">Gene</th>
+<th scope="col">Produto proteico</th>
+<th scope="col">Papel na via de pigmentação</th>
+<th scope="col">Efeito fenotípico típico</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MC1R</td>
+<td>Receptor acoplado à proteína G</td>
+<td>Switch: decide entre eumelanina e feomelanina</td>
+<td>Pelagem escura (E) vs avermelhada/amarela (ee)</td>
+</tr>
+<tr>
+<td>ASIP (Agouti)</td>
+<td>Ligante competitivo do MC1R</td>
+<td>Modulador: bloqueia a ativação do receptor</td>
+<td>Padrão agouti, bandas de cor no pelo individual</td>
+</tr>
+<tr>
+<td>TYR (Tirosinase)</td>
+<td>Enzima catalisadora</td>
+<td>Executor: realiza a primeira etapa da síntese de melanina</td>
+<td>Intensidade/presença do pigmento, albinismo em mutações severas</td>
+</tr>
+</tbody></table>
+<p>Vale notar a diferença entre mutações no TYR que reduzem pigmento e condições como o leucismo, que têm origem genética distinta — o artigo <a href="/blog/albinismo-vs-leucismo-qual-a-diferenca-genetica">albinismo vs leucismo</a> detalha essa distinção.</p>
+<h2>Como simular o efeito do MC1R em cruzamentos genéticos</h2>
+<p>O locus Extension se comporta, na maioria dos casos documentados, como um locus de herança mendeliana simples com dois alelos (E dominante, e recessivo). Isso significa que um quadro de Punnett aplicado ao Extension já prevê as proporções esperadas de filhotes claros e escuros em um cruzamento — o mesmo raciocínio explicado passo a passo em <a href="/blog/quadro-de-punnett-passo-a-passo-com-exemplos">quadro de Punnett passo a passo</a>.</p>
+<pre><code>Cruzamento Ee x Ee:
+  E | e
+E EE | Ee
+e Ee | ee
+
+Proporção genotípica: 1 EE : 2 Ee : 1 ee
+Proporção fenotípica: 3 escuro : 1 avermelhado/amarelo (assumindo E dominante)
+</code></pre>
+<p>Na prática, prever o fenótipo final exige combinar esse resultado com os genótipos de Agouti e, em alguns casos, de genes de diluição — por isso simuladores que modelam múltiplos loci simultaneamente são mais úteis do que calcular um locus isolado no papel.</p>
+<blockquote>
+<p>Se você quer testar esse tipo de cruzamento sem precisar de acesso a um pedigree real, o <a href="https://genbreed.com.br" rel="noopener" target="_blank">GenBreed</a> simula loci reais de cor, padrão e diluição em gerações sucessivas, incluindo a interação entre MC1R, Agouti e outros genes — com plano gratuito disponível para começar.</p>
+</blockquote>
+<p>Ferramentas como essa também ajudam a visualizar o efeito acumulado de endogamia em linhagens que fixam um fenótipo específico — um tema tratado em detalhe no <a href="/blog/simulador-de-genetica-online-heranca-mendeliana">simulador de genética online</a>.</p>
+<h2>Perguntas Frequentes</h2>
+<h3>O que o gene MC1R faz exatamente?</h3>
+<p>Ele codifica um receptor acoplado à proteína G nos melanócitos que decide se a célula vai produzir eumelanina (pigmento escuro) ou feomelanina (pigmento avermelhado/amarelo), funcionando como um switch bioquímico de pigmentação.</p>
+<h3>MC1R é o mesmo gene em todas as espécies de mamíferos?</h3>
+<p>É o mesmo gene, evolutivamente conservado, mas as mutações que alteram sua função variam entre espécies. A mutação que causa pelagem amarela em cães não é necessariamente idêntica à encontrada em gatos ou cavalos com fenótipo semelhante.</p>
+<h3>Qual a diferença entre MC1R e o gene Agouti?</h3>
+<p>MC1R é o receptor que decide o tipo de pigmento. Agouti (ASIP) produz uma proteína que compete pelo mesmo receptor e pode bloquear sua ativação, funcionando como modulador em vez de switch independente.</p>
+<h3>Uma mutação no MC1R sempre deixa o animal mais claro?</h3>
+<p>Mutações de perda de função tendem a produzir pelagem avermelhada ou amarela (genótipo ee), mas o resultado final depende de outros loci, como Agouti e genes de diluição, que também afetam a tonalidade observada.</p>
+<h3>É possível simular o efeito do MC1R sem ter acesso a animais reais?</h3>
+<p>Sim. Simuladores que modelam o locus Extension junto com outros genes de pigmentação permitem testar cruzamentos virtuais e observar proporções genotípicas e fenotípicas ao longo de gerações, sem depender de um pedigree físico.</p>
+
+</article>
+</main>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo"><span class="logo-mark" aria-hidden="true">HTF</span> Hack Tech Farm</a>
+        <p>Software house familiar em Porto Alegre. Apps e SaaS com propósito, arte e tecnologia.</p>
+      </div>
+      <div><h2>Produtos</h2><ul><li><a href="/neuroart">NeuroArt DApp</a></li><li><a href="/posthink">Posthink</a></li><li><a href="/asphalt">Asphalt Hoops</a></li><li><a href="/galeria">ArtHack</a></li></ul></div>
+      <div><h2>Empresa</h2><ul><li><a href="/sobre">Sobre nós</a></li><li><a href="/blog">Blog</a></li><li><a href="/roadmap">Roadmap</a></li><li><a href="/parceiros">Parceiros</a></li><li><a href="/contato">Contato</a></li></ul></div>
+      <div><h2>Contato</h2><ul><li><a href="mailto:hacktechfarm@proton.me">hacktechfarm@proton.me</a></li><li><a href="/contato">Fale conosco</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Hack Tech Farm. Todos os direitos reservados.</span>
+      <span>Porto Alegre, RS &mdash; Brasil</span>
+    </div>
+  </div>
+</footer>
+<script src="/js/site.js" defer></script>
+</body>
+</html>
